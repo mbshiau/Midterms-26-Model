@@ -1,1 +1,124 @@
-ahsdfkjads
+Objective
+
+Develop a full-stack web application that automatically aggregates polling data for the 2026 Pennsylvania gubernatorial election, runs probabilistic election simulations, and presents an interactive forecast to users.
+
+Unlike a polling average, the application estimates uncertainty by running Monte Carlo simulations and reports:
+
+projected vote share
+probability of victory
+distribution of likely outcomes
+
+Future versions may support multiple races, demographic modeling, and AI-generated explanations.
+
+
+Goals
+Primary Goals
+Automatically ingest new polling data
+Maintain a clean polling database
+Generate probabilistic election forecasts
+Visualize uncertainty instead of only averages
+Deploy as a public web application
+Secondary Goals
+Historical forecast tracking
+AI-generated forecast explanations
+Pollster reliability weighting
+User-defined simulation scenarios
+
+
+Tech Stack
+Frontend
+React
+TypeScript
+Tailwind CSS
+Recharts (or D3 if you want more customization)
+Backend
+Python
+FastAPI
+Database
+PostgreSQL
+Data Processing
+pandas
+NumPy
+Simulation
+Monte Carlo engine
+Deployment
+Docker
+Vercel (frontend)
+Railway or Render (backend)
+
+MVP Features
+1. Poll Collection
+Description
+
+Automatically retrieve new polls from public sources (prefer official APIs or datasets where available, and only scrape sites that permit it).
+
+Stored Fields:
+Pollster
+Sponsor
+Field Dates
+Release Date
+Sample Size
+Population (LV/RV/A)
+Candidate A %
+Candidate B %
+Undecided %
+Margin of Error
+Poll URL
+
+Pipeline:
+Scheduler
+      ↓
+Poll Fetcher
+      ↓
+Parser
+      ↓
+Validation
+      ↓
+Database
+
+2. Poll Dashboard
+
+Display:
+
+latest polls
+polling average
+trend over time
+poll details
+
+3. Simulation Engine
+
+Run
+
+10,000 Monte Carlo simulations
+
+Input:
+
+polling average
+polling variance
+historical polling error (simple constant in the MVP)
+
+Output:
+
+Democratic vote share distribution
+Republican vote share distribution
+projected winner
+probability of victory
+
+4. Forecast Page
+
+Display 
+
+Forecast Summary Example:
+
+
+Projected Winner
+
+Josh Shapiro
+
+Probability of Winning
+
+93.4%
+
+Expected Vote Share
+
+53.1%
