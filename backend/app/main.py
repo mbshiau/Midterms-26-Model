@@ -10,7 +10,7 @@ from app.ingestion.pipeline import ingest_polls
 from app.ingestion.scheduler import start_scheduler, stop_scheduler
 from app.routers import forecast, polls, races, simulations
 from app.services.approval import seed_default_approval
-from app.services.forecasting import generate_forecast
+from app.services.forecasting import generate_forecast, latest_forecast
 from app.services.races import get_race_seed, seed_all_races
 
 logging.basicConfig(level=logging.INFO)
@@ -30,10 +30,15 @@ async def lifespan(app: FastAPI):
         for race in races.values():
             race_seed = get_race_seed(race.state_code)
             ingest_polls(db, race, race_seed)
-            # The forecast is generated here (once per app start, per race)
-            # and again by the scheduled refresh job every 24h — never on
-            # demand from the client, so there's no user-facing "re-run" action.
-            generate_forecast(db, race)
+            # Only bootstrap a forecast the first time a race is seeded (no
+            # snapshot yet). Every subsequent app restart must NOT re-run
+            # this, or every existing race gets a spurious new snapshot each
+            # time the container restarts for an unrelated reason (e.g.
+            # adding a different state) -- forecast history is meant to
+            # reflect real refresh events (the 24h scheduled job, or a
+            # manual /simulate call), not process restarts.
+            if latest_forecast(db, race) is None:
+                generate_forecast(db, race)
     finally:
         db.close()
 

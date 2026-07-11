@@ -191,6 +191,121 @@ RACE_FUNDAMENTALS = {
             {"date": "2026-07-02", "dem_lead": -183_912},
         ],
     },
+    "ny": {
+        # NY has fusion voting: candidates often run on both a major party
+        # line and a minor party line (e.g. Working Families, Conservative).
+        # dem_share/rep_share below combine a candidate's major-line and
+        # fusion-line votes (same candidate, not a spoiler), matching how
+        # Wikipedia's own results tables report "combined" totals.
+        "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 57.39, "incumbent_party": "D"},  # Cuomo (inc) d. Astorino
+            {"year": 2018, "dem_share": 62.23, "incumbent_party": "D"},  # Cuomo (inc) d. Molinaro
+            {"year": 2022, "dem_share": 53.20, "incumbent_party": "D"},  # Hochul (inc) d. Zeldin
+        ],
+        # Last 3 NY Senate elections (mixes Gillibrand's Class 1 and
+        # Schumer's Class 3 seats), combined-line totals.
+        "senate_elections": [
+            {"year": 2018, "dem_share": 67.00},  # Gillibrand (inc) d. Farley
+            {"year": 2022, "dem_share": 57.04},  # Schumer (inc) d. Pinion
+            {"year": 2024, "dem_share": 59.21},  # Gillibrand (inc) d. Sapraicone
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 61.78},  # Clinton d. Trump
+            {"year": 2020, "dem_share": 61.73},  # Biden d. Trump
+            {"year": 2024, "dem_share": 56.35},  # Harris d. Trump -- NY's largest R swing of any state in 2024
+        ],
+        # NYS Board of Elections publishes official statewide enrollment by
+        # party (elections.ny.gov/enrollment-county). Direct access was
+        # blocked by an anti-bot challenge; figures below are the same BOE
+        # report retrieved via Internet Archive captures of the official
+        # files, reconciled against their own Active+Inactive subtotals.
+        # dem_lead = statewide Democratic minus Republican registration.
+        "registration_snapshots": [
+            {"date": "2020-02-21", "dem_lead": 3_720_174},
+            {"date": "2022-02-21", "dem_lead": 3_623_202},
+            {"date": "2022-11-01", "dem_lead": 3_615_902},
+            {"date": "2024-02-27", "dem_lead": 3_500_925},
+            {"date": "2026-02-20", "dem_lead": 3_450_766},
+        ],
+    },
+    "sc": {
+        "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 42.56, "incumbent_party": "R"},  # Haley (inc) d. Sheheen
+            {"year": 2018, "dem_share": 46.00, "incumbent_party": "R"},  # McMaster (inc) d. Smith
+            {"year": 2022, "dem_share": 41.20, "incumbent_party": "R"},  # McMaster (inc) d. Cunningham
+        ],
+        # Last 3 SC Senate elections (mixes Scott's Class II and Graham's
+        # Class III seats; Graham's 2026 seat hasn't been up for election
+        # yet as of this writing).
+        "senate_elections": [
+            {"year": 2016, "dem_share": 37.90},  # Scott (inc) d. Dixon
+            {"year": 2020, "dem_share": 44.86},  # Graham (inc) d. Harrison
+            {"year": 2022, "dem_share": 37.05},  # Scott (inc) d. Matthews
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 42.6},  # Trump d. Clinton
+            {"year": 2020, "dem_share": 44.06},  # Trump d. Biden
+            {"year": 2024, "dem_share": 40.92},  # Trump d. Harris
+        ],
+        # South Carolina doesn't register voters by party (open primaries;
+        # a 2025 bill to start capturing party affiliation at registration
+        # hasn't become law) -- no D-minus-R figure exists to track, same
+        # as Ohio/Georgia.
+        "registration_snapshots": [],
+    },
+    "tx": {
+        "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 39.62, "incumbent_party": None},  # Abbott d. Davis, open seat (Perry not running)
+            {"year": 2018, "dem_share": 43.23, "incumbent_party": "R"},  # Abbott (inc) d. Valdez
+            {"year": 2022, "dem_share": 44.48, "incumbent_party": "R"},  # Abbott (inc) d. O'Rourke
+        ],
+        # Last 3 TX Senate elections (mixes Cruz's Class 1 and Cornyn's
+        # Class 2 seats; Cornyn's 2026 seat is up concurrently but not yet
+        # decided as of this writing, so it isn't one of the "last 3").
+        "senate_elections": [
+            {"year": 2018, "dem_share": 48.71},  # Cruz (inc) d. O'Rourke
+            {"year": 2020, "dem_share": 45.05},  # Cornyn (inc) d. Hegar
+            {"year": 2024, "dem_share": 45.65},  # Cruz (inc) d. Allred
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 45.29},  # Trump d. Clinton
+            {"year": 2020, "dem_share": 47.17},  # Trump d. Biden
+            {"year": 2024, "dem_share": 43.06},  # Trump d. Harris
+        ],
+        # Texas doesn't register voters by party (open primaries; a voter's
+        # primary choice each cycle isn't a permanent registration record),
+        # confirmed directly via the Texas Secretary of State.
+        "registration_snapshots": [],
+    },
+    "fl": {
+        "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 49.4, "incumbent_party": "R"},  # Scott (inc) d. Crist
+            {"year": 2018, "dem_share": 49.8, "incumbent_party": None},  # DeSantis d. Gillum, open seat (Scott ran for Senate)
+            {"year": 2022, "dem_share": 40.2, "incumbent_party": "R"},  # DeSantis (inc) d. Crist
+        ],
+        # Last 3 FL Senate elections (mixes Rubio's Class III seat and the
+        # Class I seat Rick Scott won in 2018 and held in 2024).
+        "senate_elections": [
+            {"year": 2018, "dem_share": 49.9},  # Scott (R) d. Nelson (inc)
+            {"year": 2022, "dem_share": 41.7},  # Rubio (R, inc) d. Demings
+            {"year": 2024, "dem_share": 43.5},  # Scott (R, inc) d. Mucarsel-Powell
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 49.4},  # Trump d. Clinton
+            {"year": 2020, "dem_share": 48.4},  # Trump d. Biden
+            {"year": 2024, "dem_share": 44.6},  # Trump d. Harris
+        ],
+        # Florida Division of Elections publishes official statewide
+        # registration by party. Registration flipped from a Democratic to
+        # a widening Republican advantage over this span -- a real,
+        # dramatic realignment, not a data artifact.
+        "registration_snapshots": [
+            {"date": "2020-05-31", "dem_lead": 97_215},
+            {"date": "2022-05-31", "dem_lead": -383_954},
+            {"date": "2024-05-31", "dem_lead": -1_156_082},
+            {"date": "2026-05-31", "dem_lead": -1_514_893},
+        ],
+    },
 }
 
 PRESIDENT = {

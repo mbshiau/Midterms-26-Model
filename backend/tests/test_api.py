@@ -8,12 +8,47 @@ def test_races_lists_all_seeded_states(client):
     resp = client.get("/races")
     assert resp.status_code == 200
     codes = {r["state_code"] for r in resp.json()}
-    assert codes == {"pa", "oh", "ga", "me", "ia"}
+    assert codes == {"pa", "oh", "ga", "me", "ia", "ny", "sc", "tx", "fl"}
+
+
+def test_races_expose_current_holder_party(client):
+    races = {r["state_code"]: r for r in client.get("/races").json()}
+    # PA and NY: incumbent (Shapiro, Hochul) is on the ballot -- their party.
+    assert races["pa"]["current_holder_party"] == "Democratic"
+    assert races["ny"]["current_holder_party"] == "Democratic"
+    # Open seats: derived from the most recent real gubernatorial election.
+    assert races["oh"]["current_holder_party"] == "Republican"  # DeWine (R)
+    assert races["ia"]["current_holder_party"] == "Republican"  # Reynolds (R)
+    assert races["me"]["current_holder_party"] == "Democratic"  # Mills (D)
+    assert races["sc"]["current_holder_party"] == "Republican"  # McMaster (R)
+    assert races["tx"]["current_holder_party"] == "Republican"  # Abbott (inc) is on the ballot
+    assert races["fl"]["current_holder_party"] == "Republican"  # DeSantis (R), open seat
 
 
 def test_unknown_state_returns_404(client):
     resp = client.get("/races/zz/polls")
     assert resp.status_code == 404
+
+
+def test_restarting_the_app_does_not_duplicate_existing_snapshots(test_engine):
+    # Regression test: adding a new race (or any other reason to restart the
+    # container) must not spuriously re-generate a forecast for every
+    # already-seeded race. Two app "starts" against the same database should
+    # leave existing races with exactly one snapshot -- only a genuinely new
+    # race should get one from this second start.
+    from fastapi.testclient import TestClient
+
+    from app.main import app
+
+    with TestClient(app) as client:
+        first_start_body = client.get("/races/pa/forecast").json()
+
+    with TestClient(app) as client:
+        second_start_body = client.get("/races/pa/forecast").json()
+        history = client.get("/races/pa/forecast/history").json()
+
+    assert first_start_body["id"] == second_start_body["id"]
+    assert len(history["snapshots"]) == 1
 
 
 def test_polls_are_seeded_on_startup(client):
@@ -180,18 +215,86 @@ def test_iowa_race_is_independently_seeded_and_forecast(client):
     assert sand["polling_vote_share"] > 50
 
 
-def test_all_five_forecasts_are_independent(client):
+def test_new_york_race_is_independently_seeded_and_forecast(client):
+    polls = client.get("/races/ny/polls").json()
+    assert len(polls) == 9
+    pollster_names = {p["pollster"] for p in polls}
+    assert "Siena College" in pollster_names
+    assert "Marist University" in pollster_names
+
+    forecast = client.get("/races/ny/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Bruce Blakeman", "Kathy Hochul"}
+    assert forecast["n_polls_used"] == 9
+
+    hochul = next(r for r in forecast["results"] if r["candidate"]["name"] == "Kathy Hochul")
+    assert hochul["win_probability"] > 0.9
+
+
+def test_south_carolina_race_is_fundamentals_only_with_zero_polls(client):
+    polls = client.get("/races/sc/polls").json()
+    assert polls == []
+
+    forecast = client.get("/races/sc/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Alan Wilson", "Jermaine Johnson"}
+    assert forecast["n_polls_used"] == 0
+    assert forecast["poll_weight_alpha"] == 0.0
+
+    for r in forecast["results"]:
+        # No real polling-only figure exists yet -- it mirrors fundamentals.
+        assert r["polling_vote_share"] == r["fundamentals_vote_share"]
+        # mean_vote_share is the post-simulation mean (clipped/normalized
+        # Monte Carlo draws), so it's very close to but not bit-identical to
+        # the pre-simulation fundamentals share fed in as the blend mean.
+        assert abs(r["mean_vote_share"] - r["fundamentals_vote_share"]) < 1.0
+
+
+def test_texas_race_is_independently_seeded_and_forecast(client):
+    polls = client.get("/races/tx/polls").json()
+    assert len(polls) == 15
+    pollster_names = {p["pollster"] for p in polls}
+    assert "Siena College/New York Times" in pollster_names
+    assert "Emerson College" in pollster_names
+
+    forecast = client.get("/races/tx/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Greg Abbott", "Gina Hinojosa"}
+    assert forecast["n_polls_used"] == 15
+
+    abbott = next(r for r in forecast["results"] if r["candidate"]["name"] == "Greg Abbott")
+    assert abbott["win_probability"] > 0.5
+
+
+def test_florida_race_is_independently_seeded_and_forecast(client):
+    polls = client.get("/races/fl/polls").json()
+    assert len(polls) == 4
+    pollster_names = {p["pollster"] for p in polls}
+    assert "Emerson College" in pollster_names
+    assert "Change Research" in pollster_names
+
+    forecast = client.get("/races/fl/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Byron Donalds", "David Jolly"}
+    assert forecast["n_polls_used"] == 4
+
+
+def test_all_nine_forecasts_are_independent(client):
     pa = client.get("/races/pa/forecast").json()
     oh = client.get("/races/oh/forecast").json()
     ga = client.get("/races/ga/forecast").json()
     me = client.get("/races/me/forecast").json()
     ia = client.get("/races/ia/forecast").json()
-    ids = {pa["id"], oh["id"], ga["id"], me["id"], ia["id"]}
-    assert len(ids) == 5
+    ny = client.get("/races/ny/forecast").json()
+    sc = client.get("/races/sc/forecast").json()
+    tx = client.get("/races/tx/forecast").json()
+    fl = client.get("/races/fl/forecast").json()
+    ids = {pa["id"], oh["id"], ga["id"], me["id"], ia["id"], ny["id"], sc["id"], tx["id"], fl["id"]}
+    assert len(ids) == 9
 
     name_sets = [
         {r["candidate"]["name"] for r in race["results"]}
-        for race in (pa, oh, ga, me, ia)
+        for race in (pa, oh, ga, me, ia, ny, sc, tx, fl)
     ]
     for i, names_a in enumerate(name_sets):
         for names_b in name_sets[i + 1 :]:

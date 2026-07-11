@@ -1,8 +1,21 @@
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_serializer
 
 from app.models import Population
+
+
+def _as_utc_isoformat(value: datetime) -> str:
+    """Postgres' plain DateTime column drops tzinfo on round-trip, even
+    though every created_at value is written with datetime.now(timezone.utc).
+    Without this, the API would emit a bare timestamp with no UTC marker,
+    which browsers parse as local time instead of UTC -- silently shifting
+    every displayed time by the viewer's UTC offset. Stamping it back on
+    before serializing lets the frontend's `new Date(...)` (and
+    toLocaleString) convert to the viewer's real local time correctly."""
+    if value.tzinfo is None:
+        value = value.replace(tzinfo=timezone.utc)
+    return value.isoformat()
 
 
 class RaceOut(BaseModel):
@@ -12,6 +25,7 @@ class RaceOut(BaseModel):
     state_name: str
     office: str
     election_date: date
+    current_holder_party: str
 
 
 class CandidateOut(BaseModel):
@@ -89,6 +103,10 @@ class ForecastSnapshotOut(BaseModel):
     fundamentals_breakdown: FundamentalsBreakdownOut
     results: list[ForecastResultOut]
 
+    @field_serializer("created_at")
+    def _serialize_created_at(self, value: datetime) -> str:
+        return _as_utc_isoformat(value)
+
 
 class SimulationHistogramOut(BaseModel):
     candidate: CandidateOut
@@ -102,6 +120,10 @@ class SimulationsOut(BaseModel):
     created_at: datetime
     n_simulations: int
     histograms: list[SimulationHistogramOut]
+
+    @field_serializer("created_at")
+    def _serialize_created_at(self, value: datetime) -> str:
+        return _as_utc_isoformat(value)
 
 
 class SimulateRequest(BaseModel):

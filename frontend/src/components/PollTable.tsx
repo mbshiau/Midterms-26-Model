@@ -8,6 +8,10 @@ function formatDateRange(start: string, end: string): string {
 }
 
 export function PollTable({ polls }: { polls: Poll[] }) {
+  if (polls.length === 0) {
+    return <p style={{ color: "var(--text-muted)" }}>No general-election polls have been published yet.</p>;
+  }
+
   const sorted = [...polls].sort(
     (a, b) => new Date(b.field_end_date).getTime() - new Date(a.field_end_date).getTime()
   );

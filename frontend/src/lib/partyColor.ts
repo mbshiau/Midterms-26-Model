@@ -10,3 +10,22 @@ export function partyColorVar(party: string): string {
   if (!KNOWN_PARTIES.has(party)) return "var(--text-muted)";
   return `var(--party-${slug})`;
 }
+
+export type ProbabilityTier = 50 | 60 | 75 | 95;
+
+/** One of 4 confidence tiers per party: 95+ / 75-95 / 60-75 / 50-60. Winner
+ * win_probability is always >= 50% by construction, so "50" is the floor. */
+export function probabilityTier(
+  party: string,
+  winProbability: number
+): { slug: string; tier: ProbabilityTier } | null {
+  if (!KNOWN_PARTIES.has(party)) return null;
+  const pct = winProbability * 100;
+  const tier: ProbabilityTier = pct >= 95 ? 95 : pct >= 75 ? 75 : pct >= 60 ? 60 : 50;
+  return { slug: party.toLowerCase(), tier };
+}
+
+export function probabilityColorVar(party: string, winProbability: number): string {
+  const t = probabilityTier(party, winProbability);
+  return t ? `var(--party-${t.slug}-${t.tier})` : "var(--text-muted)";
+}

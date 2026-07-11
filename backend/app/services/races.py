@@ -5,7 +5,8 @@ from datetime import date
 
 from sqlalchemy.orm import Session
 
-from app.models import Race
+from app.data.fundamentals_data import RACE_FUNDAMENTALS
+from app.models import Candidate, Race
 from app.seed.seed_data import RACES as RACE_SEED_DATA
 
 
@@ -36,3 +37,18 @@ def get_race(db: Session, state_code: str) -> Race | None:
 
 def get_race_seed(state_code: str) -> dict:
     return RACE_SEED_DATA[state_code.lower()]
+
+
+def current_holder_party(state_code: str, candidates: list[Candidate]) -> str:
+    """Which party currently holds this seat -- used to detect a projected
+    flip. For a race with a candidate running for reelection, that's simply
+    their party. For an open seat (no candidate is the incumbent), it's
+    derived from the winning party of the most recent real gubernatorial
+    election on file, since that officeholder's term runs through this
+    year's election regardless of whether they're on the ballot again."""
+    for candidate in candidates:
+        if candidate.incumbent:
+            return candidate.party
+
+    last_election = RACE_FUNDAMENTALS[state_code.lower()]["gubernatorial_elections"][-1]
+    return "Democratic" if last_election["dem_share"] > 50 else "Republican"

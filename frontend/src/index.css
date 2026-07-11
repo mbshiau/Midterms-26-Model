@@ -13,6 +13,20 @@
 
   --party-democratic: #2a78d6;
   --party-republican: #e34948;
+
+  /* Win-probability tiers, one sequential ramp per party (light->dark as
+     confidence increases): 50-60% / 60-75% / 75-95% / 95%+. The 75-95%
+     step reuses the base --party-* color so the map's tone matches the
+     rest of the app at "normal" confidence levels. */
+  --party-democratic-50: #cde0f5;
+  --party-democratic-60: #7fb0e0;
+  --party-democratic-75: #2a78d6;
+  --party-democratic-95: #0b3d78;
+
+  --party-republican-50: #f9d8d7;
+  --party-republican-60: #ef9c9b;
+  --party-republican-75: #e34948;
+  --party-republican-95: #7a1f1e;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -27,7 +41,24 @@
 
     --party-democratic: #3987e5;
     --party-republican: #e66767;
+
+    /* Same tiers, re-tuned for the dark surface: confidence now reads as
+       distance from the neutral background (muted -> vivid) rather than
+       light->dark, since the page itself is already dark. */
+    --party-democratic-50: #33465c;
+    --party-democratic-60: #4d7ab0;
+    --party-democratic-75: #3987e5;
+    --party-democratic-95: #7ab8ff;
+
+    --party-republican-50: #5a3a3a;
+    --party-republican-60: #a56464;
+    --party-republican-75: #e66767;
+    --party-republican-95: #ff8f8e;
   }
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {

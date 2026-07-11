@@ -2,6 +2,7 @@ import {
   Area,
   CartesianGrid,
   ComposedChart,
+  ErrorBar,
   Legend,
   Line,
   ReferenceLine,
@@ -85,6 +86,12 @@ export function ForecastHistoryChart({ history }: { history: ForecastHistory }) 
   const electionTs = new Date(election_date + "T00:00:00").getTime();
   const minTs = Math.min(...data.map((d) => d.timestamp));
   const hasActuals = actuals.length > 0;
+  // A shaded band needs at least 2 points to draw a shape at all -- with
+  // exactly 1 snapshot, Recharts can't form a line/area from a single
+  // point, so instead show that one point as an explicit dot with a
+  // vertical whisker for its 95% CI (via ErrorBar) rather than relying on
+  // Recharts' single-point fallback rendering (which ignores dot={false}).
+  const hasEnoughForBand = data.length >= 2;
 
   const actualPoints = actuals.map((a) => ({
     timestamp: electionTs,
@@ -125,37 +132,69 @@ export function ForecastHistoryChart({ history }: { history: ForecastHistory }) 
             strokeDasharray="4 4"
             label={{ value: "Election Day", position: "insideTopRight", fill: "var(--text-muted)", fontSize: 11 }}
           />
-          {candidateNames.map((name) => {
-            const color = partyColorVar(candidateByName.get(name)?.party ?? "");
-            return (
-              <Area
-                key={`${name}-band`}
+          {hasEnoughForBand &&
+            candidateNames.map((name) => {
+              const color = partyColorVar(candidateByName.get(name)?.party ?? "");
+              return (
+                <Area
+                  key={`${name}-band`}
+                  type="monotone"
+                  dataKey={`${name}Range`}
+                  stroke="none"
+                  fill={color}
+                  fillOpacity={0.15}
+                  legendType="none"
+                  isAnimationActive={false}
+                  dot={false}
+                  activeDot={false}
+                  connectNulls
+                />
+              );
+            })}
+          {hasEnoughForBand &&
+            candidateNames.map((name) => (
+              <Line
+                key={name}
                 type="monotone"
-                dataKey={`${name}Range`}
-                stroke="none"
-                fill={color}
-                fillOpacity={0.15}
-                legendType="none"
-                isAnimationActive={false}
+                dataKey={name}
+                stroke={partyColorVar(candidateByName.get(name)?.party ?? "")}
+                strokeWidth={2}
                 dot={false}
-                activeDot={false}
+                activeDot={{ r: 5, strokeWidth: 2, stroke: "var(--surface)" }}
+                isAnimationActive={false}
                 connectNulls
               />
-            );
-          })}
-          {candidateNames.map((name) => (
-            <Line
-              key={name}
-              type="monotone"
-              dataKey={name}
-              stroke={partyColorVar(candidateByName.get(name)?.party ?? "")}
-              strokeWidth={2}
-              dot={false}
-              activeDot={{ r: 5, strokeWidth: 2, stroke: "var(--surface)" }}
-              isAnimationActive={false}
-              connectNulls
-            />
-          ))}
+            ))}
+          {!hasEnoughForBand &&
+            candidateNames.map((name) => {
+              const color = partyColorVar(candidateByName.get(name)?.party ?? "");
+              return (
+                <Line
+                  key={name}
+                  type="monotone"
+                  dataKey={name}
+                  stroke={color}
+                  strokeWidth={2}
+                  dot={{ r: 5, fill: color, stroke: "var(--surface)", strokeWidth: 2 }}
+                  activeDot={{ r: 6, strokeWidth: 2, stroke: "var(--surface)" }}
+                  isAnimationActive={false}
+                  connectNulls
+                >
+                  <ErrorBar
+                    dataKey={(point: HistoryPoint) => {
+                      const range = point[`${name}Range`] as [number, number];
+                      const mean = point[name] as number;
+                      return [mean - range[0], range[1] - mean];
+                    }}
+                    width={0}
+                    strokeWidth={8}
+                    strokeOpacity={0.2}
+                    stroke={color}
+                    direction="y"
+                  />
+                </Line>
+              );
+            })}
           {hasActuals && (
             <Scatter
               name="Actual result"

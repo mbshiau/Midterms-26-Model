@@ -1,21 +1,22 @@
-"""Scheduler stage: periodically refreshes polls (per race) + presidential
-approval (national, once) and regenerates every race's forecast, entirely
-in the background.
+"""Scheduler stage: refreshes polls (per race) + presidential approval
+(national, once) and regenerates every race's forecast, entirely in the
+background, at fixed wall-clock times every day.
 
-`add_job` is given an explicit `next_run_time` (now + interval) rather than
-leaving it at the default: APScheduler's default next_run_time is "now",
-which would fire immediately and duplicate the synchronous startup run in
-app.main's lifespan. An earlier version of this file passed
-`next_run_time=None`, which actually *disables* the job entirely (it's
-added but never fires again) — worth calling out since it's a one-character
-difference between "runs every 24h" and "never runs."
+Uses a cron trigger (fixed times of day) rather than an interval trigger
+(fixed delay from whenever the job was registered). An interval trigger's
+"next run" is computed as `now + interval` at scheduler startup, so it
+silently resets every time the process restarts — including restarts that
+have nothing to do with a real refresh event (e.g. adding a new state's
+seed data). A cron trigger instead computes its next fire time from the
+clock itself, so it lands on the same wall-clock times regardless of how
+many times the container has restarted in between.
 """
 
 import logging
-from datetime import datetime, timedelta
 from functools import partial
 
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 from app import database
 from app.data.fundamentals_data import PRESIDENT
@@ -29,6 +30,10 @@ from app.services.races import get_race_seed
 logger = logging.getLogger(__name__)
 
 _scheduler: BackgroundScheduler | None = None
+
+# Refresh at noon and 7pm, US Eastern time (handles EST/EDT automatically).
+REFRESH_HOURS = "12,19"
+REFRESH_TIMEZONE = "America/New_York"
 
 
 def _run_refresh_job() -> None:
@@ -64,7 +69,7 @@ def _run_refresh_job() -> None:
         db.close()
 
 
-def start_scheduler(interval_hours: int = 24) -> BackgroundScheduler:
+def start_scheduler() -> BackgroundScheduler:
     global _scheduler
     if _scheduler is not None:
         return _scheduler
@@ -72,9 +77,7 @@ def start_scheduler(interval_hours: int = 24) -> BackgroundScheduler:
     _scheduler = BackgroundScheduler()
     _scheduler.add_job(
         _run_refresh_job,
-        "interval",
-        hours=interval_hours,
-        next_run_time=datetime.now() + timedelta(hours=interval_hours),
+        CronTrigger(hour=REFRESH_HOURS, minute=0, timezone=REFRESH_TIMEZONE),
     )
     _scheduler.start()
     return _scheduler

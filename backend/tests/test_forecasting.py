@@ -1,5 +1,6 @@
 from datetime import date
 
+from app.config import settings
 from app.data.fundamentals_data import RACE_FUNDAMENTALS
 from app.models import Candidate
 from app.services.forecasting import blend_with_fundamentals
@@ -62,3 +63,22 @@ def test_alpha_one_ignores_fundamentals_entirely():
 
     assert blended[1].weighted_mean == polling_averages[1].weighted_mean
     assert blended[1].weighted_std == polling_averages[1].weighted_std
+
+
+def test_blend_falls_back_to_fundamentals_only_when_no_polling_exists():
+    # A race with zero real polls yet (e.g. a just-settled matchup with no
+    # published polling) must still produce a full forecast for every
+    # candidate, using the fundamentals estimate directly rather than
+    # fabricating a polling number or omitting the candidate.
+    dem = Candidate(id=1, name="Dem Candidate", party="Democratic", incumbent=False)
+    rep = Candidate(id=2, name="Rep Candidate", party="Republican", incumbent=False)
+
+    blended, fundamentals_shares = blend_with_fundamentals(
+        PA, {}, [dem, rep], 0.0, date(2026, 7, 10), 37.0, "Republican"
+    )
+
+    assert set(blended.keys()) == {1, 2}
+    assert blended[1].weighted_mean == fundamentals_shares[1]
+    assert blended[2].weighted_mean == fundamentals_shares[2]
+    assert blended[1].weighted_std == settings.fundamentals_uncertainty_stdev
+    assert blended[1].n_polls == 0

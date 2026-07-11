@@ -3,6 +3,7 @@ export interface Race {
   state_name: string;
   office: string;
   election_date: string;
+  current_holder_party: string;
 }
 
 export interface Candidate {

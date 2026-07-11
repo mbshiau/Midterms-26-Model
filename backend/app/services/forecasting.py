@@ -44,29 +44,45 @@ def blend_with_fundamentals(
     approval_pct: float,
     president_party: str,
 ) -> tuple[dict[int, CandidateAverage], dict[int, float]]:
-    """Returns (blended averages fed into the simulator, fundamentals share per candidate)."""
+    """Returns (blended averages fed into the simulator, fundamentals share per candidate).
+
+    Iterates over `candidates` rather than `candidate_averages` so a race
+    with zero polls yet (no real polling published for the matchup) still
+    produces a full fundamentals-only forecast instead of an empty result --
+    real-data-only means never fabricating a poll, not refusing to forecast
+    at all when none exist yet.
+    """
     incumbent_party = _incumbent_party(candidates)
-    by_id = {c.id: c for c in candidates}
     fundamentals_shares: dict[int, float] = {}
     blended: dict[int, CandidateAverage] = {}
 
-    for candidate_id, avg in candidate_averages.items():
-        candidate = by_id[candidate_id]
+    for candidate in candidates:
         fundamentals_share = fundamentals.fundamentals_vote_share(
             race_fundamentals, candidate.party, incumbent_party, approval_pct, president_party, as_of
         )
-        fundamentals_shares[candidate_id] = fundamentals_share
+        fundamentals_shares[candidate.id] = fundamentals_share
 
-        blended_mean = alpha * avg.weighted_mean + (1 - alpha) * fundamentals_share
-        blended_std = math.sqrt(
-            (alpha * avg.weighted_std) ** 2
-            + ((1 - alpha) * settings.fundamentals_uncertainty_stdev) ** 2
-        )
-        blended[candidate_id] = CandidateAverage(
-            candidate_id=candidate_id,
+        avg = candidate_averages.get(candidate.id)
+        if avg is None:
+            # No polling exists for this candidate -- alpha is expected to
+            # be 0 here (see generate_forecast), so the blend is just the
+            # fundamentals estimate with the fundamentals-only uncertainty.
+            blended_mean = fundamentals_share
+            blended_std = settings.fundamentals_uncertainty_stdev
+            n_polls = 0
+        else:
+            blended_mean = alpha * avg.weighted_mean + (1 - alpha) * fundamentals_share
+            blended_std = math.sqrt(
+                (alpha * avg.weighted_std) ** 2
+                + ((1 - alpha) * settings.fundamentals_uncertainty_stdev) ** 2
+            )
+            n_polls = avg.n_polls
+
+        blended[candidate.id] = CandidateAverage(
+            candidate_id=candidate.id,
             weighted_mean=blended_mean,
             weighted_std=blended_std,
-            n_polls=avg.n_polls,
+            n_polls=n_polls,
         )
 
     return blended, fundamentals_shares
@@ -92,8 +108,6 @@ def generate_forecast(
         .options(selectinload(Poll.results))
         .all()
     )
-    if not polls:
-        raise ValueError(f"no polls available to forecast {race.state_code} from")
 
     candidates = db.query(Candidate).filter(Candidate.race_id == race.id).all()
     fundamentals_data = RACE_FUNDAMENTALS[race.state_code]
@@ -101,7 +115,11 @@ def generate_forecast(
     polling_averages = two_party_normalize(weighted_polling_averages(polls, as_of, half_life_days))
 
     approval = get_current_approval(db)
-    alpha = fundamentals.poll_weight_for_election(race.election_date, as_of)
+    # No real polling exists yet for this race's matchup -- force 0% polling
+    # weight (100% fundamentals) rather than reporting the normal alpha
+    # curve's value, which would misleadingly imply polls are contributing
+    # to a blend that, in reality, has none to draw on.
+    alpha = fundamentals.poll_weight_for_election(race.election_date, as_of) if polls else 0.0
     blended_averages, fundamentals_shares = blend_with_fundamentals(
         fundamentals_data, polling_averages, candidates, alpha, as_of, approval.approval_pct, approval.party
     )
@@ -144,7 +162,15 @@ def generate_forecast(
                 ci_low=result.ci_low,
                 ci_high=result.ci_high,
                 draws_sample=sample.tolist(),
-                polling_vote_share=polling_averages[candidate_id].weighted_mean,
+                # No polling-only figure exists when the race has zero real
+                # polls yet -- fall back to the fundamentals share so the
+                # (non-nullable) column still holds a real, non-fabricated
+                # number rather than a fictitious polling estimate.
+                polling_vote_share=(
+                    polling_averages[candidate_id].weighted_mean
+                    if candidate_id in polling_averages
+                    else fundamentals_shares[candidate_id]
+                ),
                 fundamentals_vote_share=fundamentals_shares[candidate_id],
             )
         )

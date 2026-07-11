@@ -8,6 +8,10 @@ OH = RACE_FUNDAMENTALS["oh"]
 GA = RACE_FUNDAMENTALS["ga"]
 ME = RACE_FUNDAMENTALS["me"]
 IA = RACE_FUNDAMENTALS["ia"]
+NY = RACE_FUNDAMENTALS["ny"]
+SC = RACE_FUNDAMENTALS["sc"]
+TX = RACE_FUNDAMENTALS["tx"]
+FL = RACE_FUNDAMENTALS["fl"]
 
 
 def test_gubernatorial_lean_favors_democratic_given_researched_data():
@@ -130,6 +134,100 @@ def test_iowa_registration_trend_uses_the_two_most_recent_snapshots():
     # though earlier snapshots in the list aren't comparable to them.
     adjustment = fundamentals.registration_trend_adjustment(IA["registration_snapshots"])
     assert adjustment != 0.0
+
+
+def test_new_york_gubernatorial_lean_favors_democratic():
+    # Cuomo/Hochul have won all 3 of the last NY governor races comfortably,
+    # each above 53% two-party share.
+    lean = fundamentals.gubernatorial_lean(NY["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert lean > 5
+
+
+def test_new_york_senate_lean_favors_democratic():
+    # Gillibrand and Schumer have both won their last races by 15+ points.
+    lean = fundamentals.senate_lean(NY["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean > 5
+
+
+def test_new_york_presidential_lean_favors_democratic():
+    # NY hasn't gone Republican since 1984, though 2024 saw its largest
+    # rightward swing of any state.
+    lean = fundamentals.presidential_lean(NY["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean > 5
+
+
+def test_new_york_registration_trend_uses_official_boe_snapshots():
+    adjustment = fundamentals.registration_trend_adjustment(NY["registration_snapshots"])
+    assert adjustment != 0.0
+
+
+def test_south_carolina_gubernatorial_lean_favors_republican():
+    # Haley/McMaster have won all 3 of the last SC governor races solidly.
+    lean = fundamentals.gubernatorial_lean(SC["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert lean < -5
+
+
+def test_south_carolina_senate_lean_favors_republican():
+    # Scott and Graham have both won their last races by double digits.
+    lean = fundamentals.senate_lean(SC["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean < -5
+
+
+def test_south_carolina_presidential_lean_favors_republican():
+    lean = fundamentals.presidential_lean(SC["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean < -5
+
+
+def test_south_carolina_has_no_registration_data():
+    # South Carolina doesn't register voters by party (open primaries).
+    assert fundamentals.registration_trend_adjustment(SC["registration_snapshots"]) == 0.0
+
+
+def test_texas_gubernatorial_lean_favors_republican():
+    # Abbott has won all 3 of the last TX governor races solidly.
+    lean = fundamentals.gubernatorial_lean(TX["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert lean < -5
+
+
+def test_texas_senate_lean_favors_republican():
+    # Cruz and Cornyn have both won their last races, Cruz's 2018 race
+    # notwithstanding being unusually close.
+    lean = fundamentals.senate_lean(TX["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean < -5
+
+
+def test_texas_presidential_lean_favors_republican():
+    lean = fundamentals.presidential_lean(TX["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean < -5
+
+
+def test_texas_has_no_registration_data():
+    # Texas doesn't register voters by party (open primaries).
+    assert fundamentals.registration_trend_adjustment(TX["registration_snapshots"]) == 0.0
+
+
+def test_florida_gubernatorial_lean_is_close_to_even():
+    # FL's last 3 governor races: 2014/2018 were near-toss-ups, 2022 was a
+    # DeSantis landslide -- net lean should tilt Republican but not extreme.
+    lean = fundamentals.gubernatorial_lean(FL["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert lean < 0
+
+
+def test_florida_senate_lean_favors_republican():
+    lean = fundamentals.senate_lean(FL["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean < 0
+
+
+def test_florida_presidential_lean_favors_republican():
+    # Florida is no longer a swing state at the presidential level.
+    lean = fundamentals.presidential_lean(FL["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean < -3
+
+
+def test_florida_registration_trend_shows_the_republican_realignment():
+    # FL flipped from a Dem to a widening Republican registration edge.
+    adjustment = fundamentals.registration_trend_adjustment(FL["registration_snapshots"])
+    assert adjustment < 0
 
 
 def test_more_recent_elections_are_weighted_more_heavily():
