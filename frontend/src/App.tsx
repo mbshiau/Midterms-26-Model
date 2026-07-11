@@ -7,7 +7,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<MapPage />} />
-        <Route path="/states/:stateCode" element={<StateForecastPage />} />
+        <Route path="/states/:stateCode"  element={<StateForecastPage />} />
       </Routes>
     </BrowserRouter>
   );
