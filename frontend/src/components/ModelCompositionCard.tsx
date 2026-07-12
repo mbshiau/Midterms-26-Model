@@ -22,10 +22,21 @@ export function ModelCompositionCard({
   const pollPct = forecast.poll_weight_alpha * 100;
   const fundamentalsPct = 100 - pollPct;
   const sorted = [...forecast.results].sort((a, b) => b.mean_vote_share - a.mean_vote_share);
+  const b = forecast.fundamentals_breakdown;
+  const raceCount = (n: number) => `last ${n} race${n === 1 ? "" : "s"}`;
   const historicalLeanRows: { key: keyof ForecastSnapshot["fundamentals_breakdown"]; label: string }[] = [
-    { key: "gubernatorial_lean_pts", label: `${stateName} gubernatorial lean (last 3 races, recency-weighted)` },
-    { key: "senate_lean_pts", label: `${stateName} Senate lean (last 3 races, recency-weighted)` },
-    { key: "presidential_lean_pts", label: `${stateName} presidential lean (last 3 races, recency-weighted)` },
+    {
+      key: "gubernatorial_lean_pts",
+      label: `${stateName} gubernatorial lean (${raceCount(b.gubernatorial_elections_count)}, recency-weighted)`,
+    },
+    {
+      key: "senate_lean_pts",
+      label: `${stateName} Senate lean (${raceCount(b.senate_elections_count)}, recency-weighted)`,
+    },
+    {
+      key: "presidential_lean_pts",
+      label: `${stateName} presidential lean (${raceCount(b.presidential_elections_count)}, recency-weighted)`,
+    },
   ];
 
   return (

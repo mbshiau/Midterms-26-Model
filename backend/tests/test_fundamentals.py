@@ -12,6 +12,12 @@ NY = RACE_FUNDAMENTALS["ny"]
 SC = RACE_FUNDAMENTALS["sc"]
 TX = RACE_FUNDAMENTALS["tx"]
 FL = RACE_FUNDAMENTALS["fl"]
+NV = RACE_FUNDAMENTALS["nv"]
+IL = RACE_FUNDAMENTALS["il"]
+OR_ = RACE_FUNDAMENTALS["or"]
+MI = RACE_FUNDAMENTALS["mi"]
+NE = RACE_FUNDAMENTALS["ne"]
+KS = RACE_FUNDAMENTALS["ks"]
 
 
 def test_gubernatorial_lean_favors_democratic_given_researched_data():
@@ -227,6 +233,157 @@ def test_florida_presidential_lean_favors_republican():
 def test_florida_registration_trend_shows_the_republican_realignment():
     # FL flipped from a Dem to a widening Republican registration edge.
     adjustment = fundamentals.registration_trend_adjustment(FL["registration_snapshots"])
+    assert adjustment < 0
+
+
+def test_nevada_gubernatorial_lean_is_close_to_even():
+    # NV's last 3 governor races: a 2014 GOP landslide, then two close
+    # races each decided within a few points -- net lean should be mild.
+    lean = fundamentals.gubernatorial_lean(NV["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert -15 < lean < 5
+
+
+def test_nevada_senate_lean_favors_democratic():
+    # Cortez Masto and Rosen have both won their last races, each narrowly.
+    lean = fundamentals.senate_lean(NV["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean > 0
+
+
+def test_nevada_presidential_lean_is_close_to_even():
+    # NV flipped to Trump in 2024 after backing Democrats in 2016/2020 --
+    # a genuine swing state.
+    lean = fundamentals.presidential_lean(NV["presidential_elections"], as_of=date(2026, 7, 10))
+    assert -5 < lean < 5
+
+
+def test_nevada_registration_trend_shows_a_narrowing_democratic_edge():
+    # NV's Dem registration lead shrank from +50K (2022) to +502 (2026).
+    adjustment = fundamentals.registration_trend_adjustment(NV["registration_snapshots"])
+    assert adjustment < 0
+
+
+def test_illinois_gubernatorial_lean_favors_democratic():
+    # Pritzker has won the last 2 of 3 IL governor races comfortably.
+    lean = fundamentals.gubernatorial_lean(IL["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert lean > 5
+
+
+def test_illinois_senate_lean_favors_democratic():
+    # Duckworth and Durbin have both won their last races comfortably.
+    lean = fundamentals.senate_lean(IL["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean > 5
+
+
+def test_illinois_presidential_lean_favors_democratic():
+    lean = fundamentals.presidential_lean(IL["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean > 5
+
+
+def test_illinois_has_no_registration_data():
+    # Illinois doesn't register voters by party.
+    assert fundamentals.registration_trend_adjustment(IL["registration_snapshots"]) == 0.0
+
+
+def test_oregon_gubernatorial_lean_favors_democratic():
+    # Kitzhaber/Brown/Kotek have won all 3 of the last OR governor races.
+    lean = fundamentals.gubernatorial_lean(OR_["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert lean > 0
+
+
+def test_oregon_senate_lean_favors_democratic():
+    # Wyden and Merkley have both won their last races comfortably.
+    lean = fundamentals.senate_lean(OR_["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean > 5
+
+
+def test_oregon_presidential_lean_favors_democratic():
+    lean = fundamentals.presidential_lean(OR_["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean > 5
+
+
+def test_oregon_registration_trend_shows_a_narrowing_democratic_edge():
+    # OR's Dem registration lead has shrunk every cycle since 2020 as
+    # automatic voter registration grows the nonaffiliated bloc.
+    adjustment = fundamentals.registration_trend_adjustment(OR_["registration_snapshots"])
+    assert adjustment < 0
+
+
+def test_michigan_gubernatorial_lean_favors_democratic():
+    # Whitmer won both of the last 2 races comfortably; only 2014 (Snyder)
+    # was Republican, and it's the most-decayed of the 3.
+    lean = fundamentals.gubernatorial_lean(MI["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert lean > 0
+
+
+def test_michigan_senate_lean_favors_democratic():
+    lean = fundamentals.senate_lean(MI["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean > 0
+
+
+def test_michigan_presidential_lean_is_close_to_even():
+    # MI has split its last 3 presidential results (Trump/Biden/Trump), each
+    # within about a point or two -- a genuine swing state.
+    lean = fundamentals.presidential_lean(MI["presidential_elections"], as_of=date(2026, 7, 10))
+    assert -5 < lean < 5
+
+
+def test_michigan_has_no_registration_data():
+    # Michigan doesn't register voters by party.
+    assert fundamentals.registration_trend_adjustment(MI["registration_snapshots"]) == 0.0
+
+
+def test_nebraska_gubernatorial_lean_favors_republican():
+    # Ricketts/Pillen have won all 3 of the last NE governor races, each by
+    # double digits in two-party terms.
+    lean = fundamentals.gubernatorial_lean(NE["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert lean < -5
+
+
+def test_nebraska_senate_lean_favors_republican():
+    # Fischer, Sasse, and Ricketts have all won their last races, each by a
+    # comfortable double-digit two-party margin.
+    lean = fundamentals.senate_lean(NE["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean < -5
+
+
+def test_nebraska_presidential_lean_favors_republican():
+    # Nebraska hasn't gone Democratic statewide since 1964 -- solidly
+    # Republican at the presidential level.
+    lean = fundamentals.presidential_lean(NE["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean < -10
+
+
+def test_nebraska_registration_trend_shows_a_widening_republican_edge():
+    # NE's registered-Republican advantage grew steadily from the Sept. 2022
+    # snapshot through the most recent (May 2026) one.
+    adjustment = fundamentals.registration_trend_adjustment(NE["registration_snapshots"])
+    assert adjustment < 0
+
+
+def test_kansas_gubernatorial_lean_is_nearly_even_but_slightly_democratic():
+    # Kansas governor races have been genuinely close for over a decade
+    # (48-53% two-party) despite the state being solidly Republican
+    # federally -- Kelly's two wins keep the lean barely positive.
+    lean = fundamentals.gubernatorial_lean(KS["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert 0 < lean < 5
+
+
+def test_kansas_senate_lean_favors_republican():
+    # Both KS Senate seats have been comfortably Republican-held in the
+    # elections used (2008/2020 for Seat A, since Seat A's 2014 race had no
+    # Democrat on the ballot).
+    lean = fundamentals.senate_lean(KS["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean < -10
+
+
+def test_kansas_presidential_lean_favors_republican():
+    # Kansas hasn't gone Democratic statewide since 1964.
+    lean = fundamentals.presidential_lean(KS["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean < -10
+
+
+def test_kansas_registration_trend_shows_a_widening_republican_edge():
+    adjustment = fundamentals.registration_trend_adjustment(KS["registration_snapshots"])
     assert adjustment < 0
 
 

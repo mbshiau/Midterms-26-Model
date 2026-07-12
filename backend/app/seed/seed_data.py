@@ -14,6 +14,11 @@ GA_WIKI_SOURCE = "https://en.wikipedia.org/wiki/2026_Georgia_gubernatorial_elect
 NY_WIKI_SOURCE = "https://en.wikipedia.org/wiki/2026_New_York_gubernatorial_election"
 TX_WIKI_SOURCE = "https://en.wikipedia.org/wiki/2026_Texas_gubernatorial_election"
 FL_WIKI_SOURCE = "https://en.wikipedia.org/wiki/2026_Florida_gubernatorial_election"
+NV_WIKI_SOURCE = "https://en.wikipedia.org/wiki/2026_Nevada_gubernatorial_election"
+IL_WIKI_SOURCE = "https://en.wikipedia.org/wiki/2026_Illinois_gubernatorial_election"
+OR_WIKI_SOURCE = "https://en.wikipedia.org/wiki/2026_Oregon_gubernatorial_election"
+MI_WIKI_SOURCE = "https://en.wikipedia.org/wiki/2026_Michigan_gubernatorial_election"
+NE_WIKI_SOURCE = "https://en.wikipedia.org/wiki/2026_Nebraska_gubernatorial_election"
 
 RACES = {
     "pa": {
@@ -997,5 +1002,359 @@ RACES = {
                 "results": {"Byron Donalds": 43.0, "David Jolly": 49.0},
             },
         ],
+    },
+    "nv": {
+        "state_name": "Nevada",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Nevada_gubernatorial_election",
+        # Incumbent Joe Lombardo (R) won his June 9, 2026 primary with ~91%.
+        # AG Aaron Ford (D) won the Democratic primary with ~64% over Washoe
+        # County Commission Chair Alexis Hill. Both settled well before
+        # today. Nevada's unique "None of These Candidates" ballot line
+        # appeared in both primaries but isn't modeled as a candidate here,
+        # same convention as folding minor shares into undecided_pct.
+        "candidates": [
+            {"name": "Joe Lombardo", "party": "Republican", "incumbent": True},
+            {"name": "Aaron Ford", "party": "Democratic", "incumbent": False},
+        ],
+        "raw_polls": [
+            {
+                "pollster": "Noble Predictive Insights",
+                "sponsor": None,
+                "field_start_date": "2025-10-07",
+                "field_end_date": "2025-10-13",
+                "release_date": "2025-10-17",
+                "sample_size": 766,
+                "population": "RV",
+                "margin_of_error": 3.5,
+                "undecided_pct": 23.0,
+                "source_url": NV_WIKI_SOURCE,
+                "results": {"Joe Lombardo": 40.0, "Aaron Ford": 37.0},
+            },
+            {
+                "pollster": "Emerson College",
+                "sponsor": None,
+                "field_start_date": "2025-11-16",
+                "field_end_date": "2025-11-18",
+                "release_date": "2025-11-21",
+                "sample_size": 800,
+                "population": "RV",
+                "margin_of_error": 3.4,
+                "undecided_pct": 18.0,
+                "source_url": "https://emersoncollegepolling.com/nevada-2026-poll/",
+                "results": {"Joe Lombardo": 41.0, "Aaron Ford": 41.0},
+            },
+            {
+                "pollster": "Hart Research",
+                "sponsor": "Democratic",
+                "field_start_date": "2026-02-11",
+                "field_end_date": "2026-02-17",
+                "release_date": "2026-02-20",
+                "sample_size": 800,
+                "population": "LV",
+                "margin_of_error": None,
+                "undecided_pct": 12.0,
+                "source_url": "https://thenevadaindependent.com/article/lombardo-remains-popular-but-new-dem-poll-ids-vulnerabilities-a-year-before-re-election",
+                "results": {"Joe Lombardo": 45.0, "Aaron Ford": 43.0},
+            },
+            {
+                "pollster": "Noble Predictive Insights",
+                "sponsor": None,
+                "field_start_date": "2026-03-10",
+                "field_end_date": "2026-03-13",
+                "release_date": "2026-03-17",
+                "sample_size": 845,
+                "population": "RV",
+                "margin_of_error": 3.4,
+                "undecided_pct": 23.0,
+                "source_url": "https://www.noblepredictiveinsights.com/post/nvgov-lombardo-keeps-pace-with-ford-as-undecideds-hold-the-balance",
+                "results": {"Joe Lombardo": 39.0, "Aaron Ford": 38.0},
+            },
+            {
+                "pollster": "Global Strategy Group",
+                "sponsor": "Democratic",
+                "field_start_date": "2026-05-05",
+                "field_end_date": "2026-05-11",
+                "release_date": "2026-05-15",
+                "sample_size": 700,
+                "population": "LV",
+                "margin_of_error": 3.7,
+                "undecided_pct": 13.0,
+                "source_url": NV_WIKI_SOURCE,
+                "results": {"Joe Lombardo": 45.0, "Aaron Ford": 42.0},
+            },
+        ],
+    },
+    "il": {
+        "state_name": "Illinois",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Illinois_gubernatorial_election",
+        # Incumbent JB Pritzker (D), running for a 3rd term, was unopposed
+        # in the March 17, 2026 Democratic primary. Darren Bailey (R, the
+        # 2022 nominee) won the Republican primary with 54% -- a rematch of
+        # 2022, the first IL gubernatorial rematch since 1986. National
+        # 2028-presidential speculation around Pritzker is real but doesn't
+        # conflict with this race (different election cycle).
+        "candidates": [
+            {"name": "JB Pritzker", "party": "Democratic", "incumbent": True},
+            {"name": "Darren Bailey", "party": "Republican", "incumbent": False},
+        ],
+        # Only one real 2026 general-election trial-heat poll was located;
+        # several widely-syndicated "Pritzker vs. Bailey" numbers found in
+        # search results are actually from the 2022 race and were excluded
+        # rather than mistakenly reused for 2026.
+        "raw_polls": [
+            {
+                "pollster": "Victory Research",
+                "sponsor": None,
+                "field_start_date": "2025-11-20",
+                "field_end_date": "2025-11-25",
+                "release_date": "2025-11-26",
+                "sample_size": 1208,
+                "population": "LV",
+                "margin_of_error": 2.82,
+                "undecided_pct": 11.7,
+                "source_url": "https://www.fox32chicago.com/news/illinois-jb-pritzker-poll-nov-25",
+                "results": {"JB Pritzker": 54.3, "Darren Bailey": 34.0},
+            },
+        ],
+    },
+    "or": {
+        "state_name": "Oregon",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Oregon_gubernatorial_election",
+        # Incumbent Tina Kotek (D) won her May 19, 2026 primary with 83.6%.
+        # Christine Drazan (R, the 2022 nominee) won the Republican primary
+        # with 40.5% -- a rematch of 2022, Oregon's first since 1978. No
+        # Betsy-Johnson-caliber independent this cycle: the two minor
+        # independents who filed (Ziwahatan, Duke) have no legislative
+        # experience, meaningful fundraising, or general-election polling,
+        # so unlike 2022 this is modeled as a straightforward 2-candidate race.
+        "candidates": [
+            {"name": "Christine Drazan", "party": "Republican", "incumbent": False},
+            {"name": "Tina Kotek", "party": "Democratic", "incumbent": True},
+        ],
+        # A third poll (Hoffman Research Group, May 11-12) tested Kotek vs.
+        # Chris Dudley, who did NOT win the GOP primary -- excluded as not
+        # the real matchup rather than reused.
+        "raw_polls": [
+            {
+                "pollster": "FM3 Research",
+                "sponsor": None,
+                "field_start_date": "2026-01-28",
+                "field_end_date": "2026-02-04",
+                "release_date": "2026-02-07",
+                "sample_size": 1065,
+                "population": "LV",
+                "margin_of_error": 3.1,
+                "undecided_pct": 15.0,
+                "source_url": OR_WIKI_SOURCE,
+                "results": {"Christine Drazan": 40.0, "Tina Kotek": 45.0},
+            },
+            {
+                "pollster": "Public Opinion Strategies",
+                "sponsor": "Republican",
+                "field_start_date": "2026-06-22",
+                "field_end_date": "2026-06-24",
+                "release_date": "2026-07-10",
+                "sample_size": 600,
+                "population": "RV",
+                "margin_of_error": 4.0,
+                "undecided_pct": 8.0,
+                "source_url": "https://www.newsweek.com/christine-drazan-tina-kotek-oregon-governor-race-poll-11972614",
+                "results": {"Christine Drazan": 48.0, "Tina Kotek": 44.0},
+            },
+        ],
+    },
+    "mi": {
+        "state_name": "Michigan",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Michigan_gubernatorial_election",
+        # Open seat: Whitmer (D) is term-limited. Michigan's primary is
+        # August 4, 2026 -- NOT settled as of this writing. Modeled with
+        # named presumptive nominees rather than deferred: Jocelyn Benson
+        # (D, Secretary of State) faces only token primary opposition and
+        # is treated as settled, matching how Florida's Jolly was handled.
+        # John James (R, Trump-endorsed June 22, 2026) is used as the GOP
+        # proxy, but this side is genuinely less certain -- Mike Cox and
+        # Perry Johnson remain active candidates with real double-digit
+        # support as of early July, and could still win the primary
+        # instead. Independent Mike Duggan (Detroit mayor) ran a serious
+        # 3-way campaign but withdrew May 22, 2026; polls before that date
+        # tested a real 3-way race, so Duggan's share (and any other/
+        # undecided) is folded into undecided_pct the same way third-party
+        # shares are handled elsewhere in this dataset, rather than treating
+        # those as clean 2-way polls.
+        "candidates": [
+            {"name": "John James", "party": "Republican", "incumbent": False},
+            {"name": "Jocelyn Benson", "party": "Democratic", "incumbent": False},
+        ],
+        # A June 11-13, 2026 Mitchell/MIRS poll was excluded: two secondary
+        # sources reported contradictory toplines for it (Benson+11 vs.
+        # James+6) and the original release couldn't be directly verified.
+        "raw_polls": [
+            {
+                "pollster": "Mitchell Research (MIRS)",
+                "sponsor": None,
+                "field_start_date": "2025-11-12",
+                "field_end_date": "2025-11-12",
+                "release_date": "2025-12-02",
+                "sample_size": 616,
+                "population": "LV",
+                "margin_of_error": 3.7,
+                "undecided_pct": 32.0,
+                "source_url": "https://michiganadvance.com/2025/12/02/rogers-leads-senate-poll-as-stevens-closes-gap-benson-james-top-early-2026-governor-field/",
+                "results": {"John James": 37.0, "Jocelyn Benson": 31.0},
+            },
+            {
+                "pollster": "Glengariff Group",
+                "sponsor": None,
+                "field_start_date": "2026-01-27",
+                "field_end_date": "2026-02-02",
+                "release_date": "2026-02-05",
+                "sample_size": 600,
+                "population": "RV",
+                "margin_of_error": 4.0,
+                "undecided_pct": 43.9,
+                "source_url": "https://www.detroitchamber.com/new-poll-shows-jocelyn-benson-leading-michigan-governor-race/",
+                "results": {"John James": 28.3, "Jocelyn Benson": 27.8},
+            },
+            {
+                "pollster": "Impact Research",
+                "sponsor": "Democratic",
+                "field_start_date": "2026-02-09",
+                "field_end_date": "2026-02-16",
+                "release_date": "2026-02-19",
+                "sample_size": 800,
+                "population": "LV",
+                "margin_of_error": 3.5,
+                "undecided_pct": 25.0,
+                "source_url": "https://www.newsweek.com/democrat-gop-michigan-governor-race-polls-charts-jocelyn-benson-john-james-11955474",
+                "results": {"John James": 36.0, "Jocelyn Benson": 39.0},
+            },
+            {
+                "pollster": "Glengariff Group",
+                "sponsor": None,
+                "field_start_date": "2026-04-28",
+                "field_end_date": "2026-05-01",
+                "release_date": "2026-05-04",
+                "sample_size": 600,
+                "population": "LV",
+                "margin_of_error": 4.0,
+                "undecided_pct": 36.6,
+                "source_url": "https://www.detroitchamber.com/new-poll-shows-jocelyn-benson-leading-michigan-governor-race/",
+                "results": {"John James": 29.2, "Jocelyn Benson": 34.2},
+            },
+            {
+                "pollster": "Mitchell Research (MIRS)",
+                "sponsor": None,
+                "field_start_date": "2026-05-01",
+                "field_end_date": "2026-05-07",
+                "release_date": "2026-05-12",
+                "sample_size": 607,
+                "population": "LV",
+                "margin_of_error": 6.0,
+                "undecided_pct": 28.0,
+                "source_url": "https://www.detroitnews.com/story/news/politics/2026/05/12/michigan-governor-latest-poll-jocelyn-benson-mike-duggan-john-james-perry-johnson/90043032007/",
+                "results": {"John James": 30.0, "Jocelyn Benson": 42.0},
+            },
+            {
+                "pollster": "TIPP Insights",
+                "sponsor": None,
+                "field_start_date": "2026-05-20",
+                "field_end_date": "2026-05-23",
+                "release_date": "2026-05-26",
+                "sample_size": 1163,
+                "population": "LV",
+                "margin_of_error": 3.0,
+                "undecided_pct": 13.0,
+                "source_url": "https://www.newsweek.com/republican-chances-of-beating-benson-to-flip-michigan-as-duggan-exits-race-11979456",
+                "results": {"John James": 38.0, "Jocelyn Benson": 49.0},
+            },
+        ],
+    },
+    "ne": {
+        "state_name": "Nebraska",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Nebraska_gubernatorial_election",
+        # Incumbent Jim Pillen (R) won his May 12, 2026 primary with 75.4%
+        # over 5 minor GOP rivals. Former state Sen. Lynne Walz (D) won her
+        # primary with 91.5% over Larry Marvin. Both nominations are settled.
+        # A Legal Marijuana NOW candidate, Rick Beard, also qualified for the
+        # general ballot; his share is folded into undecided_pct in the two
+        # polls below, the same convention used for other minor candidates
+        # throughout this dataset (e.g. MI's Duggan, ME's Bennett).
+        "candidates": [
+            {"name": "Jim Pillen", "party": "Republican", "incumbent": True},
+            {"name": "Lynne Walz", "party": "Democratic", "incumbent": False},
+        ],
+        # Only 2 real, independently verifiable general-election trial-heat
+        # polls were located, both commissioned by the Walz campaign (so both
+        # carry an inherent house-effect caveat, same as OH's Democratic-
+        # sponsored polls elsewhere in this dataset) but reported on by
+        # independent outlets with real toplines/dates/samples. Two earlier
+        # polls in the same Lake Research Partners tracking series (widely
+        # reported as "Pillen +12" in July 2025 and "Pillen +4" in December
+        # 2025) are excluded here: coverage of both only gives a month, not
+        # field start/end dates, and no sample size/MoE was found for either
+        # -- not enough to seed a poll record with the same rigor as the two
+        # below, rather than fabricating placeholder dates.
+        "raw_polls": [
+            {
+                "pollster": "Public Policy Polling",
+                "sponsor": "Democratic",
+                "field_start_date": "2026-04-06",
+                "field_end_date": "2026-04-07",
+                "release_date": "2026-04-14",
+                "sample_size": 670,
+                "population": "RV",
+                "margin_of_error": 3.8,
+                "undecided_pct": 29.0,
+                "source_url": "https://nebraskaexaminer.com/2026/04/14/walz-campaign-says-new-poll-shows-pillens-vulnerability/",
+                "results": {"Jim Pillen": 38.0, "Lynne Walz": 33.0},
+            },
+            {
+                "pollster": "Lake Research Partners",
+                "sponsor": "Democratic",
+                "field_start_date": "2026-04-25",
+                "field_end_date": "2026-04-29",
+                "release_date": "2026-05-03",
+                "sample_size": 900,
+                "population": "LV",
+                "margin_of_error": 3.3,
+                "undecided_pct": 8.0,
+                "source_url": "https://nebraskapublicmedia.org/en/news/news-articles/internal-poll-shows-democratic-challenger-lynne-walz-closing-in-on-jim-pillen-in-governors-race/",
+                "results": {"Jim Pillen": 47.0, "Lynne Walz": 45.0},
+            },
+        ],
+    },
+    "ks": {
+        "state_name": "Kansas",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Kansas_gubernatorial_election",
+        # Gov. Laura Kelly (D) is term-limited (2-consecutive-term max) and
+        # cannot run again -- this is an open seat. Neither party's Aug 4,
+        # 2026 primary is decided: GOP frontrunner is state Senate President
+        # Ty Masterson, with Secretary of State Scott Schwab and Insurance
+        # Commissioner Vicki Schmidt also running; Democrats have a real
+        # primary between state Sens. Cindy Holscher and Ethan Corson and
+        # Overland Park Mayor Curt Skoog. Per explicit direction, no
+        # presumptive nominee is named here -- this race uses generic party
+        # placeholders and is fundamentals-only. No true generic-ballot
+        # ("generic Republican" vs. "generic Democrat") general-election poll
+        # was found. The only public poll located (Change Research/Capitol
+        # Bee, June 2026) tested named candidates within the Democratic
+        # primary only, which isn't usable for a general-election forecast.
+        "candidates": [
+            {"name": "Republican Nominee", "party": "Republican", "incumbent": False},
+            {"name": "Democratic Nominee", "party": "Democratic", "incumbent": False},
+        ],
+        "raw_polls": [],
     },
 }

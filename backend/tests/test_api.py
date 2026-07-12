@@ -8,7 +8,9 @@ def test_races_lists_all_seeded_states(client):
     resp = client.get("/races")
     assert resp.status_code == 200
     codes = {r["state_code"] for r in resp.json()}
-    assert codes == {"pa", "oh", "ga", "me", "ia", "ny", "sc", "tx", "fl"}
+    assert codes == {
+        "pa", "oh", "ga", "me", "ia", "ny", "sc", "tx", "fl", "nv", "il", "or", "mi", "ne", "ks",
+    }
 
 
 def test_races_expose_current_holder_party(client):
@@ -23,6 +25,12 @@ def test_races_expose_current_holder_party(client):
     assert races["sc"]["current_holder_party"] == "Republican"  # McMaster (R)
     assert races["tx"]["current_holder_party"] == "Republican"  # Abbott (inc) is on the ballot
     assert races["fl"]["current_holder_party"] == "Republican"  # DeSantis (R), open seat
+    assert races["nv"]["current_holder_party"] == "Republican"  # Lombardo (inc) is on the ballot
+    assert races["il"]["current_holder_party"] == "Democratic"  # Pritzker (inc) is on the ballot
+    assert races["or"]["current_holder_party"] == "Democratic"  # Kotek (inc) is on the ballot
+    assert races["mi"]["current_holder_party"] == "Democratic"  # Whitmer (D), open seat
+    assert races["ne"]["current_holder_party"] == "Republican"  # Pillen (inc) is on the ballot
+    assert races["ks"]["current_holder_party"] == "Democratic"  # Kelly (D), term-limited open seat
 
 
 def test_unknown_state_returns_404(client):
@@ -104,6 +112,10 @@ def test_forecast_reports_polling_and_fundamentals_composition(client):
         "total_dem_margin_pts",
     ):
         assert key in breakdown
+    # PA uses the standard 3-election window for every race type.
+    assert breakdown["gubernatorial_elections_count"] == 3
+    assert breakdown["senate_elections_count"] == 3
+    assert breakdown["presidential_elections_count"] == 3
 
     shapiro = next(r for r in body["results"] if r["candidate"]["name"] == "Josh Shapiro")
     # Shapiro's structural advantages (incumbency, PA's Democratic lean, a
@@ -112,6 +124,17 @@ def test_forecast_reports_polling_and_fundamentals_composition(client):
     assert shapiro["fundamentals_vote_share"] > 50
     assert shapiro["polling_vote_share"] > 50
     assert shapiro["mean_vote_share"] > 50
+
+
+def test_ohio_and_nevada_gubernatorial_window_excludes_the_discarded_2014_outlier(client):
+    oh = client.get("/races/oh/forecast").json()["fundamentals_breakdown"]
+    nv = client.get("/races/nv/forecast").json()["fundamentals_breakdown"]
+
+    assert oh["gubernatorial_elections_count"] == 2
+    assert nv["gubernatorial_elections_count"] == 2
+    # Senate/president weren't affected -- still the standard window.
+    assert oh["senate_elections_count"] == 3
+    assert nv["presidential_elections_count"] == 3
 
 
 def test_forecast_history_includes_every_snapshot(client):
@@ -279,7 +302,97 @@ def test_florida_race_is_independently_seeded_and_forecast(client):
     assert forecast["n_polls_used"] == 4
 
 
-def test_all_nine_forecasts_are_independent(client):
+def test_nevada_race_is_independently_seeded_and_forecast(client):
+    polls = client.get("/races/nv/polls").json()
+    assert len(polls) == 5
+    pollster_names = {p["pollster"] for p in polls}
+    assert "Emerson College" in pollster_names
+    assert "Noble Predictive Insights" in pollster_names
+
+    forecast = client.get("/races/nv/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Joe Lombardo", "Aaron Ford"}
+    assert forecast["n_polls_used"] == 5
+
+
+def test_illinois_race_is_independently_seeded_and_forecast(client):
+    polls = client.get("/races/il/polls").json()
+    assert len(polls) == 1
+    assert polls[0]["pollster"] == "Victory Research"
+
+    forecast = client.get("/races/il/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"JB Pritzker", "Darren Bailey"}
+    assert forecast["n_polls_used"] == 1
+
+    pritzker = next(r for r in forecast["results"] if r["candidate"]["name"] == "JB Pritzker")
+    assert pritzker["win_probability"] > 0.9
+
+
+def test_oregon_race_is_independently_seeded_and_forecast(client):
+    polls = client.get("/races/or/polls").json()
+    assert len(polls) == 2
+    pollster_names = {p["pollster"] for p in polls}
+    assert "FM3 Research" in pollster_names
+    assert "Public Opinion Strategies" in pollster_names
+
+    forecast = client.get("/races/or/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Christine Drazan", "Tina Kotek"}
+    assert forecast["n_polls_used"] == 2
+
+
+def test_michigan_race_is_independently_seeded_and_forecast(client):
+    polls = client.get("/races/mi/polls").json()
+    assert len(polls) == 6
+    pollster_names = {p["pollster"] for p in polls}
+    assert "TIPP Insights" in pollster_names
+    assert "Impact Research" in pollster_names
+
+    forecast = client.get("/races/mi/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"John James", "Jocelyn Benson"}
+    assert forecast["n_polls_used"] == 6
+
+
+def test_nebraska_race_is_independently_seeded_and_forecast(client):
+    polls = client.get("/races/ne/polls").json()
+    assert len(polls) == 2
+    pollster_names = {p["pollster"] for p in polls}
+    assert "Public Policy Polling" in pollster_names
+    assert "Lake Research Partners" in pollster_names
+
+    forecast = client.get("/races/ne/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Jim Pillen", "Lynne Walz"}
+    assert forecast["n_polls_used"] == 2
+
+    # Both real polls show Walz within single digits (and closing), but
+    # Nebraska's fundamentals (a heavily Republican historical lean plus
+    # incumbency) dominate the blend this far from Election Day, so the
+    # forecast should still favor Pillen overall.
+    pillen = next(r for r in forecast["results"] if r["candidate"]["name"] == "Jim Pillen")
+    assert pillen["win_probability"] > 0.5
+    assert pillen["fundamentals_vote_share"] > 50
+
+
+def test_kansas_race_is_fundamentals_only_with_generic_nominees(client):
+    polls = client.get("/races/ks/polls").json()
+    assert polls == []
+
+    forecast = client.get("/races/ks/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Republican Nominee", "Democratic Nominee"}
+    assert forecast["n_polls_used"] == 0
+    assert forecast["poll_weight_alpha"] == 0.0
+
+    for r in forecast["results"]:
+        # No polling exists -- it mirrors fundamentals, same as SC.
+        assert r["polling_vote_share"] == r["fundamentals_vote_share"]
+        assert abs(r["mean_vote_share"] - r["fundamentals_vote_share"]) < 1.0
+
+
+def test_all_fifteen_forecasts_are_independent(client):
     pa = client.get("/races/pa/forecast").json()
     oh = client.get("/races/oh/forecast").json()
     ga = client.get("/races/ga/forecast").json()
@@ -289,12 +402,21 @@ def test_all_nine_forecasts_are_independent(client):
     sc = client.get("/races/sc/forecast").json()
     tx = client.get("/races/tx/forecast").json()
     fl = client.get("/races/fl/forecast").json()
-    ids = {pa["id"], oh["id"], ga["id"], me["id"], ia["id"], ny["id"], sc["id"], tx["id"], fl["id"]}
-    assert len(ids) == 9
+    nv = client.get("/races/nv/forecast").json()
+    il = client.get("/races/il/forecast").json()
+    orr = client.get("/races/or/forecast").json()
+    mi = client.get("/races/mi/forecast").json()
+    ne = client.get("/races/ne/forecast").json()
+    ks = client.get("/races/ks/forecast").json()
+    ids = {
+        pa["id"], oh["id"], ga["id"], me["id"], ia["id"],
+        ny["id"], sc["id"], tx["id"], fl["id"], nv["id"], il["id"], orr["id"], mi["id"], ne["id"], ks["id"],
+    }
+    assert len(ids) == 15
 
     name_sets = [
         {r["candidate"]["name"] for r in race["results"]}
-        for race in (pa, oh, ga, me, ia, ny, sc, tx, fl)
+        for race in (pa, oh, ga, me, ia, ny, sc, tx, fl, nv, il, orr, mi, ne, ks)
     ]
     for i, names_a in enumerate(name_sets):
         for names_b in name_sets[i + 1 :]:

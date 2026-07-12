@@ -65,9 +65,12 @@ RACE_FUNDAMENTALS = {
         ],
     },
     "oh": {
-        # Last 3 cycles only (trimmed from 6): 2002-2010 dropped.
+        # 2014 (Kasich d. FitzGerald, D 34.02%) was discarded as an outlier
+        # -- FitzGerald's campaign collapsed amid personal scandals
+        # unrelated to Ohio's partisan lean, making that result a poor read
+        # on the state's actual gubernatorial disposition. Left at 2
+        # elections rather than backfilling further back, per instruction.
         "gubernatorial_elections": [
-            {"year": 2014, "dem_share": 34.02, "incumbent_party": "R"},  # Kasich (inc) d. FitzGerald
             {"year": 2018, "dem_share": 48.09, "incumbent_party": None},  # DeWine d. Cordray, open seat
             {"year": 2022, "dem_share": 37.20, "incumbent_party": "R"},  # DeWine (inc) d. Whaley
         ],
@@ -305,6 +308,215 @@ RACE_FUNDAMENTALS = {
             {"date": "2024-05-31", "dem_lead": -1_156_082},
             {"date": "2026-05-31", "dem_lead": -1_514_893},
         ],
+    },
+    "nv": {
+        # 2014 (Sandoval d. Goodman, D 25.3%) was discarded as an outlier
+        # -- Goodman's campaign was severely underfunded and never
+        # competitive, making that ~45-point landslide a poor read on
+        # Nevada's actual gubernatorial disposition (contrast the genuinely
+        # close 2018/2022 races). Left at 2 elections rather than
+        # backfilling further back, per instruction.
+        "gubernatorial_elections": [
+            {"year": 2018, "dem_share": 52.2, "incumbent_party": None},  # Sisolak d. Laxalt, open seat (Sandoval term-limited)
+            {"year": 2022, "dem_share": 49.2, "incumbent_party": "D"},  # Lombardo (R) d. Sisolak (inc)
+        ],
+        # Last 3 NV Senate elections (mixes Rosen's Class I seat and Cortez
+        # Masto's Class III seat).
+        "senate_elections": [
+            {"year": 2018, "dem_share": 52.6},  # Rosen d. Heller (inc)
+            {"year": 2022, "dem_share": 50.4},  # Cortez Masto (inc) d. Laxalt
+            {"year": 2024, "dem_share": 50.9},  # Rosen (inc) d. Brown
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 51.3},  # Clinton d. Trump
+            {"year": 2020, "dem_share": 51.2},  # Biden d. Trump
+            {"year": 2024, "dem_share": 48.4},  # Trump d. Harris -- first GOP win in NV since 2004
+        ],
+        # Nevada Secretary of State publishes official registration by
+        # party. Only snapshots with a directly-stated absolute D/R count
+        # are used (a Sept. 2021 figure was reported only as a percentage
+        # of an approximate total, so it's excluded rather than back-
+        # computing a fabricated-precision count from it). The real trend
+        # here is dramatic: Nevada's Democratic registration edge narrowed
+        # from +50K in 2022 to just +502 statewide as of July 2026.
+        "registration_snapshots": [
+            {"date": "2022-10-01", "dem_lead": 50_142},
+            {"date": "2026-07-07", "dem_lead": 502},
+        ],
+    },
+    "il": {
+        "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 47.97, "incumbent_party": "D"},  # Rauner d. Quinn (inc)
+            {"year": 2018, "dem_share": 58.42, "incumbent_party": "R"},  # Pritzker d. Rauner (inc)
+            {"year": 2022, "dem_share": 56.45, "incumbent_party": "D"},  # Pritzker (inc) d. Bailey
+        ],
+        # Last 3 IL Senate elections (mixes Duckworth's Class 3 seat and
+        # Durbin's Class 2 seat; no IL Senate race occurred in 2018 since
+        # neither seat was up, so these span 2016/2020/2022).
+        "senate_elections": [
+            {"year": 2016, "dem_share": 57.98},  # Duckworth d. Kirk (inc)
+            {"year": 2020, "dem_share": 58.56},  # Durbin (inc) d. Curran
+            {"year": 2022, "dem_share": 57.78},  # Duckworth (inc) d. Salvi
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 59.02},  # Clinton d. Trump
+            {"year": 2020, "dem_share": 58.65},  # Biden d. Trump
+            {"year": 2024, "dem_share": 55.57},  # Harris d. Trump
+        ],
+        # Illinois doesn't register voters by party (a voter simply
+        # requests a party's primary ballot each cycle, with no persistent
+        # registration record), confirmed via NCSL-style classification.
+        "registration_snapshots": [],
+    },
+    "or": {
+        "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 53.06, "incumbent_party": "D"},  # Kitzhaber (inc) d. Richardson
+            {"year": 2018, "dem_share": 53.71, "incumbent_party": "D"},  # Brown (inc) d. Buehler
+            # 2022 was a genuine 3-way race: Kotek (D) 47.0%, Drazan (R)
+            # 43.5%, Betsy Johnson (I) 8.6%. dem_share here is the two-party
+            # share (D/(D+R) = 917,074/(917,074+850,347)), excluding
+            # Johnson's independent vote -- same convention used for
+            # Maine's Bennett and Georgia-style third-party candidates
+            # elsewhere in this dataset, not a special case for Oregon.
+            {"year": 2022, "dem_share": 51.89, "incumbent_party": None},  # Kotek d. Drazan, Johnson (I); open seat (Brown term-limited)
+        ],
+        # Last 3 OR Senate elections (mixes Wyden's Class III and
+        # Merkley's Class II seats).
+        "senate_elections": [
+            {"year": 2016, "dem_share": 62.94},  # Wyden (inc) d. Callahan
+            {"year": 2020, "dem_share": 59.16},  # Merkley (inc) d. Perkins
+            {"year": 2022, "dem_share": 57.71},  # Wyden (inc) d. Perkins
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 56.16},  # Clinton d. Trump
+            {"year": 2020, "dem_share": 58.30},  # Biden d. Trump
+            {"year": 2024, "dem_share": 57.42},  # Harris d. Trump
+        ],
+        # Oregon Secretary of State publishes official registration by
+        # party. Automatic voter registration (since 2016) has driven a
+        # real, steady trend: nonaffiliated voters are now the largest
+        # bloc, and the Democratic registration lead has been narrowing
+        # every cycle since 2020.
+        "registration_snapshots": [
+            {"date": "2020-11-03", "dem_lead": 292_777},
+            {"date": "2022-10-05", "dem_lead": 282_282},
+            {"date": "2024-11-06", "dem_lead": 275_183},
+            {"date": "2026-07-06", "dem_lead": 245_276},
+        ],
+    },
+    "ne": {
+        # Nebraska caps governors at 2 consecutive elected terms. Heineman
+        # (R) was termed out in 2014 (open seat, Ricketts's first win);
+        # Ricketts himself was termed out in 2022 after 2014/2018 (open
+        # seat, Pillen's first win). Only the 2018 Ricketts reelection was
+        # a true incumbent race.
+        "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 40.70, "incumbent_party": None},  # Ricketts d. Hassebrook, Elworth (L) 3.5%; open seat (Heineman term-limited)
+            {"year": 2018, "dem_share": 41.00, "incumbent_party": "R"},  # Ricketts (inc) d. Krist
+            {"year": 2022, "dem_share": 37.79, "incumbent_party": None},  # Pillen d. Blood, Zimmerman (L) 3.9%; open seat (Ricketts term-limited)
+        ],
+        # NE's 2 Senate seats: Fischer's (Class I, up 2018/2024/2030) and the
+        # seat Ben Sasse held (Class II, up 2020/2026), which Pete Ricketts
+        # was appointed to in 2023 after Sasse resigned and then won outright
+        # in a Nov. 2024 special election to serve the rest of that term.
+        # "Last 3" here is 2018/2020/2024-special. The OTHER 2024 NE Senate
+        # race on the same ballot -- Fischer (R, inc) d. Dan Osborn -- is
+        # deliberately excluded: Osborn ran as a true independent who
+        # explicitly declined the state Democratic Party's support (and
+        # Democrats fielded no candidate at all), so unlike Maine's Angus
+        # King there's no real "Democratic share" to extract from that race
+        # without fabricating one.
+        "senate_elections": [
+            {"year": 2018, "dem_share": 40.10},  # Fischer (R, inc) d. Raybould
+            # 2020: the Nebraska Democratic Party publicly withdrew support
+            # from its own nominee, Chris Janicek, in June 2020 after a
+            # sexting/racist-remarks scandal, then endorsed a write-in,
+            # Preston Love Jr., in September as the de facto Democratic
+            # candidate (Janicek couldn't be removed from the ballot under
+            # NE law). dem_share here combines Janicek's ballot-line votes
+            # with Love's write-in votes as the real Democratic-aligned
+            # total, the same combining convention used for Maine's King.
+            {"year": 2020, "dem_share": 32.86},  # Sasse (R, inc) d. Janicek (D)/Love (D write-in, combined)
+            {"year": 2024, "dem_share": 37.42},  # Ricketts (R) d. Love, special election for the balance of Sasse's term
+        ],
+        # Statewide two-party popular vote (NE splits 2 of its 5 electoral
+        # votes by congressional district -- notably NE-02/Omaha, which
+        # Democrats have carried each of the last 3 cycles -- but this
+        # input uses the statewide popular vote, same convention as Maine).
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 36.45},  # Trump d. Clinton
+            {"year": 2020, "dem_share": 40.22},  # Trump d. Biden
+            {"year": 2024, "dem_share": 39.58},  # Trump d. Harris
+        ],
+        # Nebraska registers voters by party (unlike OH/GA/IL/TX/SC/MI).
+        # Figures are statewide Grand Total rows from the NE Secretary of
+        # State's monthly VR Statistics Count Report PDFs (sos.nebraska.gov),
+        # dem_lead = Democratic minus Republican registration. The trend is
+        # a real, steadily widening Republican registration edge.
+        "registration_snapshots": [
+            {"date": "2022-09-01", "dem_lead": -259_720},
+            {"date": "2024-10-01", "dem_lead": -280_763},
+            {"date": "2026-05-01", "dem_lead": -293_084},
+        ],
+    },
+    "ks": {
+        "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 48.08, "incumbent_party": "R"},  # Brownback (inc) d. Davis; Libertarian Umbehr 4.05%
+            {"year": 2018, "dem_share": 52.76, "incumbent_party": None},  # Kelly d. Kobach, open seat (Brownback term-limited); real independent Greg Orman took 6.50% raw, so Kelly's actual plurality was only 48.01% -- not a landslide either way, kept in the window
+            {"year": 2022, "dem_share": 51.14, "incumbent_party": "D"},  # Kelly (inc) d. Schmidt; independent Pyle 2.03%, Libertarian Cordell 1.10%
+        ],
+        # Kansas's 2 Senate seats. Seat A (currently Marshall, up 2026 --
+        # the same cycle as this governor's race) uses 2008 and 2020 only:
+        # its 2014 election is excluded because Democratic nominee Chad
+        # Taylor withdrew and was removed from the ballot by court order,
+        # leaving Roberts (R, inc) vs. independent Greg Orman (42.53%) with
+        # no Democrat on the ballot at all -- there's no real D vote share to
+        # extract, so we use fewer elections rather than fabricate one or
+        # reach back further, the same convention used for OH/NV's discarded
+        # 2014 governor races.
+        "senate_elections": [
+            {"year": 2008, "dem_share": 37.77},  # Roberts (R, inc) d. Slattery
+            {"year": 2020, "dem_share": 43.98},  # Marshall d. Bollier, open seat (Roberts retired)
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 38.89},  # Trump d. Clinton
+            {"year": 2020, "dem_share": 42.51},  # Trump d. Biden
+            {"year": 2024, "dem_share": 41.79},  # Trump d. Harris
+        ],
+        # KS SOS publishes monthly statewide party-registration totals.
+        # dem_lead = Democratic minus Republican registration. No archived
+        # 2020 snapshot could be found (SOS's monthly archive only goes back
+        # to mid-2021), so Nov 2021 stands in as the earliest real snapshot.
+        "registration_snapshots": [
+            {"date": "2021-11-01", "dem_lead": -355_412},
+            {"date": "2022-11-01", "dem_lead": -360_671},
+            {"date": "2024-11-01", "dem_lead": -389_924},
+            {"date": "2026-06-01", "dem_lead": -394_642},
+        ],
+    },
+    "mi": {
+        "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 47.93, "incumbent_party": "R"},  # Snyder (inc) d. Schauer
+            {"year": 2018, "dem_share": 54.93, "incumbent_party": None},  # Whitmer d. Schuette, open seat (Snyder term-limited)
+            {"year": 2022, "dem_share": 55.35, "incumbent_party": "D"},  # Whitmer (inc) d. Dixon
+        ],
+        # Last 3 MI Senate elections (mixes Peters' seat, up in 2014/2020,
+        # and Stabenow's now-open seat, up in 2024 -- a different seat from
+        # this cycle's 2026 MI Senate race).
+        "senate_elections": [
+            {"year": 2014, "dem_share": 56.93},  # Peters d. Land, open seat (Levin retiring)
+            {"year": 2020, "dem_share": 50.86},  # Peters (inc) d. James
+            {"year": 2024, "dem_share": 50.18},  # Slotkin d. Rogers, open seat (Stabenow retiring)
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 49.88},  # Trump d. Clinton by 0.23 pts
+            {"year": 2020, "dem_share": 51.41},  # Biden d. Trump
+            {"year": 2024, "dem_share": 49.28},  # Trump d. Harris
+        ],
+        # Michigan doesn't register voters by party (a voter simply
+        # requests a party's primary ballot each cycle, with no persistent
+        # registration record) -- confirmed via Michigan SOS FAQ.
+        "registration_snapshots": [],
     },
 }
 

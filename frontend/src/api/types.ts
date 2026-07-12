@@ -59,6 +59,9 @@ export interface FundamentalsBreakdown {
   president_approval_pct: number;
   president_approval_as_of: string;
   president_approval_source_url: string;
+  gubernatorial_elections_count: number;
+  senate_elections_count: number;
+  presidential_elections_count: number;
 }
 
 export interface ForecastSnapshot {

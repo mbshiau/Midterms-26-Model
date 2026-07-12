@@ -46,7 +46,7 @@ function stripePatternId(slug: string, tier: ProbabilityTier): string {
 
 export function UsMap({ getVisual, isClickable, onStateClick, getTooltip }: UsMapProps) {
   const [hovered, setHovered] = useState<string | null>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0, containerWidth: 0, containerHeight: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   const locations = usa.locations as StateLocation[];
   const hoveredLocation = locations.find((l) => l.id === hovered);
@@ -55,7 +55,23 @@ export function UsMap({ getVisual, isClickable, onStateClick, getTooltip }: UsMa
   const updateMousePos = (e: React.MouseEvent) => {
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
-    setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+      containerWidth: rect.width,
+      containerHeight: rect.height,
+    });
+  };
+
+  const anchorRight = mousePos.x > mousePos.containerWidth / 2;
+  const anchorBottom = mousePos.y > mousePos.containerHeight / 2;
+  const tooltipStyle = {
+    ...(anchorRight
+      ? { right: mousePos.containerWidth - mousePos.x + TOOLTIP_OFFSET }
+      : { left: mousePos.x + TOOLTIP_OFFSET }),
+    ...(anchorBottom
+      ? { bottom: mousePos.containerHeight - mousePos.y + TOOLTIP_OFFSET }
+      : { top: mousePos.y + TOOLTIP_OFFSET }),
   };
 
   return (
@@ -132,8 +148,7 @@ export function UsMap({ getVisual, isClickable, onStateClick, getTooltip }: UsMa
         <div
           className="pointer-events-none absolute z-10 rounded-md border px-3 py-2 text-sm shadow-md"
           style={{
-            left: mousePos.x + TOOLTIP_OFFSET,
-            top: mousePos.y + TOOLTIP_OFFSET,
+            ...tooltipStyle,
             backgroundColor: "var(--surface)",
             borderColor: "var(--border)",
             color: "var(--text-primary)",

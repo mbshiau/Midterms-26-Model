@@ -136,6 +136,13 @@ def generate_forecast(
     breakdown["president_approval_pct"] = approval.approval_pct
     breakdown["president_approval_as_of"] = approval.as_of.isoformat()
     breakdown["president_approval_source_url"] = approval.source_url
+    # Most states use the last 3 elections per race type, but a state can
+    # have fewer (e.g. an outlier year discarded rather than backfilled) --
+    # exposing the actual count keeps the UI's "(last N races)" labels
+    # honest instead of hardcoding "3" everywhere.
+    breakdown["gubernatorial_elections_count"] = len(fundamentals_data["gubernatorial_elections"])
+    breakdown["senate_elections_count"] = len(fundamentals_data["senate_elections"])
+    breakdown["presidential_elections_count"] = len(fundamentals_data["presidential_elections"])
 
     snapshot = ForecastSnapshot(
         race_id=race.id,

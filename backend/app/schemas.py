@@ -89,6 +89,9 @@ class FundamentalsBreakdownOut(BaseModel):
     president_approval_pct: float
     president_approval_as_of: date
     president_approval_source_url: str
+    gubernatorial_elections_count: int
+    senate_elections_count: int
+    presidential_elections_count: int
 
 
 class ForecastSnapshotOut(BaseModel):
