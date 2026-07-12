@@ -465,18 +465,19 @@ RACE_FUNDAMENTALS = {
             {"year": 2018, "dem_share": 52.76, "incumbent_party": None},  # Kelly d. Kobach, open seat (Brownback term-limited); real independent Greg Orman took 6.50% raw, so Kelly's actual plurality was only 48.01% -- not a landslide either way, kept in the window
             {"year": 2022, "dem_share": 51.14, "incumbent_party": "D"},  # Kelly (inc) d. Schmidt; independent Pyle 2.03%, Libertarian Cordell 1.10%
         ],
-        # Kansas's 2 Senate seats. Seat A (currently Marshall, up 2026 --
-        # the same cycle as this governor's race) uses 2008 and 2020 only:
-        # its 2014 election is excluded because Democratic nominee Chad
-        # Taylor withdrew and was removed from the ballot by court order,
-        # leaving Roberts (R, inc) vs. independent Greg Orman (42.53%) with
-        # no Democrat on the ballot at all -- there's no real D vote share to
-        # extract, so we use fewer elections rather than fabricate one or
-        # reach back further, the same convention used for OH/NV's discarded
-        # 2014 governor races.
+        # Kansas's 2 Senate seats don't stagger evenly -- last 3 elections
+        # chronologically across both seats (same convention as FL/GA/NE):
+        # Moran's 2016 win, Marshall's 2020 open-seat win (Roberts retired),
+        # and Moran's 2022 reelection. Seat A's 2014 race (Roberts, R, inc.
+        # d. independent Greg Orman) is excluded from this window on its own
+        # merits -- Democratic nominee Chad Taylor withdrew and was removed
+        # from the ballot by court order, leaving no Democrat on the ballot
+        # at all that cycle -- but it wouldn't have made the "last 3" cut
+        # regardless.
         "senate_elections": [
-            {"year": 2008, "dem_share": 37.77},  # Roberts (R, inc) d. Slattery
+            {"year": 2016, "dem_share": 34.15},  # Moran (R, inc) d. Wiesner
             {"year": 2020, "dem_share": 43.98},  # Marshall d. Bollier, open seat (Roberts retired)
+            {"year": 2022, "dem_share": 38.17},  # Moran (R, inc) d. Holland
         ],
         "presidential_elections": [
             {"year": 2016, "dem_share": 38.89},  # Trump d. Clinton
@@ -492,6 +493,37 @@ RACE_FUNDAMENTALS = {
             {"date": "2022-11-01", "dem_lead": -360_671},
             {"date": "2024-11-01", "dem_lead": -389_924},
             {"date": "2026-06-01", "dem_lead": -394_642},
+        ],
+    },
+    "az": {
+        "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 43.78, "incumbent_party": None},  # Ducey d. DuVal, open seat (Brewer term-limited)
+            {"year": 2018, "dem_share": 42.77, "incumbent_party": "R"},  # Ducey (inc) d. Garcia, a real R-environment year (Sinema won her Senate race the same cycle -- a split-ticket data point, not an error)
+            {"year": 2022, "dem_share": 50.33, "incumbent_party": None},  # Hobbs d. Lake, open seat (Ducey term-limited)
+        ],
+        # AZ's 2 Senate seats don't stagger evenly -- last 3 elections
+        # chronologically across both seats (same convention as FL/GA/KS/NE).
+        "senate_elections": [
+            {"year": 2020, "dem_share": 51.18},  # Kelly d. McSally (appointed inc), special election
+            {"year": 2022, "dem_share": 52.51},  # Kelly (inc) d. Masters
+            {"year": 2024, "dem_share": 51.24},  # Gallego d. Lake, open seat (Sinema retired as an independent)
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 48.11},  # Trump d. Clinton
+            {"year": 2020, "dem_share": 50.16},  # Biden d. Trump
+            {"year": 2024, "dem_share": 47.22},  # Trump d. Harris
+        ],
+        # AZ SOS publishes statewide registration by party. AZ is unusual in
+        # that registered independents ("no party preference") are a huge,
+        # growing bloc -- often larger than either major party -- which is a
+        # real structural feature of the electorate, not an anomaly. Only
+        # the 3 most recent snapshots are used here: earlier (2020/2022)
+        # figures found in secondary sources were rounded estimates, not
+        # exact SOS pulls, and are excluded rather than presented as solid.
+        "registration_snapshots": [
+            {"date": "2024-10-01", "dem_lead": -295_455},
+            {"date": "2025-07-01", "dem_lead": -327_398},
+            {"date": "2026-07-01", "dem_lead": -318_734},
         ],
     },
     "mi": {
@@ -517,6 +549,39 @@ RACE_FUNDAMENTALS = {
         # requests a party's primary ballot each cycle, with no persistent
         # registration record) -- confirmed via Michigan SOS FAQ.
         "registration_snapshots": [],
+    },
+    "nh": {
+        "gubernatorial_elections": [
+            {"year": 2020, "dem_share": 33.88, "incumbent_party": "R"},  # Sununu (inc) d. Feltes; a real COVID-era rally-round-the-incumbent landslide, kept in the window (not discarded unilaterally)
+            {"year": 2022, "dem_share": 42.12, "incumbent_party": "R"},  # Sununu (inc) d. Sherman
+            {"year": 2024, "dem_share": 45.24, "incumbent_party": None},  # Ayotte d. Craig, open seat (Sununu retired)
+        ],
+        # NH's 2 Senate seats don't stagger evenly -- last 3 elections
+        # chronologically across both seats (same convention as FL/GA/KS/NE/AZ).
+        "senate_elections": [
+            {"year": 2016, "dem_share": 50.07},  # Hassan d. Ayotte (inc) by just 1,017 votes -- a genuine toss-up, not an outlier to discard
+            {"year": 2020, "dem_share": 58.02},  # Shaheen (inc) d. Messner, landslide
+            {"year": 2022, "dem_share": 54.63},  # Hassan (inc) d. Bolduc
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 50.20},  # Clinton d. Trump
+            {"year": 2020, "dem_share": 53.75},  # Biden d. Trump
+            {"year": 2024, "dem_share": 51.41},  # Trump d. Harris
+        ],
+        # NH SOS publishes "Party Registration History." Real, well-documented
+        # realignment: Democrats held a raw registration lead in 2020/2022,
+        # but Republicans overtook them by the 2024 general and have held a
+        # growing lead since (independently cross-checked: the May 2026
+        # figure below was corroborated by a separate NH Journal report of
+        # the same-period gap). "Undeclared" voters are the largest bloc in
+        # every snapshot, a well-known NH structural feature.
+        "registration_snapshots": [
+            {"date": "2020-11-08", "dem_lead": 14_663},
+            {"date": "2022-08-30", "dem_lead": 9_987},
+            {"date": "2024-09-30", "dem_lead": -39_280},
+            {"date": "2025-08-25", "dem_lead": -49_334},
+            {"date": "2026-05-04", "dem_lead": -48_822},
+        ],
     },
 }
 

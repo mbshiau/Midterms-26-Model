@@ -1357,4 +1357,147 @@ RACES = {
         ],
         "raw_polls": [],
     },
+    "az": {
+        "state_name": "Arizona",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Arizona_gubernatorial_election",
+        # Gov. Katie Hobbs (D) is running for reelection and is functionally
+        # unopposed in the Democratic primary -- treated as the settled
+        # nominee. The GOP primary (July 21, 2026) is NOT settled: Rep. Andy
+        # Biggs is the clear frontrunner, Rep. David Schweikert is also
+        # running, and Karrin Taylor Robson (an earlier Trump-endorsed
+        # candidate) withdrew Feb. 12, 2026. Per explicit direction, the
+        # Republican side is a generic "TBD" placeholder rather than naming
+        # a presumptive nominee.
+        #
+        # Every general-election trial-heat poll found tests Hobbs against a
+        # SPECIFIC named Republican (Biggs, Schweikert, and, before her
+        # withdrawal, Robson) rather than a true generic-ballot question. Per
+        # explicit direction to aggregate across contenders, each poll below
+        # represents one real polling wave (one pollster + field-date window)
+        # averaged across every named-Republican matchup that wave tested --
+        # e.g. Emerson's Nov 2025 release tested Biggs, Robson, AND
+        # Schweikert as three separate matchups; the entry below is the
+        # unweighted average of Hobbs's share, the Republican's share, and
+        # undecided across those three. This keeps one poll record per real
+        # release (matching how the pipeline dedupes on pollster + field
+        # dates) while still reflecting every contender actually polled.
+        "candidates": [
+            {"name": "Katie Hobbs", "party": "Democratic", "incumbent": True},
+            {"name": "Republican Nominee (TBD)", "party": "Republican", "incumbent": False},
+        ],
+        "raw_polls": [
+            {
+                "pollster": "Emerson College Polling",
+                "sponsor": None,
+                "field_start_date": "2025-11-08",
+                "field_end_date": "2025-11-10",
+                "release_date": "2025-11-14",
+                "sample_size": 850,
+                "population": "RV",
+                "margin_of_error": 3.3,
+                "undecided_pct": 15.0,
+                "source_url": "https://emersoncollegepolling.com/arizona-2026-governor/",
+                # Average of 3 named matchups: Hobbs 44/Biggs 43 (13% undec.),
+                # Hobbs 43/Robson 42 (15% undec.), Hobbs 44/Schweikert 39
+                # (16% undec.).
+                "results": {"Katie Hobbs": 43.7, "Republican Nominee (TBD)": 41.3},
+            },
+            {
+                "pollster": "Noble Predictive Insights",
+                "sponsor": None,
+                "field_start_date": "2026-02-23",
+                "field_end_date": "2026-02-26",
+                "release_date": "2026-03-04",
+                "sample_size": 1023,
+                "population": "RV",
+                "margin_of_error": 3.06,
+                "undecided_pct": 21.0,
+                "source_url": "https://www.noblepredictiveinsights.com/post/azgov-biggs-benefits-from-field-consolidation-hobbs-holds-early-edge",
+                # Average of 2 named matchups: Hobbs 42/Biggs 37 and Hobbs
+                # 44/Schweikert 35 (~21% undecided each, per Newsweek's
+                # independent write-up of the same release).
+                "results": {"Katie Hobbs": 43.0, "Republican Nominee (TBD)": 36.0},
+            },
+            {
+                "pollster": "Noble Predictive Insights",
+                "sponsor": None,
+                "field_start_date": "2026-05-05",
+                "field_end_date": "2026-05-07",
+                "release_date": "2026-05-18",
+                "sample_size": 996,
+                "population": "RV",
+                "margin_of_error": 3.1,
+                "undecided_pct": 22.5,
+                "source_url": "https://www.noblepredictiveinsights.com/post/azgov-biggs-nears-majority-as-hobbs-holds-early-edge",
+                # Average of 2 named matchups: Hobbs 41/Biggs 37 (includes a
+                # separately-polled No Labels independent, Hugh Lytle, at 5%,
+                # folded into undecided per this dataset's minor-candidate
+                # convention) and Hobbs 42/Schweikert 35.
+                "results": {"Katie Hobbs": 41.5, "Republican Nominee (TBD)": 36.0},
+            },
+        ],
+    },
+    "nh": {
+        "state_name": "New Hampshire",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_New_Hampshire_gubernatorial_election",
+        # Gov. Kelly Ayotte (R, elected 2024) is running for reelection with
+        # no serious primary challenger. Cinde Warmington (D) -- an NH
+        # Executive Councilor 2021-2025 who lost the 2024 Dem primary to
+        # Joyce Craig -- announced Feb 18, 2026 and is described by the
+        # Concord Monitor (June 12, 2026) as the "de-facto Democratic
+        # nominee," with no other funded Democrat found on the primary
+        # ballot. NH's primary is Sept. 8, 2026.
+        "candidates": [
+            {"name": "Kelly Ayotte", "party": "Republican", "incumbent": True},
+            {"name": "Cinde Warmington", "party": "Democratic", "incumbent": False},
+        ],
+        "raw_polls": [
+            {
+                "pollster": "Saint Anselm College Survey Center",
+                "sponsor": None,
+                "field_start_date": "2026-03-16",
+                "field_end_date": "2026-03-18",
+                "release_date": "2026-03-24",
+                "sample_size": 1491,
+                "population": "RV",
+                "margin_of_error": 2.5,
+                "undecided_pct": 15.0,
+                "source_url": "https://www.anselm.edu/sites/default/files/2026-03/March%202026%20NHRV%20Final_0.pdf",
+                "results": {"Kelly Ayotte": 46.0, "Cinde Warmington": 39.0},
+            },
+            {
+                "pollster": "UNH Survey Center",
+                "sponsor": None,
+                "field_start_date": "2026-04-17",
+                "field_end_date": "2026-04-21",
+                "release_date": "2026-04-23",
+                "sample_size": 1295,
+                "population": "LV",
+                "margin_of_error": 2.9,
+                # Boston Globe reported Ayotte 47 / Warmington 39 / undecided
+                # 10 / other 4 -- the 4% "other" is folded into undecided_pct
+                # per this dataset's minor-candidate convention.
+                "undecided_pct": 14.0,
+                "source_url": "https://www.bostonglobe.com/2026/04/24/metro/unh-survey-governor-ayotte-warmington/",
+                "results": {"Kelly Ayotte": 47.0, "Cinde Warmington": 39.0},
+            },
+            {
+                "pollster": "UNH Survey Center",
+                "sponsor": None,
+                "field_start_date": "2026-06-18",
+                "field_end_date": "2026-06-23",
+                "release_date": "2026-07-01",
+                "sample_size": 2396,
+                "population": "LV",
+                "margin_of_error": 2.0,
+                "undecided_pct": 17.0,
+                "source_url": "https://www.nhpr.org/politics/2026-07-01/unh-poll-shows-tight-races-for-governor-and-u-s-senate-2026-midterms",
+                "results": {"Kelly Ayotte": 44.0, "Cinde Warmington": 39.0},
+            },
+        ],
+    },
 }

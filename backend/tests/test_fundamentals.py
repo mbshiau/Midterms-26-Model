@@ -18,6 +18,8 @@ OR_ = RACE_FUNDAMENTALS["or"]
 MI = RACE_FUNDAMENTALS["mi"]
 NE = RACE_FUNDAMENTALS["ne"]
 KS = RACE_FUNDAMENTALS["ks"]
+AZ = RACE_FUNDAMENTALS["az"]
+NH = RACE_FUNDAMENTALS["nh"]
 
 
 def test_gubernatorial_lean_favors_democratic_given_researched_data():
@@ -369,9 +371,8 @@ def test_kansas_gubernatorial_lean_is_nearly_even_but_slightly_democratic():
 
 
 def test_kansas_senate_lean_favors_republican():
-    # Both KS Senate seats have been comfortably Republican-held in the
-    # elections used (2008/2020 for Seat A, since Seat A's 2014 race had no
-    # Democrat on the ballot).
+    # Both KS Senate seats have been comfortably Republican-held across the
+    # last 3 elections used (Moran 2016, Marshall 2020, Moran 2022).
     lean = fundamentals.senate_lean(KS["senate_elections"], as_of=date(2026, 7, 10))
     assert lean < -10
 
@@ -385,6 +386,66 @@ def test_kansas_presidential_lean_favors_republican():
 def test_kansas_registration_trend_shows_a_widening_republican_edge():
     adjustment = fundamentals.registration_trend_adjustment(KS["registration_snapshots"])
     assert adjustment < 0
+
+
+def test_arizona_gubernatorial_lean_favors_republican_on_a_recency_weighted_basis():
+    # 2014 and 2018 were both real R wins (Ducey); 2022 (Hobbs) was a real
+    # but narrow D win. The recency-weighted lean still nets slightly R.
+    lean = fundamentals.gubernatorial_lean(AZ["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert -15 < lean < 0
+
+
+def test_arizona_senate_lean_favors_democratic():
+    # AZ's last 3 Senate results across both seats (Kelly x2, Gallego) were
+    # all real, if narrow, Democratic wins.
+    lean = fundamentals.senate_lean(AZ["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean > 0
+
+
+def test_arizona_presidential_lean_is_close_to_even():
+    # AZ has been a genuine presidential swing state this decade (Biden won
+    # it in 2020, Trump won it in 2016 and 2024, all by single digits).
+    lean = fundamentals.presidential_lean(AZ["presidential_elections"], as_of=date(2026, 7, 10))
+    assert -10 < lean < 10
+
+
+def test_arizona_registration_trend_is_small_and_non_monotonic():
+    # AZ's registered-independent bloc is huge and growing, and the raw
+    # D-vs-R gap isn't a clean trend over these 3 snapshots -- the
+    # adjustment should stay small in magnitude either way.
+    adjustment = fundamentals.registration_trend_adjustment(AZ["registration_snapshots"])
+    assert abs(adjustment) < 2
+
+
+def test_new_hampshire_gubernatorial_lean_favors_republican():
+    # 2020 (Sununu's COVID-era landslide over Feltes) still weighs heavily
+    # even after recency weighting, despite 2022 and 2024 both being much
+    # closer real Republican wins.
+    lean = fundamentals.gubernatorial_lean(NH["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert lean < -5
+
+
+def test_new_hampshire_senate_lean_favors_democratic():
+    # All 3 of NH's last Senate results across both seats (Hassan x2,
+    # Shaheen) were real Democratic wins, one a near-tie and one a landslide.
+    lean = fundamentals.senate_lean(NH["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean > 5
+
+
+def test_new_hampshire_presidential_lean_favors_democratic():
+    # NH has gone Democratic in all 3 of the last presidential elections,
+    # consistent with its status as a light-blue swing state.
+    lean = fundamentals.presidential_lean(NH["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean > 0
+
+
+def test_new_hampshire_registration_trend_is_stable_after_the_republican_flip():
+    # Democrats held a raw registration lead in 2020/2022; Republicans
+    # flipped ahead by the 2024 snapshot. But the trend adjustment only
+    # looks at the trailing two snapshots (Aug 2025 -> May 2026), and the R
+    # lead was essentially flat over that span, so it should stay small.
+    adjustment = fundamentals.registration_trend_adjustment(NH["registration_snapshots"])
+    assert abs(adjustment) < 2
 
 
 def test_more_recent_elections_are_weighted_more_heavily():

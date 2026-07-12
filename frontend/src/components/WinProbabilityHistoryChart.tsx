@@ -104,18 +104,21 @@ export function WinProbabilityHistoryChart({ history }: { history: ForecastHisto
             strokeDasharray="4 4"
             label={{ value: "Election Day", position: "insideTopRight", fill: "var(--text-muted)", fontSize: 11 }}
           />
-          {candidateNames.map((name) => (
-            <Line
-              key={name}
-              type="monotone"
-              dataKey={name}
-              stroke={partyColorVar(candidateByName.get(name)?.party ?? "")}
-              strokeWidth={2}
-              dot={{ r: 4, strokeWidth: 2, stroke: "var(--surface)" }}
-              activeDot={{ r: 5, strokeWidth: 2, stroke: "var(--surface)" }}
-              isAnimationActive={false}
-            />
-          ))}
+          {candidateNames.map((name) => {
+            const color = partyColorVar(candidateByName.get(name)?.party ?? "");
+            return (
+              <Line
+                key={name}
+                type="monotone"
+                dataKey={name}
+                stroke={color}
+                strokeWidth={2}
+                dot={{ r: 4, fill: color, strokeWidth: 2, stroke: "var(--surface)" }}
+                activeDot={{ r: 5, fill: color, strokeWidth: 2, stroke: "var(--surface)" }}
+                isAnimationActive={false}
+              />
+            );
+          })}
         </LineChart>
       </ResponsiveContainer>
     </div>

@@ -9,7 +9,7 @@ def test_races_lists_all_seeded_states(client):
     assert resp.status_code == 200
     codes = {r["state_code"] for r in resp.json()}
     assert codes == {
-        "pa", "oh", "ga", "me", "ia", "ny", "sc", "tx", "fl", "nv", "il", "or", "mi", "ne", "ks",
+        "pa", "oh", "ga", "me", "ia", "ny", "sc", "tx", "fl", "nv", "il", "or", "mi", "ne", "ks", "az", "nh",
     }
 
 
@@ -31,6 +31,8 @@ def test_races_expose_current_holder_party(client):
     assert races["mi"]["current_holder_party"] == "Democratic"  # Whitmer (D), open seat
     assert races["ne"]["current_holder_party"] == "Republican"  # Pillen (inc) is on the ballot
     assert races["ks"]["current_holder_party"] == "Democratic"  # Kelly (D), term-limited open seat
+    assert races["az"]["current_holder_party"] == "Democratic"  # Hobbs (inc) is on the ballot
+    assert races["nh"]["current_holder_party"] == "Republican"  # Ayotte (inc) is on the ballot
 
 
 def test_unknown_state_returns_404(client):
@@ -392,7 +394,41 @@ def test_kansas_race_is_fundamentals_only_with_generic_nominees(client):
         assert abs(r["mean_vote_share"] - r["fundamentals_vote_share"]) < 1.0
 
 
-def test_all_fifteen_forecasts_are_independent(client):
+def test_arizona_race_aggregates_polls_across_named_republican_contenders(client):
+    polls = client.get("/races/az/polls").json()
+    assert len(polls) == 3
+    pollster_names = {p["pollster"] for p in polls}
+    assert pollster_names == {"Emerson College Polling", "Noble Predictive Insights"}
+
+    forecast = client.get("/races/az/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Katie Hobbs", "Republican Nominee (TBD)"}
+    assert forecast["n_polls_used"] == 3
+
+    # Every real matchup polled has Hobbs ahead, so the aggregate should too.
+    hobbs = next(r for r in forecast["results"] if r["candidate"]["name"] == "Katie Hobbs")
+    assert hobbs["win_probability"] > 0.5
+
+
+def test_new_hampshire_race_is_independently_seeded_and_forecast(client):
+    polls = client.get("/races/nh/polls").json()
+    assert len(polls) == 3
+    pollster_names = {p["pollster"] for p in polls}
+    assert "Saint Anselm College Survey Center" in pollster_names
+    assert "UNH Survey Center" in pollster_names
+
+    forecast = client.get("/races/nh/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Kelly Ayotte", "Cinde Warmington"}
+    assert forecast["n_polls_used"] == 3
+
+    # All 3 real polls show Ayotte ahead by high single digits, and she's
+    # the incumbent, so the forecast should favor her overall.
+    ayotte = next(r for r in forecast["results"] if r["candidate"]["name"] == "Kelly Ayotte")
+    assert ayotte["win_probability"] > 0.5
+
+
+def test_all_seventeen_forecasts_are_independent(client):
     pa = client.get("/races/pa/forecast").json()
     oh = client.get("/races/oh/forecast").json()
     ga = client.get("/races/ga/forecast").json()
@@ -408,15 +444,17 @@ def test_all_fifteen_forecasts_are_independent(client):
     mi = client.get("/races/mi/forecast").json()
     ne = client.get("/races/ne/forecast").json()
     ks = client.get("/races/ks/forecast").json()
+    az = client.get("/races/az/forecast").json()
+    nh = client.get("/races/nh/forecast").json()
     ids = {
         pa["id"], oh["id"], ga["id"], me["id"], ia["id"],
-        ny["id"], sc["id"], tx["id"], fl["id"], nv["id"], il["id"], orr["id"], mi["id"], ne["id"], ks["id"],
+        ny["id"], sc["id"], tx["id"], fl["id"], nv["id"], il["id"], orr["id"], mi["id"], ne["id"], ks["id"], az["id"], nh["id"],
     }
-    assert len(ids) == 15
+    assert len(ids) == 17
 
     name_sets = [
         {r["candidate"]["name"] for r in race["results"]}
-        for race in (pa, oh, ga, me, ia, ny, sc, tx, fl, nv, il, orr, mi, ne, ks)
+        for race in (pa, oh, ga, me, ia, ny, sc, tx, fl, nv, il, orr, mi, ne, ks, az, nh)
     ]
     for i, names_a in enumerate(name_sets):
         for names_b in name_sets[i + 1 :]:
