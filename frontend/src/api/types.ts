@@ -11,6 +11,7 @@ export interface Candidate {
   name: string;
   party: string;
   incumbent: boolean;
+  photo_url: string | null;
 }
 
 export interface PollResult {

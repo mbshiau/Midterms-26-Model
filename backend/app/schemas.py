@@ -35,6 +35,7 @@ class CandidateOut(BaseModel):
     name: str
     party: str
     incumbent: bool
+    photo_url: str | None = None
 
 
 class PollResultOut(BaseModel):

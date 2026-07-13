@@ -41,6 +41,7 @@ class Candidate(Base):
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     party: Mapped[str] = mapped_column(String(40), nullable=False)
     incumbent: Mapped[bool] = mapped_column(default=False)
+    photo_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
     race: Mapped["Race"] = relationship(back_populates="candidates")
     poll_results: Mapped[list["PollResult"]] = relationship(back_populates="candidate")

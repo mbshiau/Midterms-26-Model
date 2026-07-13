@@ -1,21 +1,35 @@
+import { useState } from "react";
 import type { ForecastResult } from "../api/types";
 import { partyColorVar } from "../lib/partyColor";
 
 function StatTile({ result }: { result: ForecastResult }) {
   const color = partyColorVar(result.candidate.party);
+  const { photo_url, name, incumbent } = result.candidate;
+  const [photoFailed, setPhotoFailed] = useState(false);
 
   return (
     <div
       className="flex-1 rounded-lg border p-4"
       style={{ borderColor: "var(--border)", backgroundColor: "var(--surface)" }}
     >
-      <div className="flex items-center gap-2">
-        <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
+      <div className="flex items-center gap-3">
+        {photo_url && !photoFailed ? (
+          <img
+            src={photo_url}
+            alt={name}
+            onError={() => setPhotoFailed(true)}
+            className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
+            style={{ border: `2px solid ${color}` }}
+          />
+        ) : (
+          <span
+            className="inline-block h-2.5 w-2.5 flex-shrink-0 rounded-full"
+            style={{ backgroundColor: color }}
+          />
+        )}
         <span className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
-          {result.candidate.name}
-          {result.candidate.incumbent && (
-            <span style={{ color: "var(--text-muted)" }}> (inc.)</span>
-          )}
+          {name}
+          {incumbent && <span style={{ color: "var(--text-muted)" }}> (inc.)</span>}
         </span>
       </div>
 

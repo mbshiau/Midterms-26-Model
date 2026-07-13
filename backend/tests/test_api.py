@@ -41,6 +41,26 @@ def test_races_expose_current_holder_party(client):
     assert races["nm"]["current_holder_party"] == "Democratic"  # Lujan Grisham (D), term-limited open seat
 
 
+def test_candidates_expose_a_photo_url_when_a_real_wikipedia_photo_exists(client):
+    forecast = client.get("/races/pa/forecast").json()
+    shapiro = next(r for r in forecast["results"] if r["candidate"]["name"] == "Josh Shapiro")
+    assert shapiro["candidate"]["photo_url"] == (
+        "https://upload.wikimedia.org/wikipedia/commons/2/26/Josh_Shapiro_December_2025.jpg"
+    )
+
+
+def test_candidates_with_no_wikipedia_photo_expose_a_null_photo_url(client):
+    # KS's generic TBD placeholders have no real person to photograph.
+    forecast = client.get("/races/ks/forecast").json()
+    for r in forecast["results"]:
+        assert r["candidate"]["photo_url"] is None
+
+    # Cinde Warmington has a real Wikipedia article but no photo on it.
+    forecast = client.get("/races/nh/forecast").json()
+    warmington = next(r for r in forecast["results"] if r["candidate"]["name"] == "Cinde Warmington")
+    assert warmington["candidate"]["photo_url"] is None
+
+
 def test_unknown_state_returns_404(client):
     resp = client.get("/races/zz/polls")
     assert resp.status_code == 404
