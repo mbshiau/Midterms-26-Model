@@ -20,6 +20,12 @@ NE = RACE_FUNDAMENTALS["ne"]
 KS = RACE_FUNDAMENTALS["ks"]
 AZ = RACE_FUNDAMENTALS["az"]
 NH = RACE_FUNDAMENTALS["nh"]
+CO = RACE_FUNDAMENTALS["co"]
+VT = RACE_FUNDAMENTALS["vt"]
+MA = RACE_FUNDAMENTALS["ma"]
+MD = RACE_FUNDAMENTALS["md"]
+CA = RACE_FUNDAMENTALS["ca"]
+NM = RACE_FUNDAMENTALS["nm"]
 
 
 def test_gubernatorial_lean_favors_democratic_given_researched_data():
@@ -445,6 +451,152 @@ def test_new_hampshire_registration_trend_is_stable_after_the_republican_flip():
     # looks at the trailing two snapshots (Aug 2025 -> May 2026), and the R
     # lead was essentially flat over that span, so it should stay small.
     adjustment = fundamentals.registration_trend_adjustment(NH["registration_snapshots"])
+    assert abs(adjustment) < 2
+
+
+def test_colorado_gubernatorial_lean_favors_democratic():
+    # All 3 of CO's last governor races were real Democratic wins, including
+    # a genuine landslide in 2022 (Polis d. Ganahl by ~20 raw points).
+    lean = fundamentals.gubernatorial_lean(CO["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert lean > 5
+
+
+def test_colorado_senate_lean_favors_democratic():
+    # All 3 of CO's last Senate results across both seats (Bennet x2,
+    # Hickenlooper's 2020 flip) were real Democratic wins.
+    lean = fundamentals.senate_lean(CO["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean > 5
+
+
+def test_colorado_presidential_lean_favors_democratic():
+    # CO has gone Democratic by a growing then slightly narrowing double
+    # digit two-party margin in all 3 of the last presidential elections.
+    lean = fundamentals.presidential_lean(CO["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean > 5
+
+
+def test_colorado_registration_trend_is_small():
+    # CO's Democratic raw registration lead has been fairly stable (~87K to
+    # ~104K) across these snapshots even as unaffiliated voters have grown
+    # to a majority of the electorate -- the trailing two-point trend
+    # adjustment should stay small.
+    adjustment = fundamentals.registration_trend_adjustment(CO["registration_snapshots"])
+    assert abs(adjustment) < 2
+
+
+def test_vermont_gubernatorial_lean_favors_republican():
+    # Phil Scott (R) has won all 3 of the last governor races by landslide
+    # two-party margins despite VT being heavily Democratic otherwise.
+    lean = fundamentals.gubernatorial_lean(VT["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert lean < -30
+
+
+def test_vermont_senate_lean_favors_democratic():
+    # Sanders (I, caucuses D) and Welch have all won their last races by
+    # landslide two-party margins.
+    lean = fundamentals.senate_lean(VT["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean > 20
+
+
+def test_vermont_presidential_lean_favors_democratic():
+    # VT is one of the most reliably Democratic states presidentially.
+    lean = fundamentals.presidential_lean(VT["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean > 20
+
+
+def test_vermont_has_no_registration_data():
+    # VT doesn't register voters by party (same as GA/OH).
+    assert fundamentals.registration_trend_adjustment(VT["registration_snapshots"]) == 0.0
+
+
+def test_massachusetts_gubernatorial_lean_is_close_to_even_despite_being_deep_blue():
+    # MA is famous for electing popular moderate Republican governors
+    # (Baker won 2014 open-seat and 2018 landslide reelection) even though
+    # the state is otherwise deep blue -- Healey's 2022 landslide isn't
+    # enough on its own to pull the recency-weighted lean solidly positive.
+    lean = fundamentals.gubernatorial_lean(MA["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert -10 < lean < 10
+
+
+def test_massachusetts_senate_lean_favors_democratic():
+    lean = fundamentals.senate_lean(MA["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean > 15
+
+
+def test_massachusetts_presidential_lean_favors_democratic():
+    lean = fundamentals.presidential_lean(MA["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean > 15
+
+
+def test_massachusetts_registration_trend_is_small():
+    adjustment = fundamentals.registration_trend_adjustment(MA["registration_snapshots"])
+    assert abs(adjustment) < 2
+
+
+def test_maryland_gubernatorial_lean_favors_democratic():
+    lean = fundamentals.gubernatorial_lean(MD["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert lean > 0
+
+
+def test_maryland_senate_lean_favors_democratic():
+    lean = fundamentals.senate_lean(MD["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean > 15
+
+
+def test_maryland_presidential_lean_favors_democratic():
+    lean = fundamentals.presidential_lean(MD["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean > 15
+
+
+def test_maryland_registration_trend_is_small():
+    # MD's Democratic raw registration lead has been fairly stable (~1.19M
+    # to ~1.20M) across these recent snapshots.
+    adjustment = fundamentals.registration_trend_adjustment(MD["registration_snapshots"])
+    assert abs(adjustment) < 2
+
+
+def test_california_gubernatorial_lean_favors_democratic():
+    lean = fundamentals.gubernatorial_lean(CA["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert lean > 15
+
+
+def test_california_senate_lean_favors_democratic():
+    lean = fundamentals.senate_lean(CA["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean > 10
+
+
+def test_california_presidential_lean_favors_democratic():
+    lean = fundamentals.presidential_lean(CA["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean > 15
+
+
+def test_california_registration_trend_is_small():
+    # CA's Democratic raw registration lead is enormous (~4.5-5M), and the
+    # trend adjustment is a damped *percent change*, not a raw-count read,
+    # so it should stay small regardless of the huge absolute lead.
+    adjustment = fundamentals.registration_trend_adjustment(CA["registration_snapshots"])
+    assert abs(adjustment) < 2
+
+
+def test_new_mexico_gubernatorial_lean_favors_democratic():
+    lean = fundamentals.gubernatorial_lean(NM["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert lean > 0
+
+
+def test_new_mexico_senate_lean_favors_democratic():
+    lean = fundamentals.senate_lean(NM["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean > 0
+
+
+def test_new_mexico_presidential_lean_favors_democratic():
+    lean = fundamentals.presidential_lean(NM["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean > 0
+
+
+def test_new_mexico_registration_trend_is_small():
+    # NM's Democratic raw registration lead has been fairly stable
+    # (~130K-131K) across these snapshots.
+    adjustment = fundamentals.registration_trend_adjustment(NM["registration_snapshots"])
     assert abs(adjustment) < 2
 
 

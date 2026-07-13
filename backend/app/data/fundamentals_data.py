@@ -583,6 +583,170 @@ RACE_FUNDAMENTALS = {
             {"date": "2026-05-04", "dem_lead": -48_822},
         ],
     },
+    "co": {
+        "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 51.76, "incumbent_party": "D"},  # Hickenlooper (inc) d. Beauprez -- the closest of the 3, a near-toss-up by CO standards
+            {"year": 2018, "dem_share": 55.51, "incumbent_party": None},  # Polis d. Stapleton, open seat (Hickenlooper term-limited)
+            {"year": 2022, "dem_share": 59.90, "incumbent_party": "D"},  # Polis (inc) d. Ganahl -- a real landslide (Ganahl was a weak/underfunded challenger), flagged as the favorable-D outlier of the 3 but not discarded
+        ],
+        # CO's 2 Senate seats don't stagger evenly -- last 3 elections
+        # chronologically across both seats (same convention as FL/GA/KS/NE/AZ/NH).
+        "senate_elections": [
+            {"year": 2016, "dem_share": 53.01},  # Bennet (inc) d. Glenn
+            {"year": 2020, "dem_share": 54.77},  # Hickenlooper d. Gardner (inc), seat flip
+            {"year": 2022, "dem_share": 57.53},  # Bennet (inc) d. O'Dea
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 52.68},  # Clinton d. Trump
+            {"year": 2020, "dem_share": 56.94},  # Biden d. Trump
+            {"year": 2024, "dem_share": 55.65},  # Trump d. Harris (still a real double-digit-two-party D win, just a smaller one)
+        ],
+        # CO SOS publishes monthly active-voter registration by party.
+        # Real, well-documented trend: Democrats hold a stable raw lead over
+        # Republicans (~87K-104K), but unaffiliated voters have grown from a
+        # plurality to an outright majority of active registrants over this
+        # span, so the D lead has shrunk as a *share* of the electorate even
+        # while holding steady in raw count.
+        "registration_snapshots": [
+            {"date": "2020-08-01", "dem_lead": 87_311},
+            {"date": "2022-08-01", "dem_lead": 103_358},
+            {"date": "2024-07-01", "dem_lead": 104_181},
+            {"date": "2026-07-01", "dem_lead": 98_161},
+        ],
+    },
+    "vt": {
+        # Phil Scott (R) has been the continuously-serving incumbent since
+        # Jan. 2017 (won 2016/2018/2020/2022/2024) -- no open seat here.
+        "gubernatorial_elections": [
+            {"year": 2020, "dem_share": 27.35, "incumbent_party": "R"},  # Scott (inc) d. Zuckerman (Prog/Dem)
+            {"year": 2022, "dem_share": 23.94, "incumbent_party": "R"},  # Scott (inc) d. Siegel
+            {"year": 2024, "dem_share": 21.83, "incumbent_party": "R"},  # Scott (inc) d. Charlestin
+        ],
+        # VT's 2 Senate seats: Leahy/Welch's (Class I, up 2010/2016/2022) and
+        # Sanders's (Class III, up 2006/2012/2018/2024). dem_share combines
+        # independent-but-Democratic-caucusing Bernie Sanders's vote with the
+        # Democratic column where relevant, same convention as Maine's Angus
+        # King.
+        "senate_elections": [
+            {"year": 2018, "dem_share": 67.44},  # Sanders (I, caucuses D) d. Zupan
+            {"year": 2022, "dem_share": 68.47},  # Welch d. Malloy, open seat (Leahy retired)
+            {"year": 2024, "dem_share": 63.16},  # Sanders (I, caucuses D) d. Malloy
+        ],
+        # 2016 combines Clinton's 55.72% with Bernie Sanders's 5.68%
+        # write-in share (a real, notable phenomenon in VT that year) for
+        # 61.40% -- same Democratic-aligned-vote convention as the Senate
+        # rows above and as Maine's King.
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 61.4},  # Clinton (+ Sanders write-in) d. Trump
+            {"year": 2020, "dem_share": 66.09},  # Biden d. Trump
+            {"year": 2024, "dem_share": 63.83},  # Trump d. Harris (still a real double-digit-two-party D win, just a smaller one)
+        ],
+        # Vermont does not register voters by party (same as GA/OH) -- any
+        # registered voter may vote in any one party's primary without
+        # declaring membership, so there's no D-minus-R figure to track.
+        "registration_snapshots": [],
+    },
+    "ma": {
+
+      "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 46.54, "incumbent_party": None},  
+            {"year": 2018, "dem_share": 33.12, "incumbent_party": "R"},  
+            {"year": 2022, "dem_share": 63.74, "incumbent_party": None},  
+      ],
+   
+        "senate_elections": [
+            {"year": 2018, "dem_share": 60.34}, 
+            {"year": 2020, "dem_share": 66.15},  
+            {"year": 2024, "dem_share": 59.81},  
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 60.01},  # Clinton d. Trump
+            {"year": 2020, "dem_share": 65.60},  # Biden d. Trump
+            {"year": 2024, "dem_share": 61.22},  # Trump d. Harris (still a real double-digit-two-party D win, just a smaller one)
+        ],
+       
+        "registration_snapshots": [
+            {"date": "2024-02-01", "dem_lead": 921_387},
+            {"date": "2022-08-01", "dem_lead": 908_805},
+            {"date": "2024-10-01", "dem_lead": 918_050},
+            {"date": "2025-02-01", "dem_lead": 875_216},
+        ],
+    },
+    "md": {
+
+      "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 47.25, "incumbent_party": None},  
+            {"year": 2018, "dem_share": 43.51, "incumbent_party": "R"},  
+            {"year": 2022, "dem_share": 64.53, "incumbent_party": None},  
+      ],
+   
+        "senate_elections": [
+            {"year": 2018, "dem_share": 64.86}, 
+            {"year": 2022, "dem_share": 65.77},  
+            {"year": 2024, "dem_share": 54.64},  
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 60.33},  # Clinton d. Trump
+            {"year": 2020, "dem_share": 65.36},  # Biden d. Trump
+            {"year": 2024, "dem_share": 62.62},  # Trump d. Harris (still a real double-digit-two-party D win, just a smaller one)
+        ],
+       
+        "registration_snapshots": [
+            {"date": "2024-03-01", "dem_lead": 1_189_464},
+            {"date": "2026-04-01", "dem_lead": 1_192_167},
+            {"date": "2026-05-01", "dem_lead": 1_198_395},
+            {"date": "2026-06-01", "dem_lead": 1_203_052},
+        ],
+    },
+    "ca": {
+
+      "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 59.97, "incumbent_party": "D"},  
+            {"year": 2018, "dem_share": 61.95, "incumbent_party": None},  
+            {"year": 2022, "dem_share": 59.18, "incumbent_party": "D"},  
+      ],
+   
+        "senate_elections": [
+            {"year": 2018, "dem_share": 54.86}, 
+            {"year": 2022, "dem_share": 61.09},  
+            {"year": 2024, "dem_share": 58.87},  
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 61.73},  
+            {"year": 2020, "dem_share": 63.48},  
+            {"year": 2024, "dem_share": 58.47},  
+        ],
+       
+        "registration_snapshots": [
+            {"date": "2025-05-01", "dem_lead": 5_004_230},
+            {"date": "2025-12-30", "dem_lead": 4_576_641},
+        ],
+    },
+    "nm": {
+
+      "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 42.78, "incumbent_party": "R"},  
+            {"year": 2018, "dem_share": 57.20, "incumbent_party": None},  
+            {"year": 2022, "dem_share": 51.97, "incumbent_party": "D"},  
+      ],
+   
+        "senate_elections": [
+            {"year": 2018, "dem_share": 54.09}, 
+            {"year": 2020, "dem_share": 53.14},  
+            {"year": 2024, "dem_share": 55.06},  
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 54.65},  
+            {"year": 2020, "dem_share": 55.51},  
+            {"year": 2024, "dem_share": 53.07},  
+        ],
+       
+        "registration_snapshots": [
+            {"date": "2025-05-01", "dem_lead": 130_359},
+            {"date": "2025-06-30", "dem_lead": 131_018},
+            {"date": "2026-01-30", "dem_lead": 130_906},
+        ],
+    }
 }
 
 PRESIDENT = {

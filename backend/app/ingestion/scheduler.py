@@ -35,6 +35,15 @@ _scheduler: BackgroundScheduler | None = None
 REFRESH_HOURS = "12,19"
 REFRESH_TIMEZONE = "America/New_York"
 
+# APScheduler's default misfire_grace_time is 1 second: if the background
+# thread's check of a due job is delayed past that (e.g. the process was busy
+# holding the GIL running CPU-bound Monte Carlo simulations for a burst of
+# forecast requests), the run is silently skipped entirely and pushed to the
+# *next* scheduled slot -- up to 7 hours later -- rather than just running
+# late. A generous grace window means a delayed check still fires instead of
+# vanishing.
+MISFIRE_GRACE_SECONDS = 3600
+
 
 def _run_refresh_job() -> None:
     db = database.SessionLocal()
@@ -78,6 +87,7 @@ def start_scheduler() -> BackgroundScheduler:
     _scheduler.add_job(
         _run_refresh_job,
         CronTrigger(hour=REFRESH_HOURS, minute=0, timezone=REFRESH_TIMEZONE),
+        misfire_grace_time=MISFIRE_GRACE_SECONDS,
     )
     _scheduler.start()
     return _scheduler

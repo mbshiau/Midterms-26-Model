@@ -1500,4 +1500,197 @@ RACES = {
             },
         ],
     },
+    "co": {
+        "state_name": "Colorado",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Colorado_gubernatorial_election",
+        # Gov. Jared Polis (D) is term-limited (2-consecutive-term max) --
+        # open seat. Both primaries are now SETTLED: CO AG Phil Weiser (D)
+        # beat sitting Sen. Michael Bennet 56.9%-43.1% on June 30, 2026
+        # (Bennet remains a sitting Senator -- his seat is not vacant).
+        # Minister/Marine veteran Victor Marx (R) won a close, initially
+        # recount-margin GOP primary over state Sen. Barb Kirkmeyer,
+        # finalized July 9, 2026. No general-election poll has been
+        # released yet -- the GOP nominee was only settled 3 days before
+        # this was built, leaving no time for one to be fielded.
+        "candidates": [
+            {"name": "Phil Weiser", "party": "Democratic", "incumbent": False},
+            {"name": "Victor Marx", "party": "Republican", "incumbent": False},
+        ],
+        "raw_polls": [],
+    },
+    "vt": {
+        "state_name": "Vermont",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Vermont_gubernatorial_election",
+        # Gov. Phil Scott (R) is running for a 6th term with no real primary
+        # challenger. The Aug. 11, 2026 Democratic primary is NOT settled --
+        # it's just Amanda Janoo (economist, first-time candidate) vs. Aly
+        # Richards (former Let's Grow Kids CEO), per explicit direction the
+        # Democratic side is a generic "TBD" placeholder rather than naming
+        # a presumptive nominee.
+        "candidates": [
+            {"name": "Phil Scott", "party": "Republican", "incumbent": True},
+            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False},
+        ],
+        "raw_polls": [
+            {
+                "pollster": "UNH Survey Center",
+                "sponsor": None,
+                "field_start_date": "2026-06-18",
+                "field_end_date": "2026-06-23",
+                "release_date": "2026-06-30",
+                "sample_size": 887,
+                "population": "LV",
+                "margin_of_error": 3.3,
+                "source_url": "https://scholars.unh.edu/survey_center_polls/970/",
+                # Average of the only 2 named matchups this release tested:
+                # Scott 42/Janoo 27 (5% other, 26% undecided) and Scott
+                # 41/Richards 25 (8% other, 26% undecided) -- the "other"
+                # share is folded into undecided_pct per this dataset's
+                # minor-candidate convention.
+                "undecided_pct": 32.5,
+                "results": {"Phil Scott": 41.5, "Democratic Nominee (TBD)": 26.0},
+            },
+        ],
+    },
+     "ma": {
+        "state_name": "Massachusetts",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Massachusetts_gubernatorial_election",
+        # Minogue won the MassGOP convention endorsement (70%, Apr 25-26,
+        # 2026) and faces Brian Shortsleeve on the Sept. 1, 2026 primary
+        # ballot; Healey has no substantive Democratic primary challenge.
+        # Several other 2025-2026 polls exist but are excluded here: waves
+        # before Minogue entered the race (he wasn't a declared candidate
+        # until ~Oct 2025), approval-only waves with no Healey-vs-Minogue
+        # matchup, a Suffolk/Globe wave whose reported Healey favorability
+        # figure (81.2%) is wildly inconsistent with every other poll here
+        # and looks like an extraction artifact, and a Feb 2026 UNH wave
+        # whose exact field dates couldn't be confirmed against a primary
+        # source.
+        "candidates": [
+            {"name": "Mike Minogue", "party": "Republican", "incumbent": False},
+            {"name": "Maura Healey", "party": "Democratic", "incumbent": True},
+        ],
+        "raw_polls": [
+            {
+                "pollster": "UMass Amherst/WCVB",
+                "sponsor": None,
+                "field_start_date": "2025-10-21",
+                "field_end_date": "2025-10-29",
+                "release_date": "2025-11-05",
+                "sample_size": 800,
+                "population": "A",
+                "margin_of_error": 4.1,
+                "undecided_pct": 23.0,
+                "source_url": "https://www.umass.edu/news/article/kennealy-holds-early-lead-2026-bay-state-gop-gubernatorial-primary-nod-according-new",
+                "results": {"Maura Healey": 51.0, "Mike Minogue": 26.0},
+            },
+            {
+                "pollster": "UNH Survey Center",
+                "sponsor": None,
+                "field_start_date": "2026-04-16",
+                "field_end_date": "2026-04-20",
+                "release_date": "2026-04-23",
+                "sample_size": 606,
+                "population": "LV",
+                "margin_of_error": 4.0,
+                "undecided_pct": 16.0,
+                "source_url": "https://scholars.unh.edu/cgi/viewcontent.cgi?article=1944&context=survey_center_polls",
+                "results": {"Maura Healey": 52.0, "Mike Minogue": 32.0},
+            },
+            {
+                "pollster": "Suffolk University/Boston Globe",
+                "sponsor": None,
+                "field_start_date": "2026-06-08",
+                "field_end_date": "2026-06-12",
+                "release_date": "2026-06-16",
+                "sample_size": 500,
+                "population": "RV",
+                "margin_of_error": 4.4,
+                "undecided_pct": 13.0,
+                "source_url": "https://www.bostonglobe.com/2026/06/16/metro/healey-voter-suffolk-poll-2026-midterm/",
+                "results": {"Maura Healey": 56.0, "Mike Minogue": 31.0},
+            },
+        ],
+    },
+    "md": {
+        "state_name": "Maryland",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Maryland_gubernatorial_election",
+        
+        "candidates": [
+            {"name": "Dan Cox", "party": "Republican", "incumbent": False},
+            {"name": "Wes Moore", "party": "Democratic", "incumbent": True},
+        ],
+        "raw_polls": [],
+    },
+    "ca": {
+        "state_name": "California",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_California_gubernatorial_election",
+        
+        "candidates": [
+            {"name": "Steve Hilton", "party": "Republican", "incumbent": False},
+            {"name": "Xavier Becerra", "party": "Democratic", "incumbent": False},
+        ],
+        "raw_polls": [{
+                "pollster": "Kreate Strategies",
+                "sponsor": None,
+                "field_start_date": "2026-06-13",
+                "field_end_date": "2026-06-17",
+                "release_date": "2026-06-17",
+                "sample_size": 900,
+                "population": "LV",
+                "margin_of_error": 3.3,
+                "undecided_pct": 8.0,
+                "source_url": "https://kstrat.net/press/california-2026-governor-becerra-leads-hilton-june",
+                "results": {"Xavier Becerra": 58.0, "Steve Hilton": 33.0},
+            },
+            {
+                "pollster": "California Elections and Policy Poll (CEPP)",
+                "sponsor": None,
+                "field_start_date": "2026-05-23",
+                "field_end_date": "2026-05-26",
+                "release_date": "2026-06-01",
+                "sample_size": 735,
+                "population": "LV",
+                "margin_of_error": 3.6,
+                "undecided_pct": 5.0,
+                "source_url": "https://www.politico.com/f/?id=0000019e-804f-d4e8-afde-e04f9b1e0000",
+                "results": {"Xavier Becerra": 58.0, "Steve Hilton": 35.0},
+            },
+            {
+                "pollster": "California Elections and Policy Poll (CEPP)",
+                "sponsor": None,
+                "field_start_date": "2026-05-19",
+                "field_end_date": "2026-05-24",
+                "release_date": "2026-06-11",
+                "sample_size": 8578,
+                "population": "RV",
+                "margin_of_error": 2.0,
+                "undecided_pct": 17.0,
+                "source_url": "https://escholarship.org/uc/item/4p03f9rh#main0",
+                "results": {"Xavier Becerra": 52.0, "Steve Hilton": 31.0},
+            }
+            ]  
+    },
+    "nm": {
+        "state_name": "New Mexico",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_New_Mexico_gubernatorial_election",
+        
+        "candidates": [
+            {"name": "Gregg Hull", "party": "Republican", "incumbent": False},
+            {"name": "Deb Haaland", "party": "Democratic", "incumbent": False},
+        ],
+        "raw_polls": []  
+    }
 }

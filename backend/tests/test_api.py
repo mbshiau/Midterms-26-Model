@@ -9,7 +9,7 @@ def test_races_lists_all_seeded_states(client):
     assert resp.status_code == 200
     codes = {r["state_code"] for r in resp.json()}
     assert codes == {
-        "pa", "oh", "ga", "me", "ia", "ny", "sc", "tx", "fl", "nv", "il", "or", "mi", "ne", "ks", "az", "nh",
+        "pa", "oh", "ga", "me", "ia", "ny", "sc", "tx", "fl", "nv", "il", "or", "mi", "ne", "ks", "az", "nh", "co", "vt", "ma", "md", "ca", "nm",
     }
 
 
@@ -33,6 +33,12 @@ def test_races_expose_current_holder_party(client):
     assert races["ks"]["current_holder_party"] == "Democratic"  # Kelly (D), term-limited open seat
     assert races["az"]["current_holder_party"] == "Democratic"  # Hobbs (inc) is on the ballot
     assert races["nh"]["current_holder_party"] == "Republican"  # Ayotte (inc) is on the ballot
+    assert races["co"]["current_holder_party"] == "Democratic"  # Polis (D), term-limited open seat
+    assert races["vt"]["current_holder_party"] == "Republican"  # Scott (inc) is on the ballot
+    assert races["ma"]["current_holder_party"] == "Democratic"  # Healey (inc) is on the ballot
+    assert races["md"]["current_holder_party"] == "Democratic"  # Moore (inc) is on the ballot
+    assert races["ca"]["current_holder_party"] == "Democratic"  # Newsom (D), term-limited open seat
+    assert races["nm"]["current_holder_party"] == "Democratic"  # Lujan Grisham (D), term-limited open seat
 
 
 def test_unknown_state_returns_404(client):
@@ -428,7 +434,107 @@ def test_new_hampshire_race_is_independently_seeded_and_forecast(client):
     assert ayotte["win_probability"] > 0.5
 
 
-def test_all_seventeen_forecasts_are_independent(client):
+def test_colorado_race_is_fundamentals_only_with_zero_polls(client):
+    polls = client.get("/races/co/polls").json()
+    assert polls == []
+
+    forecast = client.get("/races/co/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Phil Weiser", "Victor Marx"}
+    assert forecast["n_polls_used"] == 0
+    assert forecast["poll_weight_alpha"] == 0.0
+
+    for r in forecast["results"]:
+        # No polling exists -- it mirrors fundamentals, same as SC/KS.
+        assert r["polling_vote_share"] == r["fundamentals_vote_share"]
+        assert abs(r["mean_vote_share"] - r["fundamentals_vote_share"]) < 1.0
+
+
+def test_vermont_race_aggregates_polls_across_named_democratic_contenders(client):
+    polls = client.get("/races/vt/polls").json()
+    assert len(polls) == 1
+    assert polls[0]["pollster"] == "UNH Survey Center"
+
+    forecast = client.get("/races/vt/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Phil Scott", "Democratic Nominee (TBD)"}
+    assert forecast["n_polls_used"] == 1
+
+    # Both real matchups polled have Scott comfortably ahead, and VT's
+    # gubernatorial fundamentals favor him heavily too.
+    scott = next(r for r in forecast["results"] if r["candidate"]["name"] == "Phil Scott")
+    assert scott["win_probability"] > 0.5
+
+
+def test_massachusetts_race_is_independently_seeded_and_forecast(client):
+    polls = client.get("/races/ma/polls").json()
+    assert len(polls) == 3
+    pollster_names = {p["pollster"] for p in polls}
+    assert "UMass Amherst/WCVB" in pollster_names
+    assert "Suffolk University/Boston Globe" in pollster_names
+
+    forecast = client.get("/races/ma/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Maura Healey", "Mike Minogue"}
+    assert forecast["n_polls_used"] == 3
+
+    # All 3 real polls show Healey ahead by double digits, and she's the
+    # incumbent, so the forecast should heavily favor her.
+    healey = next(r for r in forecast["results"] if r["candidate"]["name"] == "Maura Healey")
+    assert healey["win_probability"] > 0.9
+
+
+def test_maryland_race_is_fundamentals_only_with_zero_polls(client):
+    polls = client.get("/races/md/polls").json()
+    assert polls == []
+
+    forecast = client.get("/races/md/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Wes Moore", "Dan Cox"}
+    assert forecast["n_polls_used"] == 0
+    assert forecast["poll_weight_alpha"] == 0.0
+
+    for r in forecast["results"]:
+        # No polling exists -- it mirrors fundamentals, same as SC/KS/CO.
+        assert r["polling_vote_share"] == r["fundamentals_vote_share"]
+        assert abs(r["mean_vote_share"] - r["fundamentals_vote_share"]) < 1.0
+
+
+def test_california_race_is_independently_seeded_and_forecast(client):
+    polls = client.get("/races/ca/polls").json()
+    assert len(polls) == 3
+    pollster_names = {p["pollster"] for p in polls}
+    assert "Kreate Strategies" in pollster_names
+    assert "California Elections and Policy Poll (CEPP)" in pollster_names
+
+    forecast = client.get("/races/ca/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Xavier Becerra", "Steve Hilton"}
+    assert forecast["n_polls_used"] == 3
+
+    # All 3 real polls show Becerra ahead by double digits, and CA's
+    # fundamentals favor Democrats heavily too.
+    becerra = next(r for r in forecast["results"] if r["candidate"]["name"] == "Xavier Becerra")
+    assert becerra["win_probability"] > 0.9
+
+
+def test_new_mexico_race_is_fundamentals_only_with_zero_polls(client):
+    polls = client.get("/races/nm/polls").json()
+    assert polls == []
+
+    forecast = client.get("/races/nm/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Deb Haaland", "Gregg Hull"}
+    assert forecast["n_polls_used"] == 0
+    assert forecast["poll_weight_alpha"] == 0.0
+
+    for r in forecast["results"]:
+        # No polling exists -- it mirrors fundamentals, same as SC/KS/CO/MD.
+        assert r["polling_vote_share"] == r["fundamentals_vote_share"]
+        assert abs(r["mean_vote_share"] - r["fundamentals_vote_share"]) < 1.0
+
+
+def test_all_twentythree_forecasts_are_independent(client):
     pa = client.get("/races/pa/forecast").json()
     oh = client.get("/races/oh/forecast").json()
     ga = client.get("/races/ga/forecast").json()
@@ -446,15 +552,21 @@ def test_all_seventeen_forecasts_are_independent(client):
     ks = client.get("/races/ks/forecast").json()
     az = client.get("/races/az/forecast").json()
     nh = client.get("/races/nh/forecast").json()
+    co = client.get("/races/co/forecast").json()
+    vt = client.get("/races/vt/forecast").json()
+    ma = client.get("/races/ma/forecast").json()
+    md = client.get("/races/md/forecast").json()
+    ca = client.get("/races/ca/forecast").json()
+    nm = client.get("/races/nm/forecast").json()
     ids = {
         pa["id"], oh["id"], ga["id"], me["id"], ia["id"],
-        ny["id"], sc["id"], tx["id"], fl["id"], nv["id"], il["id"], orr["id"], mi["id"], ne["id"], ks["id"], az["id"], nh["id"],
+        ny["id"], sc["id"], tx["id"], fl["id"], nv["id"], il["id"], orr["id"], mi["id"], ne["id"], ks["id"], az["id"], nh["id"], co["id"], vt["id"], ma["id"], md["id"], ca["id"], nm["id"],
     }
-    assert len(ids) == 17
+    assert len(ids) == 23
 
     name_sets = [
         {r["candidate"]["name"] for r in race["results"]}
-        for race in (pa, oh, ga, me, ia, ny, sc, tx, fl, nv, il, orr, mi, ne, ks, az, nh)
+        for race in (pa, oh, ga, me, ia, ny, sc, tx, fl, nv, il, orr, mi, ne, ks, az, nh, co, vt, ma, md, ca, nm)
     ]
     for i, names_a in enumerate(name_sets):
         for names_b in name_sets[i + 1 :]:
