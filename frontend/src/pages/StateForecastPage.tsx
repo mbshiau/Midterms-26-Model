@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api } from "../api/client";
 import type { ForecastHistory, ForecastSnapshot, KalshiOdds, Poll, Race, Simulations } from "../api/types";
-import { ForecastSummary } from "../components/ForecastSummary";
+import { ForecastNeedle } from "../components/ForecastNeedle";
 import { WinProbabilityMeter } from "../components/WinProbabilityMeter";
 import { ModelCompositionCard } from "../components/ModelCompositionCard";
 import { ForecastHistoryChart } from "../components/ForecastHistoryChart";
@@ -195,7 +195,7 @@ export function StateForecastPage() {
       <div className="flex flex-col gap-6">
         {forecast ? (
           <Card id="forecast-summary" title="Forecast summary">
-            <ForecastSummary results={forecast.results} />
+            <ForecastNeedle results={forecast.results} />
           </Card>
         ) : (
           <Card id="forecast-summary" title="Forecast summary">

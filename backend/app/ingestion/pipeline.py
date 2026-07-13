@@ -92,6 +92,16 @@ def validate_poll(parsed: dict) -> None:
         raise PollValidationError("missing source_url")
 
 
+# Fields safe to sync from seed_data.py onto an *existing* candidate on
+# every startup/refresh -- both are purely additive/display data (never
+# read by the forecasting model), so backfilling a value added to
+# seed_data.py after a race was already deployed can't retroactively change
+# any past forecast's meaning. Deliberately excludes party/incumbent/name:
+# those do feed the model, so changing them silently on restart could shift
+# historical forecasts without an explicit acknowledgment that data changed.
+SYNCED_CANDIDATE_FIELDS = ("photo_url", "kalshi_ticker")
+
+
 def get_or_create_candidates(db: Session, race: Race, race_seed: dict) -> dict[str, Candidate]:
     by_name = {
         c.name: c for c in db.query(Candidate).filter(Candidate.race_id == race.id).all()
@@ -102,6 +112,11 @@ def get_or_create_candidates(db: Session, race: Race, race_seed: dict) -> dict[s
             db.add(candidate)
             db.flush()
             by_name[c["name"]] = candidate
+        else:
+            candidate = by_name[c["name"]]
+            for field in SYNCED_CANDIDATE_FIELDS:
+                if field in c and getattr(candidate, field) != c[field]:
+                    setattr(candidate, field, c[field])
     db.commit()
     return by_name
 

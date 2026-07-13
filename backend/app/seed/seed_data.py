@@ -27,8 +27,8 @@ RACES = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": "2026_Pennsylvania_gubernatorial_election",
         "candidates": [
-            {"name": "Josh Shapiro", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/2/26/Josh_Shapiro_December_2025.jpg"},
-            {"name": "Stacy Garrity", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/4/45/Stacy_Garrity%2C_2024.jpg"},
+            {"name": "Josh Shapiro", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/2/26/Josh_Shapiro_December_2025.jpg", "kalshi_ticker": "GOVPARTYPA-26-D"},
+            {"name": "Stacy Garrity", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/4/45/Stacy_Garrity%2C_2024.jpg", "kalshi_ticker": "GOVPARTYPA-26-R"},
         ],
         # Release dates for polls where the exact release day wasn't
         # confirmed in source reporting (both F&M polls, and the
@@ -168,8 +168,8 @@ RACES = {
         # matchup and are cited to the Wikipedia polling table (no separate
         # press release located). All toplines/dates/samples as published.
         "candidates": [
-            {"name": "Vivek Ramaswamy", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/7/75/Vivek_Ramaswamy_%2855241367373%29_%28cropped%29.jpg"},
-            {"name": "Amy Acton", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Amy_Acton_2025.jpg"},
+            {"name": "Vivek Ramaswamy", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/7/75/Vivek_Ramaswamy_%2855241367373%29_%28cropped%29.jpg", "kalshi_ticker": "GOVPARTYOH-26-R"},
+            {"name": "Amy Acton", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Amy_Acton_2025.jpg", "kalshi_ticker": "GOVPARTYOH-26-D"},
         ],
         "raw_polls": [
             {
@@ -392,8 +392,8 @@ RACES = {
         # far. All cited to the Wikipedia polling table itself, since a
         # separate press release wasn't located for any of them.
         "candidates": [
-            {"name": "Rick Jackson", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Rick_Jackson_%28cropped%29.png"},
-            {"name": "Keisha Lance Bottoms", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Keisha_Lance_Bottoms.jpg"},
+            {"name": "Rick Jackson", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Rick_Jackson_%28cropped%29.png", "kalshi_ticker": "GOVPARTYGA-26-R"},
+            {"name": "Keisha Lance Bottoms", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Keisha_Lance_Bottoms.jpg", "kalshi_ticker": "GOVPARTYGA-26-D"},
         ],
         "raw_polls": [
             {
@@ -470,8 +470,8 @@ RACES = {
         # is folded into undecided_pct along with true undecideds, the same
         # convention used for third-party/"Other" shares in PA/OH/GA.
         "candidates": [
-            {"name": "Bobby Charles", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Robert_Charles.jpg"},
-            {"name": "Hannah Pingree", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Headshot_of_Hannah_Pingree_in_February_2026.jpg"},
+            {"name": "Bobby Charles", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Robert_Charles.jpg", "kalshi_ticker": "GOVPARTYME-26-R"},
+            {"name": "Hannah Pingree", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Headshot_of_Hannah_Pingree_in_February_2026.jpg", "kalshi_ticker": "GOVPARTYME-26-D"},
         ],
         "raw_polls": [
             {
@@ -555,8 +555,8 @@ RACES = {
         # Republican nominee (Rep. Elise Stefanik withdrew from that primary
         # Dec 19, 2025). Both ran unopposed in the June 23, 2026 primary.
         "candidates": [
-            {"name": "Bruce Blakeman", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Blakeman_Profile_Picture.jpg"},
-            {"name": "Kathy Hochul", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/2/25/Kathy_Hochul_March_2024.jpg"},
+            {"name": "Bruce Blakeman", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Blakeman_Profile_Picture.jpg", "kalshi_ticker": "GOVPARTYNY-26-R"},
+            {"name": "Kathy Hochul", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/2/25/Kathy_Hochul_March_2024.jpg", "kalshi_ticker": "GOVPARTYNY-26-D"},
         ],
         # Only polls fielded after Stefanik's Dec 19, 2025 withdrawal are
         # used, since earlier polls tested a hypothetical Hochul-vs-Stefanik
@@ -698,8 +698,8 @@ RACES = {
         # Jermaine Johnson (D) won his primary outright. No third-party/
         # independent complication in this matchup.
         "candidates": [
-            {"name": "Alan Wilson", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Alan_Wilson_in_August_2025.jpg"},
-            {"name": "Jermaine Johnson", "party": "Democratic", "incumbent": False, "photo_url": None},
+            {"name": "Alan Wilson", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Alan_Wilson_in_August_2025.jpg","kalshi_ticker": "GOVPARTYSC-26-R" },
+            {"name": "Jermaine Johnson", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "GOVPARTYSC-26-D" },
         ],
         # No real general-election trial-heat poll of Wilson vs. Johnson has
         # been published as of 2026-07-11 -- the runoff was barely 3 weeks
@@ -942,8 +942,8 @@ RACES = {
         # (Orange County Mayor Jerry Demings) suspended his campaign June
         # 5, 2026 after a cancer diagnosis, leaving only minor candidates.
         "candidates": [
-            {"name": "Byron Donalds", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Rep._Byron_Donalds_official_photo%2C_117th_Congress.jpg"},
-            {"name": "David Jolly", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/6/66/David_Jolly_%283x4%29.jpg"},
+            {"name": "Byron Donalds", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Rep._Byron_Donalds_official_photo%2C_117th_Congress.jpg", "kalshi_ticker": "GOVPARTYFL-26-R"},
+            {"name": "David Jolly", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/6/66/David_Jolly_%283x4%29.jpg", "kalshi_ticker": "GOVPARTYFL-26-D"},
         ],
         "raw_polls": [
             {
@@ -1015,8 +1015,8 @@ RACES = {
         # appeared in both primaries but isn't modeled as a candidate here,
         # same convention as folding minor shares into undecided_pct.
         "candidates": [
-            {"name": "Joe Lombardo", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Joe_Lombardo_by_Gage_Skidmore_%283x4_cropped%29.jpg"},
-            {"name": "Aaron Ford", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Nevada_Attorney_General_Aaron_Ford_addresses_the_United_Nations_Human_Rights_Committee%2C_October_17-18%2C_2023_1_%28cropped%29.jpg"},
+            {"name": "Joe Lombardo", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Joe_Lombardo_by_Gage_Skidmore_%283x4_cropped%29.jpg", "kalshi_ticker": "GOVPARTYNV-26-R"},
+            {"name": "Aaron Ford", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Nevada_Attorney_General_Aaron_Ford_addresses_the_United_Nations_Human_Rights_Committee%2C_October_17-18%2C_2023_1_%28cropped%29.jpg", "kalshi_ticker": "GOVPARTYNV-26-D"},
         ],
         "raw_polls": [
             {
@@ -1098,8 +1098,8 @@ RACES = {
         # 2028-presidential speculation around Pritzker is real but doesn't
         # conflict with this race (different election cycle).
         "candidates": [
-            {"name": "JB Pritzker", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/5/53/Governor_JB_Pritzker_official_portrait_2019_%28crop%29.jpg"},
-            {"name": "Darren Bailey", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Darren_Bailey_at_a_2022_Campaign_Event.jpg"},
+            {"name": "JB Pritzker", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/5/53/Governor_JB_Pritzker_official_portrait_2019_%28crop%29.jpg", "kalshi_ticker": "GOVPARTYIL-26-D"},
+            {"name": "Darren Bailey", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Darren_Bailey_at_a_2022_Campaign_Event.jpg", "kalshi_ticker": "GOVPARTYIL-26-R"},
         ],
         # Only one real 2026 general-election trial-heat poll was located;
         # several widely-syndicated "Pritzker vs. Bailey" numbers found in
@@ -1134,8 +1134,8 @@ RACES = {
         # experience, meaningful fundraising, or general-election polling,
         # so unlike 2022 this is modeled as a straightforward 2-candidate race.
         "candidates": [
-            {"name": "Christine Drazan", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Christine_Drazan_in_August_2022_%28cropped%29.jpg"},
-            {"name": "Tina Kotek", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Tina_Kotek_official_portrait_2021%283x4_cropped%29.jpg"},
+            {"name": "Christine Drazan", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Christine_Drazan_in_August_2022_%28cropped%29.jpg", "kalshi_ticker": "GOVPARTYOR-26-R"},
+            {"name": "Tina Kotek", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Tina_Kotek_official_portrait_2021%283x4_cropped%29.jpg", "kalshi_ticker": "GOVPARTYOR-26-D"},
         ],
         # A third poll (Hoffman Research Group, May 11-12) tested Kotek vs.
         # Chris Dudley, who did NOT win the GOP primary -- excluded as not
@@ -1190,8 +1190,8 @@ RACES = {
         # shares are handled elsewhere in this dataset, rather than treating
         # those as clean 2-way polls.
         "candidates": [
-            {"name": "John James", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/b/b6/Rep._John_James_official_photo%2C_118th_Congress.jpg"},
-            {"name": "Jocelyn Benson", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/5/57/SOS_Jocelyn_Benson_web.jpg"},
+            {"name": "John James", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/b/b6/Rep._John_James_official_photo%2C_118th_Congress.jpg", "kalshi_ticker": "GOVPARTYMI-26-R"},
+            {"name": "Jocelyn Benson", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/5/57/SOS_Jocelyn_Benson_web.jpg", "kalshi_ticker": "GOVPARTYMI-26-D"},
         ],
         # A June 11-13, 2026 Mitchell/MIRS poll was excluded: two secondary
         # sources reported contradictory toplines for it (Benson+11 vs.
@@ -1290,8 +1290,8 @@ RACES = {
         # polls below, the same convention used for other minor candidates
         # throughout this dataset (e.g. MI's Duggan, ME's Bennett).
         "candidates": [
-            {"name": "Jim Pillen", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/2/22/Jim_Pillen_SelectUSA_%2855251574792%29.jpg"},
-            {"name": "Lynne Walz", "party": "Democratic", "incumbent": False, "photo_url": None},
+            {"name": "Jim Pillen", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/2/22/Jim_Pillen_SelectUSA_%2855251574792%29.jpg", "kalshi_ticker": "GOVPARTYNE-26-R"},
+            {"name": "Lynne Walz", "party": "Democratic", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYNE-26-D"},
         ],
         # Only 2 real, independently verifiable general-election trial-heat
         # polls were located, both commissioned by the Walz campaign (so both
@@ -1352,8 +1352,13 @@ RACES = {
         # Bee, June 2026) tested named candidates within the Democratic
         # primary only, which isn't usable for a general-election forecast.
         "candidates": [
-            {"name": "Republican Nominee", "party": "Republican", "incumbent": False, "photo_url": None},
-            {"name": "Democratic Nominee", "party": "Democratic", "incumbent": False, "photo_url": None},
+            # Kalshi's ticker suffix for this series is "-27-" (likely an
+            # inauguration-year/contract-sequence convention), not "-26-"
+            # like every other state -- confirmed via the market's own
+            # rules_primary text, which explicitly resolves "pursuant to
+            # the 2026 election".
+            {"name": "Republican Nominee", "party": "Republican", "incumbent": False, "photo_url": None, "kalshi_ticker": "GOVPARTYKS-27-R"},
+            {"name": "Democratic Nominee", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "GOVPARTYKS-27-D"},
         ],
         "raw_polls": [],
     },
@@ -1384,8 +1389,8 @@ RACES = {
         # release (matching how the pipeline dedupes on pollster + field
         # dates) while still reflecting every contender actually polled.
         "candidates": [
-            {"name": "Katie Hobbs", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/0/02/Katie_Hobbs_2026.jpg"},
-            {"name": "Republican Nominee (TBD)", "party": "Republican", "incumbent": False, "photo_url": None},
+            {"name": "Katie Hobbs", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/0/02/Katie_Hobbs_2026.jpg", "kalshi_ticker": "GOVPARTYAZ-26-D"},
+            {"name": "Republican Nominee (TBD)", "party": "Republican", "incumbent": False, "photo_url": None, "kalshi_ticker": "GOVPARTYAZ-26-R"},
         ],
         "raw_polls": [
             {
@@ -1452,8 +1457,11 @@ RACES = {
         # nominee," with no other funded Democrat found on the primary
         # ballot. NH's primary is Sept. 8, 2026.
         "candidates": [
-            {"name": "Kelly Ayotte", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/9/98/Governor_Kelly_Ayotte_receives_a_briefing_from_National_Guard_cyber_operators_%28cropped%29_%28cropped%29.jpg"},
-            {"name": "Cinde Warmington", "party": "Democratic", "incumbent": False, "photo_url": None},
+            # Same Kalshi ticker-suffix quirk as Kansas: this series uses
+            # "-28-", confirmed to still be the 2026 election via the
+            # market's own rules_primary text.
+            {"name": "Kelly Ayotte", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/9/98/Governor_Kelly_Ayotte_receives_a_briefing_from_National_Guard_cyber_operators_%28cropped%29_%28cropped%29.jpg", "kalshi_ticker": "GOVPARTYNH-28-R"},
+            {"name": "Cinde Warmington", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "GOVPARTYNH-28-D"},
         ],
         "raw_polls": [
             {
@@ -1515,8 +1523,8 @@ RACES = {
         # released yet -- the GOP nominee was only settled 3 days before
         # this was built, leaving no time for one to be fielded.
         "candidates": [
-            {"name": "Phil Weiser", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/6/6c/AG_Phil_Weiser.jpg"},
-            {"name": "Victor Marx", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Victor_Marx_%2852125665777%29_%28cropped%29.jpg"},
+            {"name": "Phil Weiser", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/6/6c/AG_Phil_Weiser.jpg","kalshi_ticker": "GOVPARTYCO-26-D"},
+            {"name": "Victor Marx", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Victor_Marx_%2852125665777%29_%28cropped%29.jpg", "kalshi_ticker": "GOVPARTYCO-26-R"},
         ],
         "raw_polls": [],
     },
@@ -1532,8 +1540,8 @@ RACES = {
         # Democratic side is a generic "TBD" placeholder rather than naming
         # a presumptive nominee.
         "candidates": [
-            {"name": "Phil Scott", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/c/cc/Phil_Scott_2019.png"},
-            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None},
+            {"name": "Phil Scott", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/c/cc/Phil_Scott_2019.png", "kalshi_ticker": "GOVPARTYVT-26-R"},
+            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "GOVPARTYVT-26-D"},
         ],
         "raw_polls": [
             {
@@ -1573,8 +1581,8 @@ RACES = {
         # whose exact field dates couldn't be confirmed against a primary
         # source.
         "candidates": [
-            {"name": "Mike Minogue", "party": "Republican", "incumbent": False, "photo_url": None},
-            {"name": "Maura Healey", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/3/39/Maura_Healey%2C_official_portrait%2C_governor.jpg"},
+            {"name": "Mike Minogue", "party": "Republican", "incumbent": False, "photo_url": None, "kalshi_ticker": "GOVPARTYMA-26-R"},
+            {"name": "Maura Healey", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/3/39/Maura_Healey%2C_official_portrait%2C_governor.jpg", "kalshi_ticker": "GOVPARTYMA-26-D"},
         ],
         "raw_polls": [
             {
@@ -1625,8 +1633,8 @@ RACES = {
         "wikipedia_page_title": "2026_Maryland_gubernatorial_election",
         
         "candidates": [
-            {"name": "Dan Cox", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/4/40/Dan_Cox_Mar2020_%2849617550556%29.jpg"},
-            {"name": "Wes Moore", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Wes_Moore_Official_Governor_Portrait.jpg"},
+            {"name": "Dan Cox", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/4/40/Dan_Cox_Mar2020_%2849617550556%29.jpg", "kalshi_ticker": "GOVPARTYMD-26-R"},
+            {"name": "Wes Moore", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Wes_Moore_Official_Governor_Portrait.jpg", "kalshi_ticker": "GOVPARTYMD-26-D"},
         ],
         "raw_polls": [],
     },
@@ -1688,8 +1696,8 @@ RACES = {
         "wikipedia_page_title": "2026_New_Mexico_gubernatorial_election",
         
         "candidates": [
-            {"name": "Gregg Hull", "party": "Republican", "incumbent": False, "photo_url": None},
-            {"name": "Deb Haaland", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Secretary_Deb_Haaland%2C_official_headshot.jpg"},
+            {"name": "Gregg Hull", "party": "Republican", "incumbent": False, "photo_url": None, "kalshi_ticker": "GOVPARTYNM-26-R"},
+            {"name": "Deb Haaland", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Secretary_Deb_Haaland%2C_official_headshot.jpg", "kalshi_ticker": "GOVPARTYNM-26-D"},
         ],
         "raw_polls": []  
     },
@@ -1700,8 +1708,8 @@ RACES = {
         "wikipedia_page_title": "2026_Alabama_gubernatorial_election",
         
         "candidates": [
-            {"name": "Tommy Tuberville", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/d/df/Tommy_tuberville.jpg"},
-            {"name": "Doug Jones", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Senator_Doug_Jones_official_photo_%28cropped%29_2.jpg"},
+            {"name": "Tommy Tuberville", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/d/df/Tommy_tuberville.jpg", "kalshi_ticker": "GOVPARTYAL-26-R"},
+            {"name": "Doug Jones", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Senator_Doug_Jones_official_photo_%28cropped%29_2.jpg","kalshi_ticker": "GOVPARTYAL-26-D"},
         ],
         "raw_polls": [
             {

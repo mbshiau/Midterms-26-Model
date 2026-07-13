@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 
 from app.database import Base
-from app.ingestion.pipeline import fetch_live_polls, ingest_polls
+from app.ingestion.pipeline import fetch_live_polls, get_or_create_candidates, ingest_polls
 from app.ingestion.wikipedia_scraper import ScrapedPoll
 from app.models import Candidate, Race
 
@@ -162,3 +162,65 @@ def test_fetch_live_polls_maps_surnames_to_full_candidate_names(db_session, tabl
     assert call_args[1] == {"Shapiro": "Josh Shapiro", "Garrity": "Stacy Garrity"}
     assert raw[0]["pollster"] == "Test Pollster"
     assert raw[0]["results"] == {"Josh Shapiro": 52.0, "Stacy Garrity": 38.0}
+
+
+def test_get_or_create_candidates_backfills_kalshi_ticker_and_photo_url_onto_existing_rows(
+    db_session, tables
+):
+    # Simulates the real workflow: a race is already deployed (candidate
+    # exists with no ticker), then a ticker is added to seed_data.py later
+    # -- get_or_create_candidates must pick it up on the next call rather
+    # than only ever creating brand-new candidates.
+    race = make_race(db_session)
+    race_seed = {
+        "candidates": [{"name": "Josh Shapiro", "party": "Democratic", "incumbent": True}],
+        "raw_polls": [],
+    }
+    get_or_create_candidates(db_session, race, race_seed)
+
+    shapiro = db_session.query(Candidate).filter(Candidate.name == "Josh Shapiro").first()
+    assert shapiro.kalshi_ticker is None
+    assert shapiro.photo_url is None
+
+    updated_seed = {
+        "candidates": [
+            {
+                "name": "Josh Shapiro",
+                "party": "Democratic",
+                "incumbent": True,
+                "kalshi_ticker": "KXGOVPA-26-SHAP",
+                "photo_url": "https://example.com/shapiro.jpg",
+            }
+        ],
+        "raw_polls": [],
+    }
+    get_or_create_candidates(db_session, race, updated_seed)
+
+    db_session.refresh(shapiro)
+    assert shapiro.kalshi_ticker == "KXGOVPA-26-SHAP"
+    assert shapiro.photo_url == "https://example.com/shapiro.jpg"
+
+    all_shapiros = db_session.query(Candidate).filter(Candidate.name == "Josh Shapiro").all()
+    assert len(all_shapiros) == 1  # updated in place, not duplicated
+
+
+def test_get_or_create_candidates_never_syncs_party_incumbent_or_name(db_session, tables):
+    # party/incumbent feed the forecasting model -- silently changing them
+    # on a restart could shift historical forecasts' meaning without an
+    # explicit acknowledgment, unlike the purely-additive fields above.
+    race = make_race(db_session)
+    race_seed = {
+        "candidates": [{"name": "Josh Shapiro", "party": "Democratic", "incumbent": True}],
+        "raw_polls": [],
+    }
+    get_or_create_candidates(db_session, race, race_seed)
+
+    conflicting_seed = {
+        "candidates": [{"name": "Josh Shapiro", "party": "Republican", "incumbent": False}],
+        "raw_polls": [],
+    }
+    get_or_create_candidates(db_session, race, conflicting_seed)
+
+    shapiro = db_session.query(Candidate).filter(Candidate.name == "Josh Shapiro").first()
+    assert shapiro.party == "Democratic"
+    assert shapiro.incumbent is True

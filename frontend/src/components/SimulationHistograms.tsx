@@ -10,6 +10,31 @@ function toChartData(hist: SimulationHistogram) {
   }));
 }
 
+const DOT_DIAMETER = 8;
+const DOT_PITCH = 11; // diameter + 3px surface gap between stacked dots
+
+function DotColumn(props: any) {
+  const { x, y, width, height, fill } = props;
+  const cx = x + width / 2;
+  const numDots = Math.max(0, Math.floor(height / DOT_PITCH));
+
+  return (
+    <g>
+      {Array.from({ length: numDots }, (_, i) => (
+        <circle
+          key={i}
+          cx={cx}
+          cy={y + height - DOT_PITCH * i - DOT_DIAMETER / 2}
+          r={DOT_DIAMETER / 2}
+          fill={fill}
+          stroke="var(--surface)"
+          strokeWidth={2}
+        />
+      ))}
+    </g>
+  );
+}
+
 function HistTooltip({ active, payload, color }: any) {
   if (!active || !payload?.length) return null;
   const p = payload[0].payload;
@@ -52,7 +77,7 @@ function SingleHistogram({ hist }: { hist: SimulationHistogram }) {
           />
           <YAxis hide />
           <Tooltip content={<HistTooltip color={color} />} />
-          <Bar dataKey="count" fill={color} radius={[4, 4, 0, 0]} maxBarSize={10} />
+          <Bar dataKey="count" fill={color} shape={DotColumn} maxBarSize={20} />
         </BarChart>
       </ResponsiveContainer>
     </div>
