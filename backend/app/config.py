@@ -43,5 +43,18 @@ class Settings(BaseSettings):
     poll_weight_ceiling: float = 0.80
     poll_weight_decay_tau_days: float = 90.0
 
+    # Kalshi prediction-market odds (see app.services.market_odds /
+    # app.ingestion.kalshi_scraper): shown as its own standalone section per
+    # race (app.routers.kalshi) -- never part of the forecasting model's
+    # blend. RSA key pair from the user's own Kalshi account (Account
+    # Settings -> API Keys). Every Kalshi endpoint requires a signed
+    # request, including read-only market data -- unlike Wikipedia, which is
+    # deliberately open to bots. Left blank by default so a dev environment
+    # without Kalshi credentials just never resolves a ticker, rather than
+    # needing a separate feature flag.
+    kalshi_api_key_id: str = ""
+    kalshi_private_key_path: str = ""
+    kalshi_base_url: str = "https://api.elections.kalshi.com/trade-api/v2"
+
 
 settings = Settings()

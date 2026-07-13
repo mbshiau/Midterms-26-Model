@@ -720,8 +720,8 @@ RACES = {
         # Rep. Gina Hinojosa (D) won a 9-way Democratic primary with 59%, no
         # runoff needed. Both nominations settled well before today.
         "candidates": [
-            {"name": "Greg Abbott", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/d/db/Greg_Abbott_at_NASA_2024_%28cropped%29.jpg"},
-            {"name": "Gina Hinojosa", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/1/13/Gina_Hinojosa_at_LBJ_Library_Forum_%283x4_cropped%29.jpg"},
+            {"name": "Greg Abbott", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/d/db/Greg_Abbott_at_NASA_2024_%28cropped%29.jpg", "kalshi_ticker": "GOVPARTYTX-26-R"},
+            {"name": "Gina Hinojosa", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/1/13/Gina_Hinojosa_at_LBJ_Library_Forum_%283x4_cropped%29.jpg", "kalshi_ticker": "GOVPARTYTX-26-D"},
         ],
         # Release dates aren't independently confirmed for most of these
         # (only field dates were), so they're approximated as field_end + a
@@ -1637,8 +1637,8 @@ RACES = {
         "wikipedia_page_title": "2026_California_gubernatorial_election",
         
         "candidates": [
-            {"name": "Steve Hilton", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Steve_Hilton_%2854233445987_crop%29.jpg"},
-            {"name": "Xavier Becerra", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/8/85/HHS_Xavier_Becerra.jpg"},
+            {"name": "Steve Hilton", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Steve_Hilton_%2854233445987_crop%29.jpg", "kalshi_ticker": "KXGOVCA-26-SHIL"},
+            {"name": "Xavier Becerra", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/8/85/HHS_Xavier_Becerra.jpg", "kalshi_ticker": "KXGOVCA-26-XBEC"},
         ],
         "raw_polls": [{
                 "pollster": "Kreate Strategies",
@@ -1690,6 +1690,44 @@ RACES = {
         "candidates": [
             {"name": "Gregg Hull", "party": "Republican", "incumbent": False, "photo_url": None},
             {"name": "Deb Haaland", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Secretary_Deb_Haaland%2C_official_headshot.jpg"},
+        ],
+        "raw_polls": []  
+    },
+    "al": {
+        "state_name": "Alabama",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Alabama_gubernatorial_election",
+        
+        "candidates": [
+            {"name": "Tommy Tuberville", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/d/df/Tommy_tuberville.jpg"},
+            {"name": "Doug Jones", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Senator_Doug_Jones_official_photo_%28cropped%29_2.jpg"},
+        ],
+        "raw_polls": [
+            {
+                "pollster": "Cygnal",
+                "sponsor": None,
+                "field_start_date": "2025-12-12",
+                "field_end_date": "2025-12-13",
+                "release_date": "2025-12-17",
+                "sample_size": 605,
+                "population": "LV",
+                "margin_of_error": 4.0,
+                "undecided_pct": 13.0,
+                "source_url": "https://www.cygn.al/wp-content/uploads/2025/11/AL-Gov-Gen-Elect-Poll-Memo.pdf",
+                "results": {"Tommy Tuberville": 53.0, "Doug Jones": 34.0},
+            }
+        ]  
+    },
+    "ar": {
+        "state_name": "Arkansas",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Arkansas_gubernatorial_election",
+        
+        "candidates": [
+            {"name": "Sarah Huckabee", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Governor_Sarah_Huckabee_Sanders_%28cropped_3x4%29.jpg"},
+            {"name": "Frederick", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/d/da/Rep_Fredrick_J_Love.jpg"},
         ],
         "raw_polls": []  
     }

@@ -12,6 +12,7 @@ export interface Candidate {
   party: string;
   incumbent: boolean;
   photo_url: string | null;
+  kalshi_ticker: string | null;
 }
 
 export interface PollResult {
@@ -101,4 +102,12 @@ export interface ForecastHistory {
   snapshots: ForecastSnapshot[];
   actuals: ActualResult[];
   election_date: string;
+}
+
+export interface KalshiOdds {
+  candidate: Candidate;
+  ticker: string;
+  win_probability_pct: number;
+  as_of: string;
+  source_url: string;
 }

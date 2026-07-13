@@ -20,6 +20,18 @@ services:
     environment:
       DATABASE_URL: postgresql://forecast:forecast@db:5432/pa_gov_forecast
       CORS_ORIGINS: http://localhost:5173
+    # Optional -- absent unless you've copied backend/.env.example to
+    # backend/.env and filled in your own Kalshi account credentials. Without
+    # it, KALSHI_API_KEY_ID stays empty and every race's Kalshi weight is 0
+    # (falls back to the existing polls+fundamentals-only blend).
+    env_file:
+      - path: ./backend/.env
+        required: false
+    # Always mounted (backend/secrets/ exists even when empty) so this never
+    # errors for users without a Kalshi key -- drop kalshi_private_key.pem in
+    # there when you have one.
+    volumes:
+      - ./backend/secrets:/run/secrets:ro
     ports:
       - "8000:8000"
     depends_on:

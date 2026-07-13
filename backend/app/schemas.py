@@ -36,6 +36,7 @@ class CandidateOut(BaseModel):
     party: str
     incumbent: bool
     photo_url: str | None = None
+    kalshi_ticker: str | None = None
 
 
 class PollResultOut(BaseModel):
@@ -149,3 +150,20 @@ class ForecastHistoryOut(BaseModel):
     snapshots: list[ForecastSnapshotOut]
     actuals: list[ActualResultOut]
     election_date: date
+
+
+class KalshiOddsOut(BaseModel):
+    """A candidate's latest Kalshi market price -- a standalone prediction-
+    market data point, not part of the forecasting model's blend."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    candidate: CandidateOut
+    ticker: str
+    win_probability_pct: float
+    as_of: datetime
+    source_url: str
+
+    @field_serializer("as_of")
+    def _serialize_as_of(self, value: datetime) -> str:
+        return _as_utc_isoformat(value)

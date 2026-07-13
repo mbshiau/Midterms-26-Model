@@ -8,6 +8,11 @@ exponential decay in days-to-election — from `poll_weight_floor` far out to
 app.services.fundamentals.poll_weight_for_election). Both pre-blend
 components are kept on each ForecastResult so the UI can show its
 composition.
+
+Kalshi market odds are deliberately NOT part of this blend -- they're
+surfaced as their own standalone section (see app.routers.kalshi /
+app.services.market_odds) rather than folded into the model's vote-share
+estimate or win probability.
 """
 
 import math

@@ -26,6 +26,8 @@ MA = RACE_FUNDAMENTALS["ma"]
 MD = RACE_FUNDAMENTALS["md"]
 CA = RACE_FUNDAMENTALS["ca"]
 NM = RACE_FUNDAMENTALS["nm"]
+AL = RACE_FUNDAMENTALS["al"]
+AR = RACE_FUNDAMENTALS["ar"]
 
 
 def test_gubernatorial_lean_favors_democratic_given_researched_data():
@@ -598,6 +600,46 @@ def test_new_mexico_registration_trend_is_small():
     # (~130K-131K) across these snapshots.
     adjustment = fundamentals.registration_trend_adjustment(NM["registration_snapshots"])
     assert abs(adjustment) < 2
+
+
+def test_alabama_gubernatorial_lean_favors_republican():
+    lean = fundamentals.gubernatorial_lean(AL["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert lean < -15
+
+
+def test_alabama_senate_lean_favors_republican():
+    lean = fundamentals.senate_lean(AL["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean < -15
+
+
+def test_alabama_presidential_lean_favors_republican():
+    lean = fundamentals.presidential_lean(AL["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean < -15
+
+
+def test_alabama_has_no_registration_data():
+    # Alabama doesn't register voters by party.
+    assert fundamentals.registration_trend_adjustment(AL["registration_snapshots"]) == 0.0
+
+
+def test_arkansas_gubernatorial_lean_favors_republican():
+    lean = fundamentals.gubernatorial_lean(AR["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert lean < -15
+
+
+def test_arkansas_senate_lean_favors_republican():
+    lean = fundamentals.senate_lean(AR["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean < -15
+
+
+def test_arkansas_presidential_lean_favors_republican():
+    lean = fundamentals.presidential_lean(AR["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean < -15
+
+
+def test_arkansas_has_no_registration_data():
+    # Arkansas doesn't register voters by party.
+    assert fundamentals.registration_trend_adjustment(AR["registration_snapshots"]) == 0.0
 
 
 def test_more_recent_elections_are_weighted_more_heavily():

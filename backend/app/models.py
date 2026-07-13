@@ -42,6 +42,14 @@ class Candidate(Base):
     party: Mapped[str] = mapped_column(String(40), nullable=False)
     incumbent: Mapped[bool] = mapped_column(default=False)
     photo_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    # Kalshi market ticker for this candidate's "will win" YES contract, e.g.
+    # "KXGOVCA-26-XBEC" (Xavier Becerra, California). Kalshi also lists a
+    # coarser per-*party* series ("GOVPARTY{STATE}-26-{D|R}"), but the
+    # per-candidate KXGOV{STATE} series is the better fit here -- it's exact
+    # even in jungle-primary states with multiple same-party candidates.
+    # None means no live market. This is display-only -- see
+    # app.routers.kalshi -- and never feeds the forecasting model itself.
+    kalshi_ticker: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
     race: Mapped["Race"] = relationship(back_populates="candidates")
     poll_results: Mapped[list["PollResult"]] = relationship(back_populates="candidate")
@@ -147,6 +155,30 @@ class PresidentApproval(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, default=lambda: datetime.now(timezone.utc)
     )
+
+
+class MarketOdds(Base):
+    """Latest Kalshi win-probability snapshot for one candidate -- surfaced
+    as its own standalone section per race (see app.routers.kalshi), never
+    fed into app.services.forecasting.generate_forecast. One row per
+    candidate (upserted in place, not accumulated -- same convention as
+    PresidentApproval), refreshed by the scheduled job (see
+    app.ingestion.kalshi_scraper). A candidate never gets a row here until
+    its kalshi_ticker resolves at least once."""
+
+    __tablename__ = "market_odds"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    candidate_id: Mapped[int] = mapped_column(ForeignKey("candidates.id"), unique=True, nullable=False)
+    ticker: Mapped[str] = mapped_column(String(64), nullable=False)
+    yes_price_pct: Mapped[float] = mapped_column(Float, nullable=False)
+    as_of: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    source_url: Mapped[str] = mapped_column(Text, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=lambda: datetime.now(timezone.utc)
+    )
+
+    candidate: Mapped["Candidate"] = relationship()
 
 
 class ActualResult(Base):

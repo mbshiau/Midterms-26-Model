@@ -13,6 +13,7 @@
 
   --party-democratic: #2a78d6;
   --party-republican: #e34948;
+  --market-kalshi: #b8860b;
 
   /* Win-probability tiers, one sequential ramp per party (light->dark as
      confidence increases): 50-60% / 60-75% / 75-95% / 95%+. The 75-95%

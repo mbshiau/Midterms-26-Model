@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api } from "../api/client";
-import type { ForecastHistory, ForecastSnapshot, Poll, Race, Simulations } from "../api/types";
+import type { ForecastHistory, ForecastSnapshot, KalshiOdds, Poll, Race, Simulations } from "../api/types";
 import { ForecastSummary } from "../components/ForecastSummary";
 import { WinProbabilityMeter } from "../components/WinProbabilityMeter";
 import { ModelCompositionCard } from "../components/ModelCompositionCard";
@@ -10,6 +10,7 @@ import { WinProbabilityHistoryChart } from "../components/WinProbabilityHistoryC
 import { PollTrendChart } from "../components/PollTrendChart";
 import { SimulationHistograms } from "../components/SimulationHistograms";
 import { PollTable } from "../components/PollTable";
+import { KalshiOddsCard } from "../components/KalshiOddsCard";
 
 const NAV_HEIGHT_PX = 52;
 
@@ -49,6 +50,7 @@ export function StateForecastPage() {
   const [forecast, setForecast] = useState<ForecastSnapshot | null>(null);
   const [history, setHistory] = useState<ForecastHistory | null>(null);
   const [simulations, setSimulations] = useState<Simulations | null>(null);
+  const [kalshiOdds, setKalshiOdds] = useState<KalshiOdds[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [notFound, setNotFound] = useState(false);
 
@@ -66,6 +68,12 @@ export function StateForecastPage() {
 
       const pollsData = await api.getPolls(stateCode);
       setPolls(pollsData);
+
+      try {
+        setKalshiOdds(await api.getKalshiOdds(stateCode));
+      } catch {
+        setKalshiOdds([]);
+      }
 
       try {
         const [forecastData, simulationsData, historyData] = await Promise.all([
@@ -119,6 +127,7 @@ export function StateForecastPage() {
     { id: "polling-trend", label: "Polling trend", visible: !!polls },
     { id: "simulation-distribution", label: "Simulations", visible: !!simulations },
     { id: "latest-polls", label: "Latest polls", visible: !!polls },
+    { id: "kalshi-odds", label: "Kalshi odds", visible: kalshiOdds.length > 0 },
   ].filter((s) => s.visible);
 
   return (
@@ -239,6 +248,12 @@ export function StateForecastPage() {
         {polls && (
           <Card id="latest-polls" title="Latest polls">
             <PollTable polls={polls} />
+          </Card>
+        )}
+
+        {kalshiOdds.length > 0 && (
+          <Card id="kalshi-odds" title="Kalshi prediction market">
+            <KalshiOddsCard odds={kalshiOdds} />
           </Card>
         )}
 

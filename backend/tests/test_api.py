@@ -9,7 +9,7 @@ def test_races_lists_all_seeded_states(client):
     assert resp.status_code == 200
     codes = {r["state_code"] for r in resp.json()}
     assert codes == {
-        "pa", "oh", "ga", "me", "ia", "ny", "sc", "tx", "fl", "nv", "il", "or", "mi", "ne", "ks", "az", "nh", "co", "vt", "ma", "md", "ca", "nm",
+        "pa", "oh", "ga", "me", "ia", "ny", "sc", "tx", "fl", "nv", "il", "or", "mi", "ne", "ks", "az", "nh", "co", "vt", "ma", "md", "ca", "nm", "al", "ar",
     }
 
 
@@ -39,6 +39,8 @@ def test_races_expose_current_holder_party(client):
     assert races["md"]["current_holder_party"] == "Democratic"  # Moore (inc) is on the ballot
     assert races["ca"]["current_holder_party"] == "Democratic"  # Newsom (D), term-limited open seat
     assert races["nm"]["current_holder_party"] == "Democratic"  # Lujan Grisham (D), term-limited open seat
+    assert races["al"]["current_holder_party"] == "Republican"  # Ivey (R), term-limited open seat
+    assert races["ar"]["current_holder_party"] == "Republican"  # Sanders (inc) is on the ballot
 
 
 def test_candidates_expose_a_photo_url_when_a_real_wikipedia_photo_exists(client):
@@ -554,7 +556,39 @@ def test_new_mexico_race_is_fundamentals_only_with_zero_polls(client):
         assert abs(r["mean_vote_share"] - r["fundamentals_vote_share"]) < 1.0
 
 
-def test_all_twentythree_forecasts_are_independent(client):
+def test_alabama_race_is_independently_seeded_and_forecast(client):
+    polls = client.get("/races/al/polls").json()
+    assert len(polls) == 1
+    assert polls[0]["pollster"] == "Cygnal"
+
+    forecast = client.get("/races/al/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Tommy Tuberville", "Doug Jones"}
+    assert forecast["n_polls_used"] == 1
+
+    # The one real poll shows Tuberville ahead by double digits, and AL's
+    # fundamentals favor Republicans heavily too.
+    tuberville = next(r for r in forecast["results"] if r["candidate"]["name"] == "Tommy Tuberville")
+    assert tuberville["win_probability"] > 0.9
+
+
+def test_arkansas_race_is_fundamentals_only_with_zero_polls(client):
+    polls = client.get("/races/ar/polls").json()
+    assert polls == []
+
+    forecast = client.get("/races/ar/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Sarah Huckabee", "Frederick"}
+    assert forecast["n_polls_used"] == 0
+    assert forecast["poll_weight_alpha"] == 0.0
+
+    for r in forecast["results"]:
+        # No polling exists -- it mirrors fundamentals, same as SC/KS/CO/MD/NM.
+        assert r["polling_vote_share"] == r["fundamentals_vote_share"]
+        assert abs(r["mean_vote_share"] - r["fundamentals_vote_share"]) < 1.0
+
+
+def test_all_twentyfive_forecasts_are_independent(client):
     pa = client.get("/races/pa/forecast").json()
     oh = client.get("/races/oh/forecast").json()
     ga = client.get("/races/ga/forecast").json()
@@ -578,15 +612,17 @@ def test_all_twentythree_forecasts_are_independent(client):
     md = client.get("/races/md/forecast").json()
     ca = client.get("/races/ca/forecast").json()
     nm = client.get("/races/nm/forecast").json()
+    al = client.get("/races/al/forecast").json()
+    ar = client.get("/races/ar/forecast").json()
     ids = {
         pa["id"], oh["id"], ga["id"], me["id"], ia["id"],
-        ny["id"], sc["id"], tx["id"], fl["id"], nv["id"], il["id"], orr["id"], mi["id"], ne["id"], ks["id"], az["id"], nh["id"], co["id"], vt["id"], ma["id"], md["id"], ca["id"], nm["id"],
+        ny["id"], sc["id"], tx["id"], fl["id"], nv["id"], il["id"], orr["id"], mi["id"], ne["id"], ks["id"], az["id"], nh["id"], co["id"], vt["id"], ma["id"], md["id"], ca["id"], nm["id"], al["id"], ar["id"],
     }
-    assert len(ids) == 23
+    assert len(ids) == 25
 
     name_sets = [
         {r["candidate"]["name"] for r in race["results"]}
-        for race in (pa, oh, ga, me, ia, ny, sc, tx, fl, nv, il, orr, mi, ne, ks, az, nh, co, vt, ma, md, ca, nm)
+        for race in (pa, oh, ga, me, ia, ny, sc, tx, fl, nv, il, orr, mi, ne, ks, az, nh, co, vt, ma, md, ca, nm, al, ar)
     ]
     for i, names_a in enumerate(name_sets):
         for names_b in name_sets[i + 1 :]:

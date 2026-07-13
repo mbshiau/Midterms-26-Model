@@ -7,3 +7,7 @@ __pycache__/
 node_modules/
 dist/
 .env
+
+# Kalshi RSA private key -- never commit real account credentials.
+backend/secrets/*
+!backend/secrets/.gitkeep

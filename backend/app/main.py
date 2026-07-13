@@ -8,7 +8,8 @@ from app import database
 from app.config import settings
 from app.ingestion.pipeline import ingest_polls
 from app.ingestion.scheduler import start_scheduler, stop_scheduler
-from app.routers import forecast, polls, races, simulations
+from app.routers import forecast, kalshi, polls, races, simulations
+from app.schema_sync import sync_schema
 from app.services.approval import seed_default_approval
 from app.services.forecasting import generate_forecast, latest_forecast
 from app.services.races import get_race_seed, seed_all_races
@@ -22,6 +23,12 @@ async def lifespan(app: FastAPI):
     # Looked up via the `database` module (not destructured at import time) so
     # tests can swap in a test engine/sessionmaker before startup runs.
     database.Base.metadata.create_all(bind=database.engine)
+    # create_all() only creates tables that don't exist yet -- it never adds
+    # columns to a table that's already there, which is why every additive
+    # schema change (a new nullable column) used to require a full `docker
+    # compose down -v` to take effect. sync_schema adds those columns
+    # in place instead, so existing forecast history survives.
+    sync_schema(database.engine)
 
     db = database.SessionLocal()
     try:
@@ -62,6 +69,7 @@ app.include_router(races.router)
 app.include_router(polls.router)
 app.include_router(forecast.router)
 app.include_router(simulations.router)
+app.include_router(kalshi.router)
 
 
 @app.get("/health")

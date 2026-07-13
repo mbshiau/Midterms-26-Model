@@ -1,6 +1,7 @@
 """Scheduler stage: refreshes polls (per race) + presidential approval
-(national, once) and regenerates every race's forecast, entirely in the
-background, at fixed wall-clock times every day.
+(national, once) + Kalshi market odds (per candidate with a configured
+ticker) and regenerates every race's forecast, entirely in the background, at
+fixed wall-clock times every day.
 
 Uses a cron trigger (fixed times of day) rather than an interval trigger
 (fixed delay from whenever the job was registered). An interval trigger's
@@ -21,10 +22,12 @@ from apscheduler.triggers.cron import CronTrigger
 from app import database
 from app.data.fundamentals_data import PRESIDENT
 from app.ingestion.approval_scraper import fetch_current_approval
+from app.ingestion.kalshi_scraper import fetch_market_odds
 from app.ingestion.pipeline import fetch_live_polls, ingest_polls
-from app.models import Race
+from app.models import Candidate, Race
 from app.services.approval import update_approval
 from app.services.forecasting import generate_forecast
+from app.services.market_odds import update_market_odds
 from app.services.races import get_race_seed
 
 logger = logging.getLogger(__name__)
@@ -70,6 +73,26 @@ def _run_refresh_job() -> None:
                 "scheduled refresh: %s — %d new poll(s) from Wikipedia",
                 race.state_code, new_poll_count,
             )
+
+            candidates_with_tickers = (
+                db.query(Candidate)
+                .filter(Candidate.race_id == race.id, Candidate.kalshi_ticker.isnot(None))
+                .all()
+            )
+            for candidate in candidates_with_tickers:
+                scraped = fetch_market_odds(candidate.kalshi_ticker)
+                if scraped is None:
+                    logger.warning(
+                        "scheduled refresh: %s — Kalshi fetch failed for %s (%s)",
+                        race.state_code, candidate.name, candidate.kalshi_ticker,
+                    )
+                    continue
+                update_market_odds(db, candidate.id, scraped)
+                logger.info(
+                    "scheduled refresh: %s — Kalshi odds for %s now %.1f%%",
+                    race.state_code, candidate.name, scraped.yes_price_pct,
+                )
+
             generate_forecast(db, race)
             logger.info("scheduled refresh: %s forecast regenerated", race.state_code)
     except Exception:
