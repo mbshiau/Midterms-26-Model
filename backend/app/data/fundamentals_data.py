@@ -788,6 +788,27 @@ RACE_FUNDAMENTALS = {
         ],
        
         "registration_snapshots": [],
+    },
+    "wi": {
+
+      "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 47.13, "incumbent_party": "R"},  
+            {"year": 2018, "dem_share": 50.56, "incumbent_party": "R"},  
+            {"year": 2022, "dem_share": 51.72, "incumbent_party": "D"},  
+      ],
+   
+        "senate_elections": [
+            {"year": 2018, "dem_share": 55.42}, 
+            {"year": 2022, "dem_share": 49.50},  
+            {"year": 2024, "dem_share": 50.43},  
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 49.59},  
+            {"year": 2020, "dem_share": 50.32},  
+            {"year": 2024, "dem_share": 49.56},  
+        ],
+       
+        "registration_snapshots": [],
     }
 }
 

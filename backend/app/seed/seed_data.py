@@ -1734,9 +1734,90 @@ RACES = {
         "wikipedia_page_title": "2026_Arkansas_gubernatorial_election",
         
         "candidates": [
-            {"name": "Sarah Huckabee", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Governor_Sarah_Huckabee_Sanders_%28cropped_3x4%29.jpg"},
-            {"name": "Frederick", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/d/da/Rep_Fredrick_J_Love.jpg"},
+            {"name": "Sarah Huckabee", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Governor_Sarah_Huckabee_Sanders_%28cropped_3x4%29.jpg",  "kalshi_ticker": "GOVPARTYAR-26-R"},
+            {"name": "Frederick", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/d/da/Rep_Fredrick_J_Love.jpg",  "kalshi_ticker": "GOVPARTYAR-26-D"},
         ],
         "raw_polls": []  
+    },
+    "wi": {
+        "state_name": "Wisconsin",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Wisconsin_gubernatorial_election",
+        # Tom Tiffany (R) is treated as the presumptive Republican nominee.
+        # The Democratic primary is NOT settled (tight race between Francesca
+        # Hong and Mandela Barnes) -- per explicit direction, a generic
+        # "Democratic Nominee (TBD)" placeholder is used, and every poll that
+        # tested Tiffany against both named Democratic contenders in the same
+        # release (same pollster + field-date window) is averaged into one
+        # poll record, matching the AZ/CO/VT convention: the pipeline dedupes
+        # on pollster + field dates, so two separate rows with identical
+        # values there would just silently drop one.
+        "candidates": [
+            {"name": "Tom Tiffany", "party": "Republican", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYWI-26-R"},
+            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYWI-26-D"},
+        ],
+        "raw_polls": [
+            {
+                "pollster": "Wedgewood Polls",
+                "sponsor": None,
+                "field_start_date": "2026-07-02",
+                "field_end_date": "2026-07-04",
+                "release_date": "2026-07-04",
+                "sample_size": 707,
+                "population": "LV",
+                "margin_of_error": 4.4,
+                "undecided_pct": 8.5,
+                "source_url": "https://www.newsweek.com/socialist-francesca-hongs-chances-of-beating-gop-in-wisconsin-polls-12163160",
+                # Average of 2 named matchups: Barnes 48/Tiffany 44 (8% undec.),
+                # Hong 47/Tiffany 44 (8% undec.).
+                "results": {"Democratic Nominee (TBD)": 47.5, "Tom Tiffany": 44.0},
+            },
+            {
+                "pollster": "Wedgewood Polls",
+                "sponsor": None,
+                "field_start_date": "2026-03-13",
+                "field_end_date": "2026-03-19",
+                "release_date": "2026-03-23",
+                "sample_size": 1175,
+                "population": "LV",
+                "margin_of_error": 2.9,
+                "undecided_pct": 16.5,
+                "source_url": "https://tippinsights.com/league-of-american-workers-survey-wisconsin-3/",
+                # Average of 2 named matchups: Barnes 43/Tiffany 41 (10% undec.),
+                # Hong 40/Tiffany 43 (12% undec.).
+                "results": {"Democratic Nominee (TBD)": 41.5, "Tom Tiffany": 42.0},
+            },
+            {
+                "pollster": "Impact Research",
+                "sponsor": None,
+                "field_start_date": "2025-10-02",
+                "field_end_date": "2025-10-08",
+                "release_date": "2025-10-26",
+                "sample_size": 500,
+                "population": "LV",
+                "margin_of_error": 4.4,
+                "undecided_pct": 7.0,
+                "source_url": "https://www.documentcloud.org/documents/26204970-wi-gov-impact-research-for-long-run-pac-oct-2025/",
+                # Only tested Barnes vs. Tiffany -- no Hong matchup in this
+                # release, so it's used as-is rather than averaged.
+                "results": {"Democratic Nominee (TBD)": 50.0, "Tom Tiffany": 44.0},
+            },
+            {
+                "pollster": "Patriot Polling",
+                "sponsor": None,
+                "field_start_date": "2026-03-10",
+                "field_end_date": "2026-03-16",
+                "release_date": "2026-03-25",
+                "sample_size": 500,
+                "population": "LV",
+                "margin_of_error": 3.5,
+                "undecided_pct": 12.0,
+                "source_url": "https://drive.google.com/file/d/1RPTJ7lVbPnf35orAIGiwW9TRZthViZY5/view",
+                # Only tested Hong vs. Tiffany -- no Barnes matchup in this
+                # release, so it's used as-is rather than averaged.
+                "results": {"Democratic Nominee (TBD)": 42.0, "Tom Tiffany": 46.0},
+            },
+        ]
     }
 }

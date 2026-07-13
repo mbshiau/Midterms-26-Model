@@ -9,7 +9,7 @@ def test_races_lists_all_seeded_states(client):
     assert resp.status_code == 200
     codes = {r["state_code"] for r in resp.json()}
     assert codes == {
-        "pa", "oh", "ga", "me", "ia", "ny", "sc", "tx", "fl", "nv", "il", "or", "mi", "ne", "ks", "az", "nh", "co", "vt", "ma", "md", "ca", "nm", "al", "ar",
+        "pa", "oh", "ga", "me", "ia", "ny", "sc", "tx", "fl", "nv", "il", "or", "mi", "ne", "ks", "az", "nh", "co", "vt", "ma", "md", "ca", "nm", "al", "ar", "wi",
     }
 
 
@@ -41,6 +41,7 @@ def test_races_expose_current_holder_party(client):
     assert races["nm"]["current_holder_party"] == "Democratic"  # Lujan Grisham (D), term-limited open seat
     assert races["al"]["current_holder_party"] == "Republican"  # Ivey (R), term-limited open seat
     assert races["ar"]["current_holder_party"] == "Republican"  # Sanders (inc) is on the ballot
+    assert races["wi"]["current_holder_party"] == "Democratic"  # open seat, derived from 2022 result
 
 
 def test_candidates_expose_a_photo_url_when_a_real_wikipedia_photo_exists(client):
@@ -588,7 +589,25 @@ def test_arkansas_race_is_fundamentals_only_with_zero_polls(client):
         assert abs(r["mean_vote_share"] - r["fundamentals_vote_share"]) < 1.0
 
 
-def test_all_twentyfive_forecasts_are_independent(client):
+def test_wisconsin_race_aggregates_polls_across_named_democratic_contenders(client):
+    polls = client.get("/races/wi/polls").json()
+    assert len(polls) == 4
+    pollster_names = {p["pollster"] for p in polls}
+    assert pollster_names == {"Wedgewood Polls", "Impact Research", "Patriot Polling"}
+
+    forecast = client.get("/races/wi/forecast").json()
+    names = {r["candidate"]["name"] for r in forecast["results"]}
+    assert names == {"Tom Tiffany", "Democratic Nominee (TBD)"}
+    assert forecast["n_polls_used"] == 4
+
+    # Every real matchup polled (Barnes or Hong vs. Tiffany) is close, and
+    # WI's fundamentals are a near-even toss-up too -- neither candidate
+    # should be a lock either way.
+    for r in forecast["results"]:
+        assert 0.1 < r["win_probability"] < 0.9
+
+
+def test_all_twentysix_forecasts_are_independent(client):
     pa = client.get("/races/pa/forecast").json()
     oh = client.get("/races/oh/forecast").json()
     ga = client.get("/races/ga/forecast").json()
@@ -614,15 +633,23 @@ def test_all_twentyfive_forecasts_are_independent(client):
     nm = client.get("/races/nm/forecast").json()
     al = client.get("/races/al/forecast").json()
     ar = client.get("/races/ar/forecast").json()
+    wi = client.get("/races/wi/forecast").json()
     ids = {
         pa["id"], oh["id"], ga["id"], me["id"], ia["id"],
-        ny["id"], sc["id"], tx["id"], fl["id"], nv["id"], il["id"], orr["id"], mi["id"], ne["id"], ks["id"], az["id"], nh["id"], co["id"], vt["id"], ma["id"], md["id"], ca["id"], nm["id"], al["id"], ar["id"],
+        ny["id"], sc["id"], tx["id"], fl["id"], nv["id"], il["id"], orr["id"], mi["id"], ne["id"], ks["id"], az["id"], nh["id"], co["id"], vt["id"], ma["id"], md["id"], ca["id"], nm["id"], al["id"], ar["id"], wi["id"],
     }
-    assert len(ids) == 25
+    assert len(ids) == 26
+
+    # Generic TBD-style placeholders (an unsettled primary) are deliberately
+    # reused verbatim across states (VT and WI both have a "Democratic
+    # Nominee (TBD)") -- that's expected, not the cross-contamination this
+    # disjointness check is guarding against, so they're excluded here.
+    def real_names(names: set[str]) -> set[str]:
+        return {n for n in names if "TBD" not in n and n not in ("Republican Nominee", "Democratic Nominee")}
 
     name_sets = [
-        {r["candidate"]["name"] for r in race["results"]}
-        for race in (pa, oh, ga, me, ia, ny, sc, tx, fl, nv, il, orr, mi, ne, ks, az, nh, co, vt, ma, md, ca, nm, al, ar)
+        real_names({r["candidate"]["name"] for r in race["results"]})
+        for race in (pa, oh, ga, me, ia, ny, sc, tx, fl, nv, il, orr, mi, ne, ks, az, nh, co, vt, ma, md, ca, nm, al, ar, wi)
     ]
     for i, names_a in enumerate(name_sets):
         for names_b in name_sets[i + 1 :]:

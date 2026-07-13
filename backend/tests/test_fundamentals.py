@@ -28,6 +28,7 @@ CA = RACE_FUNDAMENTALS["ca"]
 NM = RACE_FUNDAMENTALS["nm"]
 AL = RACE_FUNDAMENTALS["al"]
 AR = RACE_FUNDAMENTALS["ar"]
+WI = RACE_FUNDAMENTALS["wi"]
 
 
 def test_gubernatorial_lean_favors_democratic_given_researched_data():
@@ -640,6 +641,28 @@ def test_arkansas_presidential_lean_favors_republican():
 def test_arkansas_has_no_registration_data():
     # Arkansas doesn't register voters by party.
     assert fundamentals.registration_trend_adjustment(AR["registration_snapshots"]) == 0.0
+
+
+def test_wisconsin_gubernatorial_lean_is_a_genuine_toss_up():
+    # WI is one of the closest-divided swing states -- every lean here
+    # should be small in magnitude, not lopsided either direction.
+    lean = fundamentals.gubernatorial_lean(WI["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert abs(lean) < 5
+
+
+def test_wisconsin_senate_lean_is_a_genuine_toss_up():
+    lean = fundamentals.senate_lean(WI["senate_elections"], as_of=date(2026, 7, 10))
+    assert abs(lean) < 5
+
+
+def test_wisconsin_presidential_lean_is_a_genuine_toss_up():
+    lean = fundamentals.presidential_lean(WI["presidential_elections"], as_of=date(2026, 7, 10))
+    assert abs(lean) < 5
+
+
+def test_wisconsin_has_no_registration_data():
+    # Wisconsin doesn't register voters by party.
+    assert fundamentals.registration_trend_adjustment(WI["registration_snapshots"]) == 0.0
 
 
 def test_more_recent_elections_are_weighted_more_heavily():
