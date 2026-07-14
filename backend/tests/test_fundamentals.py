@@ -30,6 +30,7 @@ AL = RACE_FUNDAMENTALS["al"]
 AR = RACE_FUNDAMENTALS["ar"]
 WI = RACE_FUNDAMENTALS["wi"]
 ID = RACE_FUNDAMENTALS["id"]
+SD = RACE_FUNDAMENTALS["sd"]
 
 
 def test_gubernatorial_lean_favors_democratic_given_researched_data():
@@ -685,6 +686,21 @@ def test_idaho_registration_trend_is_a_noop_with_a_single_snapshot():
     # Only one snapshot on file -- the trend adjustment needs two to compute
     # a trailing change, so it's a documented no-op (0.0), not an error.
     assert fundamentals.registration_trend_adjustment(ID["registration_snapshots"]) == 0.0
+
+
+def test_south_dakota_gubernatorial_lean_favors_republican():
+    lean = fundamentals.gubernatorial_lean(SD["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert lean < -15
+
+
+def test_south_dakota_senate_lean_favors_republican():
+    lean = fundamentals.senate_lean(SD["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean < -15
+
+
+def test_south_dakota_presidential_lean_favors_republican():
+    lean = fundamentals.presidential_lean(SD["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean < -15
 
 
 def test_more_recent_elections_are_weighted_more_heavily():

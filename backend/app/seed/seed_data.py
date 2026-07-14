@@ -1832,4 +1832,16 @@ RACES = {
         ],
         "raw_polls": []  
     },
+    "sd": {
+        "state_name": "South Dakota",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_South_Dakota_gubernatorial_election",
+        
+        "candidates": [
+            {"name": "Republican Nominee (TBD)", "party": "Republican", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYSD-26-R"},
+            {"name": "Dan Ahlers", "party": "Democratic", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYSD-26-D"},
+        ],
+        "raw_polls": []  
+    },
 }

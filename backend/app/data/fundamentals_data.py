@@ -832,7 +832,32 @@ RACE_FUNDAMENTALS = {
         "registration_snapshots": [
             {"date": "2026-07-01", "dem_lead": -525_830},
         ],
-    }
+    },
+    "sd": {
+
+      "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 26.51, "incumbent_party": "R"},  
+            {"year": 2018, "dem_share": 48.29, "incumbent_party": None},  
+            {"year": 2022, "dem_share": 36.20, "incumbent_party": "R"},  
+      ],
+   
+        "senate_elections": [
+            {"year": 2016, "dem_share": 28.17}, 
+            {"year": 2020, "dem_share": 27.30},  
+            {"year": 2022, "dem_share": 32.14},  
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 34.03},  
+            {"year": 2020, "dem_share": 36.57},  
+            {"year": 2024, "dem_share": 35.07},  
+        ],
+       
+        "registration_snapshots": [
+            {"date": "2026-05-01", "dem_lead": -182_195},
+            {"date": "2026-06-01", "dem_lead": -184_821},
+        ],
+    },
+    
 }
 
 PRESIDENT = {
