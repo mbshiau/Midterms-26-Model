@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ForecastResult } from "../api/types";
-import { partyColorVar, probabilityColorVar } from "../lib/partyColor";
+import { partyColorVar } from "../lib/partyColor";
 
 const CX = 170;
 const CY = 168;
@@ -8,11 +8,24 @@ const OUTER_R = 150;
 const INNER_R = 106;
 const NEEDLE_LENGTH = 128;
 const NEEDLE_BASE_HALF_WIDTH = 7;
+const GRADIENT_ID = "forecast-needle-gradient";
 
-// Same 4-tier confidence breakpoints as probabilityTier (50/60/75/95),
-// mirrored across the toss-up center so the arc's color reads identically
-// to every other win-probability encoding in the app (the map, etc).
-const BAND_BOUNDARIES = [0, 0.05, 0.25, 0.4, 0.5, 0.6, 0.75, 0.95, 1];
+// Left (angle 180°) is fully Democratic, right (angle 0°) is fully
+// Republican -- a gradient's x1→x2 runs left-to-right, so stop position
+// 0% = 180° = darkest blue and 100% = 0° = darkest red. Positions/colors
+// mirror the same 4-tier confidence breakpoints (50/60/75/95) used
+// everywhere else in the app (the map, etc), just blended continuously
+// instead of stepped into blocks.
+const GRADIENT_STOPS: { position: number; color: string }[] = [
+  { position: 2.5, color: "var(--party-democratic-95)" },
+  { position: 15, color: "var(--party-democratic-75)" },
+  { position: 32.5, color: "var(--party-democratic-60)" },
+  { position: 45, color: "var(--party-democratic-50)" },
+  { position: 55, color: "var(--party-republican-50)" },
+  { position: 67.5, color: "var(--party-republican-60)" },
+  { position: 85, color: "var(--party-republican-75)" },
+  { position: 97.5, color: "var(--party-republican-95)" },
+];
 
 function polarPoint(radius: number, angleDeg: number): { x: number; y: number } {
   const rad = (angleDeg * Math.PI) / 180;
@@ -31,15 +44,6 @@ function bandPath(innerR: number, outerR: number, a0: number, a1: number): strin
     `A ${innerR} ${innerR} 0 0 1 ${inner0.x} ${inner0.y}`,
     "Z",
   ].join(" ");
-}
-
-/** pDemocratic in [0,1] -- the fraction of the arc's span (right=Republican,
- * left=Democratic) this band sits at. Returns the same tiered color the rest
- * of the app uses for a win probability of that magnitude. */
-function bandColor(pDemMidpoint: number): string {
-  const party = pDemMidpoint < 0.5 ? "Republican" : "Democratic";
-  const winProbability = party === "Republican" ? 1 - pDemMidpoint : pDemMidpoint;
-  return probabilityColorVar(party, winProbability);
 }
 
 function formatPct(p: number): string {
@@ -109,17 +113,14 @@ export function ForecastNeedle({ results }: { results: ForecastResult[] }) {
   return (
     <div>
       <svg viewBox="0 0 340 185" className="w-full" style={{ maxHeight: 210 }} role="img" aria-label="Forecast needle">
-        {BAND_BOUNDARIES.slice(0, -1).map((a0Frac, i) => {
-          const a1Frac = BAND_BOUNDARIES[i + 1];
-          const mid = (a0Frac + a1Frac) / 2;
-          return (
-            <path
-              key={i}
-              d={bandPath(INNER_R, OUTER_R, a0Frac * 180, a1Frac * 180)}
-              fill={bandColor(mid)}
-            />
-          );
-        })}
+        <defs>
+          <linearGradient id={GRADIENT_ID} x1="0%" y1="0%" x2="100%" y2="0%">
+            {GRADIENT_STOPS.map((stop) => (
+              <stop key={stop.position} offset={`${stop.position}%`} stopColor={stop.color} />
+            ))}
+          </linearGradient>
+        </defs>
+        <path d={bandPath(INNER_R, OUTER_R, 0, 180)} fill={`url(#${GRADIENT_ID})`} />
         <polygon
           points={`${needleTip.x},${needleTip.y} ${needleLeftBase.x},${needleLeftBase.y} ${needleRightBase.x},${needleRightBase.y}`}
           fill="var(--text-primary)"
