@@ -512,8 +512,8 @@ RACES = {
         # nominations: Zach Lahn (R) narrowly upset Trump-endorsed Rep. Randy
         # Feenstra, and Rob Sand (D, state auditor) ran unopposed.
         "candidates": [
-            {"name": "Zach Lahn", "party": "Republican", "incumbent": False, "photo_url": None},
-            {"name": "Rob Sand", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Rob_Sand_campaign_headshot_%28cropped_2%29.jpg"},
+            {"name": "Zach Lahn", "party": "Republican", "incumbent": False, "photo_url": None, "kalshi_ticker": "GOVPARTYIA-26-R"},
+            {"name": "Rob Sand", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Rob_Sand_campaign_headshot_%28cropped_2%29.jpg", "kalshi_ticker": "GOVPARTYIA-26-D"},
         ],
         "raw_polls": [
             {
@@ -1735,7 +1735,7 @@ RACES = {
         
         "candidates": [
             {"name": "Sarah Huckabee", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Governor_Sarah_Huckabee_Sanders_%28cropped_3x4%29.jpg",  "kalshi_ticker": "GOVPARTYAR-26-R"},
-            {"name": "Frederick", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/d/da/Rep_Fredrick_J_Love.jpg",  "kalshi_ticker": "GOVPARTYAR-26-D"},
+            {"name": "Frederick Love", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/d/da/Rep_Fredrick_J_Love.jpg",  "kalshi_ticker": "GOVPARTYAR-26-D"},
         ],
         "raw_polls": []  
     },
@@ -1819,5 +1819,17 @@ RACES = {
                 "results": {"Democratic Nominee (TBD)": 42.0, "Tom Tiffany": 46.0},
             },
         ]
-    }
+    },
+    "id": {
+        "state_name": "Idaho",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Idaho_gubernatorial_election",
+        
+        "candidates": [
+            {"name": "Brad Little", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/5/59/Brad_Little_official_photo_%28cropped%29.jpg",  "kalshi_ticker": "GOVPARTYID-26-R"},
+            {"name": "Terri Pickens", "party": "Democratic", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYID-26-D"},
+        ],
+        "raw_polls": []  
+    },
 }
