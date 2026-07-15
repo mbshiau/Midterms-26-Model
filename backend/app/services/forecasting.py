@@ -7,7 +7,20 @@ exponential decay in days-to-election — from `poll_weight_floor` far out to
 `poll_weight_ceiling` on election day (see
 app.services.fundamentals.poll_weight_for_election). Both pre-blend
 components are kept on each ForecastResult so the UI can show its
-composition.
+composition. A race's RACE_FUNDAMENTALS entry can carry an optional
+"model_overrides" dict replacing poll_weight_floor/ceiling (and the
+fundamentals-side weights -- see fundamentals.fundamentals_breakdown) for
+that state specifically.
+
+The fundamentals model's national-environment input blends presidential
+approval with the generic congressional ballot (see
+app.services.fundamentals.national_environment_adjustment /
+app.services.generic_ballot).
+
+The Monte Carlo step also layers in a correlated national polling-error
+shock (see app.services.simulation.generate_national_shock), shared across
+every race generated on the same as_of date, on top of each race's own
+independent error term.
 
 Kalshi market odds are deliberately NOT part of this blend -- they're
 surfaced as their own standalone section (see app.routers.kalshi /
@@ -27,7 +40,9 @@ from app.data.fundamentals_data import RACE_FUNDAMENTALS
 from app.models import Candidate, ForecastResult, ForecastSnapshot, Poll, Race
 from app.services import fundamentals
 from app.services.approval import get_current_approval
-from app.services.simulation import run_monte_carlo
+from app.services.generic_ballot import get_current_generic_ballot
+from app.services.pollster_ratings import get_pollster_ratings_by_name
+from app.services.simulation import generate_national_shock, run_monte_carlo
 from app.services.weighting import CandidateAverage, two_party_normalize, weighted_polling_averages
 
 DRAWS_SAMPLE_SIZE = 2000
@@ -48,6 +63,7 @@ def blend_with_fundamentals(
     as_of: date,
     approval_pct: float,
     president_party: str,
+    generic_ballot_margin: float | None = None,
 ) -> tuple[dict[int, CandidateAverage], dict[int, float]]:
     """Returns (blended averages fed into the simulator, fundamentals share per candidate).
 
@@ -63,7 +79,8 @@ def blend_with_fundamentals(
 
     for candidate in candidates:
         fundamentals_share = fundamentals.fundamentals_vote_share(
-            race_fundamentals, candidate.party, incumbent_party, approval_pct, president_party, as_of
+            race_fundamentals, candidate.party, incumbent_party, approval_pct, president_party, as_of,
+            generic_ballot_margin,
         )
         fundamentals_shares[candidate.id] = fundamentals_share
 
@@ -117,30 +134,64 @@ def generate_forecast(
     candidates = db.query(Candidate).filter(Candidate.race_id == race.id).all()
     fundamentals_data = RACE_FUNDAMENTALS[race.state_code]
 
-    polling_averages = two_party_normalize(weighted_polling_averages(polls, as_of, half_life_days))
+    pollster_ratings = get_pollster_ratings_by_name(db)
+    polling_averages = two_party_normalize(
+        weighted_polling_averages(polls, as_of, half_life_days, pollster_ratings)
+    )
 
     approval = get_current_approval(db)
+    generic_ballot = get_current_generic_ballot(db)
+    generic_ballot_margin = generic_ballot.dem_pct - generic_ballot.rep_pct
     # No real polling exists yet for this race's matchup -- force 0% polling
     # weight (100% fundamentals) rather than reporting the normal alpha
     # curve's value, which would misleadingly imply polls are contributing
     # to a blend that, in reality, has none to draw on.
-    alpha = fundamentals.poll_weight_for_election(race.election_date, as_of) if polls else 0.0
+    model_overrides = fundamentals_data.get("model_overrides", {})
+    alpha = (
+        fundamentals.poll_weight_for_election(
+            race.election_date,
+            as_of,
+            floor=model_overrides.get("poll_weight_floor"),
+            ceiling=model_overrides.get("poll_weight_ceiling"),
+        )
+        if polls
+        else 0.0
+    )
     blended_averages, fundamentals_shares = blend_with_fundamentals(
-        fundamentals_data, polling_averages, candidates, alpha, as_of, approval.approval_pct, approval.party
+        fundamentals_data, polling_averages, candidates, alpha, as_of, approval.approval_pct, approval.party,
+        generic_ballot_margin,
     )
 
-    sim_results = run_monte_carlo(blended_averages, error_stdev, n_simulations, seed=seed)
+    # Shared across every race generated with this same as_of date -- see
+    # app.services.simulation.generate_national_shock -- so a correlated
+    # national polling miss moves every state's simulation together instead
+    # of each race drawing fully independent noise.
+    national_shock = generate_national_shock(n_simulations, settings.national_error_stdev, as_of)
+    candidate_parties = {c.id: c.party for c in candidates}
+    sim_results = run_monte_carlo(
+        blended_averages,
+        error_stdev,
+        n_simulations,
+        seed=seed,
+        candidate_parties=candidate_parties,
+        national_shock=national_shock,
+    )
 
     incumbent_party = _incumbent_party(candidates)
     breakdown = asdict(
         fundamentals.fundamentals_breakdown(
-            fundamentals_data, incumbent_party, approval.approval_pct, approval.party, as_of
+            fundamentals_data, incumbent_party, approval.approval_pct, approval.party, as_of,
+            generic_ballot_margin,
         )
     )
     breakdown["president_name"] = approval.name
     breakdown["president_approval_pct"] = approval.approval_pct
     breakdown["president_approval_as_of"] = approval.as_of.isoformat()
     breakdown["president_approval_source_url"] = approval.source_url
+    breakdown["generic_ballot_dem_pct"] = generic_ballot.dem_pct
+    breakdown["generic_ballot_rep_pct"] = generic_ballot.rep_pct
+    breakdown["generic_ballot_as_of"] = generic_ballot.as_of.isoformat()
+    breakdown["generic_ballot_source_url"] = generic_ballot.source_url
     # Most states use the last 3 elections per race type, but a state can
     # have fewer (e.g. an outlier year discarded rather than backfilled) --
     # exposing the actual count keeps the UI's "(last N races)" labels

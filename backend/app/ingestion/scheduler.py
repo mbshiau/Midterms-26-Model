@@ -1,7 +1,14 @@
-"""Scheduler stage: refreshes polls (per race) + presidential approval
-(national, once) + Kalshi market odds (per candidate with a configured
-ticker) and regenerates every race's forecast, entirely in the background, at
-fixed wall-clock times every day.
+"""Scheduler stage: refreshes polls (per race) + presidential approval and
+the generic congressional ballot (national, once each) + Kalshi market odds
+(per candidate with a configured ticker) and regenerates every race's
+forecast, entirely in the background, at fixed wall-clock times every day.
+
+Pollster quality ratings (see app.services.pollster_ratings) are
+deliberately NOT part of this recurring refresh -- unlike approval/generic
+ballot, which are current-opinion snapshots that genuinely move day to day,
+a pollster's historical average error only changes when a new election
+cycle's results are certified (at most a few times a year), so it's scraped
+once as a one-time seed rather than re-scraped on a schedule.
 
 Uses a cron trigger (fixed times of day) rather than an interval trigger
 (fixed delay from whenever the job was registered). An interval trigger's
@@ -22,11 +29,13 @@ from apscheduler.triggers.cron import CronTrigger
 from app import database
 from app.data.fundamentals_data import PRESIDENT
 from app.ingestion.approval_scraper import fetch_current_approval
+from app.ingestion.generic_ballot_scraper import fetch_current_generic_ballot
 from app.ingestion.kalshi_scraper import fetch_market_odds
 from app.ingestion.pipeline import fetch_live_polls, ingest_polls
 from app.models import Candidate, Race
 from app.services.approval import update_approval
 from app.services.forecasting import generate_forecast
+from app.services.generic_ballot import update_generic_ballot
 from app.services.market_odds import update_market_odds
 from app.services.races import get_race_seed
 
@@ -61,6 +70,16 @@ def _run_refresh_job() -> None:
             )
         else:
             logger.warning("scheduled refresh: approval scrape failed, keeping previous value")
+
+        scraped_ballot = fetch_current_generic_ballot()
+        if scraped_ballot is not None:
+            update_generic_ballot(db, scraped_ballot)
+            logger.info(
+                "scheduled refresh: generic ballot now Dem %.1f%% / Rep %.1f%% (as of %s)",
+                scraped_ballot.dem_pct, scraped_ballot.rep_pct, scraped_ballot.as_of,
+            )
+        else:
+            logger.warning("scheduled refresh: generic ballot scrape failed, keeping previous value")
 
         races = db.query(Race).all()
         for race in races:

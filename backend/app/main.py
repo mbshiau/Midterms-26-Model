@@ -12,6 +12,7 @@ from app.routers import forecast, kalshi, polls, races, simulations
 from app.schema_sync import sync_schema
 from app.services.approval import seed_default_approval
 from app.services.forecasting import generate_forecast, latest_forecast
+from app.services.generic_ballot import seed_default_generic_ballot
 from app.services.races import get_race_seed, seed_all_races
 
 logging.basicConfig(level=logging.INFO)
@@ -33,6 +34,13 @@ async def lifespan(app: FastAPI):
     db = database.SessionLocal()
     try:
         seed_default_approval(db)
+        seed_default_generic_ballot(db)
+        # Pollster quality ratings (app.services.pollster_ratings) are
+        # deliberately NOT (re-)scraped here on every startup -- historical
+        # pollster accuracy only changes when a new cycle's results are
+        # certified, so the pollster_ratings table is a one-time seed (see
+        # scripts/seed_pollster_ratings.py) rather than something refreshed
+        # on every restart or on the scheduled job.
         races = seed_all_races(db)
         for race in races.values():
             race_seed = get_race_seed(race.state_code)

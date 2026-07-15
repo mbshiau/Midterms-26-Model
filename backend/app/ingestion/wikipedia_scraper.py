@@ -41,6 +41,23 @@ MONTHS = {
 }
 
 
+def parse_full_date(text: str) -> date | None:
+    """Parses a single "Month D, Year" date, e.g. "July 10, 2026" -- the
+    format Wikipedia's aggregate-tracker tables (presidential approval,
+    generic congressional ballot) use for their "Updated" column."""
+    match = re.match(r"^(\w+)\s+(\d{1,2}),?\s*(\d{4})$", text.strip())
+    if not match:
+        return None
+    month_name, day, year = match.groups()
+    month = MONTHS.get(month_name.lower())
+    if month is None:
+        return None
+    try:
+        return date(int(year), month, int(day))
+    except ValueError:
+        return None
+
+
 @dataclass
 class ScrapedPoll:
     pollster: str

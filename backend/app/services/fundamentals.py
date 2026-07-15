@@ -12,7 +12,10 @@ reading a hardcoded constant, so the same model runs for any state:
    `gubernatorial_lean_weight`, since it's the same office), its Senate
    results (`senate_lean_weight`), and its presidential results (the
    remainder). Each series is independently recency-weighted by half-life
-   decay so more recent elections count for more.
+   decay so more recent elections count for more. A state can override the
+   gov/Senate/president split, and how much the *combined* historical lean
+   counts against the other three inputs, via an optional "model_overrides"
+   dict on its RACE_FUNDAMENTALS entry -- see fundamentals_breakdown.
 2. Incumbency — a fixed bonus for whichever party currently holds the seat
    and is running for reelection (0 for an open seat).
 3. Registration trend — the recent trajectory of the statewide D-minus-R
@@ -21,10 +24,14 @@ reading a hardcoded constant, so the same model runs for any state:
    empty list, which is a no-op (0 adjustment) rather than a fabricated one.
 4. National environment — a thermostatic adjustment from the sitting
    president's approval rating: when it's below 50%, the president's party
-   tends to underperform in other races, and vice versa. Approval/party are
+   tends to underperform in other races, and vice versa. Optionally blended
+   with a second, more direct signal -- the generic congressional ballot
+   margin (Democratic minus Republican share, "if the election were held
+   today") -- when one is available. Approval/party/ballot margin are all
    passed in rather than read from a constant, since they're refreshed daily
-   by app.ingestion.approval_scraper and stored in the PresidentApproval
-   table — this module stays a pure function of its inputs, easy to test.
+   by app.ingestion.approval_scraper / app.ingestion.generic_ballot_scraper
+   and stored in the PresidentApproval / GenericBallot tables — this module
+   stays a pure function of its inputs, easy to test.
 """
 
 import math
@@ -89,11 +96,16 @@ def presidential_lean(presidential_elections: list[dict], as_of: date | None = N
     )
 
 
-def _historical_lean_weights() -> tuple[float, float, float]:
+def _historical_lean_weights(model_overrides: dict | None = None) -> tuple[float, float, float]:
     """(governor, senate, president) weights; president is the remainder so
-    the three always sum to 1 regardless of how the first two are tuned."""
-    w_gov = settings.gubernatorial_lean_weight
-    w_sen = settings.senate_lean_weight
+    the three always sum to 1 regardless of how the first two are tuned.
+    `model_overrides` (see fundamentals_breakdown) can replace either of the
+    two global defaults for one specific state -- e.g. Phil Scott's
+    Vermont, where the governor's own race is a far stronger signal than
+    the state's Senate/presidential results, uses gov=0.70/sen=0.15."""
+    model_overrides = model_overrides or {}
+    w_gov = model_overrides.get("gubernatorial_lean_weight", settings.gubernatorial_lean_weight)
+    w_sen = model_overrides.get("senate_lean_weight", settings.senate_lean_weight)
     return w_gov, w_sen, 1 - w_gov - w_sen
 
 
@@ -102,9 +114,10 @@ def combined_historical_lean(
     senate_elections: list[dict],
     presidential_elections: list[dict],
     as_of: date | None = None,
+    model_overrides: dict | None = None,
 ) -> float:
     """Blends the governor/Senate/presidential leans by the weights above."""
-    w_gov, w_sen, w_pres = _historical_lean_weights()
+    w_gov, w_sen, w_pres = _historical_lean_weights(model_overrides)
     return (
         w_gov * gubernatorial_lean(gubernatorial_elections, as_of)
         + w_sen * senate_lean(senate_elections, as_of)
@@ -140,12 +153,33 @@ def registration_trend_adjustment(registration_snapshots: list[dict]) -> float:
     return pct_change * 100 * settings.registration_trend_coefficient
 
 
-def national_environment_adjustment(approval_pct: float, president_party: str) -> float:
-    """Thermostatic adjustment: low presidential approval favors the out-party."""
+def national_environment_adjustment(
+    approval_pct: float,
+    president_party: str,
+    generic_ballot_margin: float | None = None,
+) -> float:
+    """Thermostatic adjustment: low presidential approval favors the
+    out-party. When a generic-congressional-ballot margin (Democratic minus
+    Republican share) is also available, it's blended in alongside the
+    approval-derived swing (weighted `generic_ballot_weight`) rather than
+    relying on approval alone -- the ballot margin is a more direct read on
+    "which way is the country leaning right now" but noisier and less
+    predictive of any one specific governor's race than the resulting blend.
+    Backward compatible: omitting generic_ballot_margin (the default) falls
+    back to approval-only, exactly as before this was added.
+    """
     swing_toward_out_party = settings.presidential_approval_coefficient * (50 - approval_pct)
-    if president_party == "Democratic":
-        return -swing_toward_out_party
-    return swing_toward_out_party
+    approval_component = -swing_toward_out_party if president_party == "Democratic" else swing_toward_out_party
+
+    if generic_ballot_margin is None:
+        return approval_component
+
+    # A raw national House-ballot margin doesn't translate 1:1 into a single
+    # state's governor race -- damped by generic_ballot_coefficient before
+    # being blended in, the same way registration swings are damped.
+    ballot_component = generic_ballot_margin * settings.generic_ballot_coefficient
+    weight = settings.generic_ballot_weight
+    return weight * ballot_component + (1 - weight) * approval_component
 
 
 def fundamentals_breakdown(
@@ -154,8 +188,26 @@ def fundamentals_breakdown(
     approval_pct: float,
     president_party: str,
     as_of: date | None = None,
+    generic_ballot_margin: float | None = None,
 ) -> FundamentalsBreakdown:
+    """`race_fundamentals` may carry an optional "model_overrides" dict for
+    states whose normal historical-lean assumptions don't fit well:
+
+    - `gubernatorial_lean_weight` / `senate_lean_weight`: replace the two
+      global defaults for this state's gov/Senate/president split (see
+      _historical_lean_weights).
+    - `historical_lean_share`: when present, switches from the default
+      (historical lean + incumbency + registration + national environment,
+      simply summed) to a weighted blend instead --
+      `historical_lean_share * combined_historical_lean +
+      (1 - historical_lean_share) * (incumbency + registration + national
+      environment)` -- for a state where a specific candidate's own brand
+      reliably overrides what the state's past elections would suggest
+      (e.g. Iowa's Democratic nominee), so historical lean shouldn't simply
+      dominate the total the way unweighted addition lets it.
+    """
     as_of = as_of or date.today()
+    model_overrides = race_fundamentals.get("model_overrides", {})
     gub_elections = race_fundamentals["gubernatorial_elections"]
     sen_elections = race_fundamentals["senate_elections"]
     pres_elections = race_fundamentals["presidential_elections"]
@@ -164,11 +216,18 @@ def fundamentals_breakdown(
     gub = gubernatorial_lean(gub_elections, as_of)
     sen = senate_lean(sen_elections, as_of)
     pres = presidential_lean(pres_elections, as_of)
-    w_gov, w_sen, w_pres = _historical_lean_weights()
+    w_gov, w_sen, w_pres = _historical_lean_weights(model_overrides)
     combined = w_gov * gub + w_sen * sen + w_pres * pres
     inc = incumbency_adjustment(incumbent_party)
     reg = registration_trend_adjustment(reg_snapshots)
-    env = national_environment_adjustment(approval_pct, president_party)
+    env = national_environment_adjustment(approval_pct, president_party, generic_ballot_margin)
+
+    historical_lean_share = model_overrides.get("historical_lean_share")
+    if historical_lean_share is None:
+        total = combined + inc + reg + env
+    else:
+        total = historical_lean_share * combined + (1 - historical_lean_share) * (inc + reg + env)
+
     return FundamentalsBreakdown(
         gubernatorial_lean_pts=gub,
         senate_lean_pts=sen,
@@ -177,7 +236,7 @@ def fundamentals_breakdown(
         incumbency_pts=inc,
         registration_trend_pts=reg,
         national_environment_pts=env,
-        total_dem_margin_pts=combined + inc + reg + env,
+        total_dem_margin_pts=total,
     )
 
 
@@ -188,10 +247,11 @@ def fundamentals_vote_share(
     approval_pct: float,
     president_party: str,
     as_of: date | None = None,
+    generic_ballot_margin: float | None = None,
 ) -> float:
     """Projected two-party vote share for a candidate of the given party."""
     margin = fundamentals_breakdown(
-        race_fundamentals, incumbent_party, approval_pct, president_party, as_of
+        race_fundamentals, incumbent_party, approval_pct, president_party, as_of, generic_ballot_margin
     ).total_dem_margin_pts
     if party == "Democratic":
         return 50 + margin / 2
@@ -200,15 +260,25 @@ def fundamentals_vote_share(
     return 50.0
 
 
-def poll_weight_for_election(election_date: date, as_of: date | None = None) -> float:
+def poll_weight_for_election(
+    election_date: date,
+    as_of: date | None = None,
+    floor: float | None = None,
+    ceiling: float | None = None,
+) -> float:
     """Fraction of weight given to polling (vs. fundamentals): a continuous
     exponential decay in days-to-election, approximating a hand-specified
     step schedule (~0.80 within 2 weeks, ~0.60 around 5 weeks out, ~0.40
     around 4 months out, asymptoting toward `poll_weight_floor` beyond that)
-    without that schedule's discontinuous jumps."""
+    without that schedule's discontinuous jumps. `floor`/`ceiling` default
+    to the global settings but can be overridden per state (see
+    RACE_FUNDAMENTALS[state_code]["model_overrides"]) for a race where
+    real-time polling should count for much more than the standard curve
+    gives it -- the decay *shape* (tau) stays the same either way, just
+    shifted to a higher baseline."""
     as_of = as_of or date.today()
     days_to_election = max(0, (election_date - as_of).days)
-    floor = settings.poll_weight_floor
-    ceiling = settings.poll_weight_ceiling
+    floor = floor if floor is not None else settings.poll_weight_floor
+    ceiling = ceiling if ceiling is not None else settings.poll_weight_ceiling
     tau = settings.poll_weight_decay_tau_days
     return floor + (ceiling - floor) * math.exp(-days_to_election / tau)

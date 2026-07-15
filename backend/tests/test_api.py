@@ -262,14 +262,18 @@ def test_iowa_race_is_independently_seeded_and_forecast(client):
     assert names == {"Zach Lahn", "Rob Sand"}
     assert forecast["n_polls_used"] == 2
 
-    # Sand leads both individual polls, but Iowa's fundamentals have leaned
-    # solidly Republican since 2014 and still carry most of the blend this
-    # far from Election Day, so the blended forecast favors Lahn overall.
+    # Sand leads both individual polls. IA has a model_overrides entry
+    # (Rob Sand is treated as a genuine crossover-appeal overperformer):
+    # historical lean is damped to 40% of the fundamentals total instead of
+    # dominating it outright, and the poll-weight floor/ceiling are raised
+    # well above the standard curve -- so unlike a typical deep-red state,
+    # Sand's real polling lead is allowed to carry the blended forecast
+    # instead of being swamped by Iowa's historically Republican lean.
     lahn = next(r for r in forecast["results"] if r["candidate"]["name"] == "Zach Lahn")
-    assert lahn["win_probability"] > 0.5
-    assert lahn["fundamentals_vote_share"] > 50
+    assert lahn["fundamentals_vote_share"] > 50  # fundamentals alone still favor Lahn...
     sand = next(r for r in forecast["results"] if r["candidate"]["name"] == "Rob Sand")
     assert sand["polling_vote_share"] > 50
+    assert sand["win_probability"] > 0.5  # ...but the blended forecast now favors Sand
 
 
 def test_new_york_race_is_independently_seeded_and_forecast(client):

@@ -193,6 +193,18 @@ RACE_FUNDAMENTALS = {
             {"date": "2024-10-01", "dem_lead": -166_858},
             {"date": "2026-07-02", "dem_lead": -183_912},
         ],
+        # Rob Sand (D) is a genuine crossover-appeal overperformer (won
+        # statewide re-election as auditor in a state Trump carried by
+        # double digits) -- per explicit direction, historical lean is
+        # damped to just 40% of the fundamentals total (incumbency +
+        # registration + national environment make up the other 60%, see
+        # fundamentals.fundamentals_breakdown), and real-time polling counts
+        # for much more than the standard state's decay curve gives it.
+        "model_overrides": {
+            "historical_lean_share": 0.40,
+            "poll_weight_floor": 0.55,
+            "poll_weight_ceiling": 0.95,
+        },
     },
     "ny": {
         # NY has fusion voting: candidates often run on both a major party
@@ -645,6 +657,17 @@ RACE_FUNDAMENTALS = {
         # registered voter may vote in any one party's primary without
         # declaring membership, so there's no D-minus-R figure to track.
         "registration_snapshots": [],
+        # Phil Scott is a constant, structural overperformer of VT's
+        # Senate/presidential lean -- the state's federal races are
+        # deeply Democratic (60s), but its own governor's races aren't
+        # close. Per explicit direction, the gov/Senate/president split is
+        # reweighted to 70/15/15 (vs. the global 45/30/25 default) so the
+        # same-office signal dominates instead of being diluted by
+        # Senate/presidential results that have never described this race.
+        "model_overrides": {
+            "gubernatorial_lean_weight": 0.70,
+            "senate_lean_weight": 0.15,
+        },
     },
     "ma": {
 
@@ -889,4 +912,14 @@ PRESIDENT = {
     "party": "Republican",
     "approval_pct": 37.0,
     "as_of": "2026-07-10",
+}
+
+# Generic congressional ballot polling average, from the "Average" row of
+# Wikipedia's 2026_United_States_House_of_Representatives_elections opinion
+# polling table (fetched 2026-07-10). Real values -- not invented.
+GENERIC_BALLOT = {
+    "dem_pct": 47.8,
+    "rep_pct": 42.0,
+    "as_of": "2026-07-10",
+    "source_url": "https://en.wikipedia.org/wiki/2026_United_States_House_of_Representatives_elections",
 }

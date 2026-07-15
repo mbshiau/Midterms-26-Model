@@ -61,6 +61,10 @@ export interface FundamentalsBreakdown {
   president_approval_pct: number;
   president_approval_as_of: string;
   president_approval_source_url: string;
+  generic_ballot_dem_pct: number | null;
+  generic_ballot_rep_pct: number | null;
+  generic_ballot_as_of: string | null;
+  generic_ballot_source_url: string | null;
   gubernatorial_elections_count: number;
   senate_elections_count: number;
   presidential_elections_count: number;

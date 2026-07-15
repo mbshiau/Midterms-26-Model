@@ -1,9 +1,12 @@
 from datetime import date
 
+import pytest
+
 from app.config import settings
 from app.data.fundamentals_data import RACE_FUNDAMENTALS
-from app.models import Candidate
-from app.services.forecasting import blend_with_fundamentals
+from app.database import Base
+from app.models import Candidate, Race
+from app.services.forecasting import blend_with_fundamentals, generate_forecast
 from app.services.weighting import CandidateAverage
 
 PA = RACE_FUNDAMENTALS["pa"]
@@ -82,3 +85,49 @@ def test_blend_falls_back_to_fundamentals_only_when_no_polling_exists():
     assert blended[2].weighted_mean == fundamentals_shares[2]
     assert blended[1].weighted_std == settings.fundamentals_uncertainty_stdev
     assert blended[1].n_polls == 0
+
+
+@pytest.fixture()
+def tables(test_engine):
+    Base.metadata.create_all(bind=test_engine)
+
+
+@pytest.fixture()
+def pa_race(db_session, tables):
+    race = Race(
+        state_code="pa",
+        state_name="Pennsylvania",
+        election_date=date(2026, 11, 3),
+        wikipedia_page_title="2026_Pennsylvania_gubernatorial_election",
+    )
+    db_session.add(race)
+    db_session.flush()
+    db_session.add(Candidate(race_id=race.id, name="Dem Candidate", party="Democratic", incumbent=True))
+    db_session.add(Candidate(race_id=race.id, name="Rep Candidate", party="Republican", incumbent=False))
+    db_session.commit()
+    return race
+
+
+def test_generate_forecast_wires_in_the_national_shock(db_session, pa_race):
+    # With a fixed seed (isolating idiosyncratic noise), the only thing that
+    # can differ between two otherwise-identical calls is the date-derived
+    # national shock -- so a real difference in mean_vote_share proves
+    # generate_forecast is actually threading it through end to end, not
+    # just that the underlying simulation primitives support it in isolation.
+    snapshot_day1 = generate_forecast(db_session, pa_race, seed=42, as_of=date(2026, 7, 15))
+    snapshot_day2 = generate_forecast(db_session, pa_race, seed=42, as_of=date(2026, 7, 16))
+
+    dem_day1 = next(r for r in snapshot_day1.results if r.candidate.party == "Democratic")
+    dem_day2 = next(r for r in snapshot_day2.results if r.candidate.party == "Democratic")
+
+    assert dem_day1.mean_vote_share != dem_day2.mean_vote_share
+
+
+def test_generate_forecast_is_reproducible_for_the_same_seed_and_date(db_session, pa_race):
+    snapshot_a = generate_forecast(db_session, pa_race, seed=42, as_of=date(2026, 7, 15))
+    snapshot_b = generate_forecast(db_session, pa_race, seed=42, as_of=date(2026, 7, 15))
+
+    dem_a = next(r for r in snapshot_a.results if r.candidate.party == "Democratic")
+    dem_b = next(r for r in snapshot_b.results if r.candidate.party == "Democratic")
+
+    assert dem_a.mean_vote_share == dem_b.mean_vote_share

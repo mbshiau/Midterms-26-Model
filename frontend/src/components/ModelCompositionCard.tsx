@@ -9,7 +9,7 @@ function signed(n: number, digits = 1): string {
 const OTHER_FUNDAMENTALS_ROWS: { key: keyof ForecastSnapshot["fundamentals_breakdown"]; label: string }[] = [
   { key: "incumbency_pts", label: "Incumbency" },
   { key: "registration_trend_pts", label: "Voter registration trend" },
-  { key: "national_environment_pts", label: "National environment (presidential approval)" },
+  { key: "national_environment_pts", label: "National environment (approval + generic ballot)" },
 ];
 
 export function ModelCompositionCard({
@@ -166,7 +166,26 @@ export function ModelCompositionCard({
           >
             source
           </a>
-          ).
+          ){forecast.fundamentals_breakdown.generic_ballot_dem_pct !== null && (
+            <>
+              , blended with the generic congressional ballot (Democrats{" "}
+              {forecast.fundamentals_breakdown.generic_ballot_dem_pct.toFixed(1)}% / Republicans{" "}
+              {forecast.fundamentals_breakdown.generic_ballot_rep_pct!.toFixed(1)}% as of{" "}
+              {new Date(
+                forecast.fundamentals_breakdown.generic_ballot_as_of + "T00:00:00"
+              ).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}{" "}
+              (
+              <a
+                href={forecast.fundamentals_breakdown.generic_ballot_source_url!}
+                target="_blank"
+                rel="noreferrer"
+                className="underline"
+              >
+                source
+              </a>
+              )
+            </>
+          )}.
         </p>
       </div>
     </div>

@@ -157,6 +157,60 @@ class PresidentApproval(Base):
     )
 
 
+class GenericBallot(Base):
+    """Current national generic-congressional-ballot polling average
+    (Democratic vs. Republican share, "if the election were held today"),
+    feeding the fundamentals model's national-environment adjustment
+    alongside presidential approval. National, not race-scoped -- the same
+    row feeds every state's forecast. Seeded from the static default in
+    app.data.fundamentals_data at startup, then kept current by the
+    scheduled scraper (see app.ingestion.generic_ballot_scraper). Single
+    current row -- refreshes update it in place rather than accumulating a
+    full history."""
+
+    __tablename__ = "generic_ballot"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    dem_pct: Mapped[float] = mapped_column(Float, nullable=False)
+    rep_pct: Mapped[float] = mapped_column(Float, nullable=False)
+    as_of: Mapped[date] = mapped_column(Date, nullable=False)
+    source_url: Mapped[str] = mapped_column(Text, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=lambda: datetime.now(timezone.utc)
+    )
+
+
+class PollsterRating(Base):
+    """One pollster's historical accuracy record (average error in points,
+    partisan house lean, winner-call rate), scraped in bulk from
+    PollingSource.com's /pollsters table -- feeds a quality-weight multiplier
+    in app.services.weighting.poll_weight, on top of the existing recency +
+    sample-size weighting. National, not race-scoped -- the same table feeds
+    every race's polls. Matched against Poll.pollster by normalized
+    (lowercased, stripped) name; a pollster with no matching row here just
+    gets a neutral 1.0 quality weight rather than being penalized for being
+    untracked. Unlike PresidentApproval/GenericBallot, this isn't a single
+    upserted row -- it's a whole table (one row per pollster), refreshed by
+    re-upserting every row on each scheduled run (see
+    app.ingestion.pollster_ratings_scraper)."""
+
+    __tablename__ = "pollster_ratings"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    pollster_name: Mapped[str] = mapped_column(String(200), nullable=False)
+    normalized_name: Mapped[str] = mapped_column(String(200), unique=True, nullable=False)
+    avg_error_pts: Mapped[float | None] = mapped_column(Float, nullable=True)
+    lean_party: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    lean_pts: Mapped[float | None] = mapped_column(Float, nullable=True)
+    winner_called_pct: Mapped[float | None] = mapped_column(Float, nullable=True)
+    polls_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    cycles_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    source_url: Mapped[str] = mapped_column(Text, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=lambda: datetime.now(timezone.utc)
+    )
+
+
 class MarketOdds(Base):
     """Latest Kalshi win-probability snapshot for one candidate -- surfaced
     as its own standalone section per race (see app.routers.kalshi), never

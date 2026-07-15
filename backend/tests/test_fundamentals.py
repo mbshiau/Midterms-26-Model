@@ -768,6 +768,72 @@ def test_historical_lean_weights_sum_to_one():
     assert abs((w_gov + w_sen + w_pres) - 1.0) < 1e-9
 
 
+def test_historical_lean_weights_override_still_sums_to_one():
+    # Vermont's override (gov=0.70, sen=0.15) -- president is still the
+    # remainder, so it must sum to 1 exactly like the global default.
+    w_gov, w_sen, w_pres = fundamentals._historical_lean_weights(VT["model_overrides"])
+    assert w_gov == 0.70
+    assert w_sen == 0.15
+    assert abs((w_gov + w_sen + w_pres) - 1.0) < 1e-9
+
+
+def test_vermont_override_makes_gubernatorial_lean_dominate():
+    # Phil Scott (R) is a constant overperformer of VT's federal-race
+    # blueness -- the 70/15/15 override must pull the combined historical
+    # lean much further toward his own (heavily Republican-favoring)
+    # gubernatorial results than the diluted default 45/30/25 blend, which
+    # is dragged back toward Democratic by VT's blue Senate/president leans.
+    as_of = date(2026, 7, 15)
+    overridden = fundamentals.fundamentals_breakdown(
+        VT, "Republican", 39.1, "Republican", as_of, generic_ballot_margin=-5.8
+    )
+    without_override = dict(VT)
+    without_override.pop("model_overrides")
+    default = fundamentals.fundamentals_breakdown(
+        without_override, "Republican", 39.1, "Republican", as_of, generic_ballot_margin=-5.8
+    )
+
+    # Both are Republican-favoring (Scott's own gubernatorial results are
+    # lopsidedly red enough to still tip the default-weighted blend too),
+    # but the override must make it dramatically more so by weighting his
+    # own race far more heavily than VT's blue-leaning federal races.
+    assert overridden.combined_historical_lean_pts < 0
+    assert default.combined_historical_lean_pts < 0
+    assert overridden.combined_historical_lean_pts < default.combined_historical_lean_pts
+    assert overridden.total_dem_margin_pts < default.total_dem_margin_pts
+
+
+def test_iowa_override_damps_historical_lean_to_40_percent_of_the_total():
+    as_of = date(2026, 7, 15)
+    overridden = fundamentals.fundamentals_breakdown(
+        IA, None, 39.1, "Republican", as_of, generic_ballot_margin=-5.8
+    )
+    without_override = dict(IA)
+    without_override.pop("model_overrides")
+    default = fundamentals.fundamentals_breakdown(
+        without_override, None, 39.1, "Republican", as_of, generic_ballot_margin=-5.8
+    )
+
+    other = overridden.incumbency_pts + overridden.registration_trend_pts + overridden.national_environment_pts
+    expected = 0.40 * overridden.combined_historical_lean_pts + 0.60 * other
+    assert abs(overridden.total_dem_margin_pts - expected) < 1e-9
+
+    # Damping a Republican-favoring historical lean toward 0 must move the
+    # total margin *toward* Democrats relative to undamped addition.
+    assert overridden.total_dem_margin_pts > default.total_dem_margin_pts
+
+
+def test_iowa_override_raises_poll_weight_above_the_global_curve():
+    election_date = date(2026, 11, 3)
+    as_of = date(2026, 7, 15)
+    overrides = IA["model_overrides"]
+    overridden = fundamentals.poll_weight_for_election(
+        election_date, as_of, floor=overrides["poll_weight_floor"], ceiling=overrides["poll_weight_ceiling"]
+    )
+    default = fundamentals.poll_weight_for_election(election_date, as_of)
+    assert overridden > default
+
+
 def test_incumbency_adjustment_sign():
     assert fundamentals.incumbency_adjustment("Democratic") > 0
     assert fundamentals.incumbency_adjustment("Republican") < 0
@@ -795,6 +861,45 @@ def test_national_environment_favors_out_party_when_approval_low():
         approval_pct=37.0, president_party="Democratic"
     )
     assert adjustment_dem_pres < 0
+
+
+def test_national_environment_is_backward_compatible_without_a_ballot_margin():
+    # Omitting generic_ballot_margin (the default) must fall back to
+    # approval-only, byte-for-byte the same as before this was added.
+    with_none = fundamentals.national_environment_adjustment(
+        approval_pct=37.0, president_party="Republican", generic_ballot_margin=None
+    )
+    without_arg = fundamentals.national_environment_adjustment(
+        approval_pct=37.0, president_party="Republican"
+    )
+    assert with_none == without_arg
+
+
+def test_national_environment_blends_in_a_favorable_generic_ballot():
+    # A Democratic-favorable generic ballot margin should pull the
+    # adjustment further toward Democrats than approval alone.
+    approval_only = fundamentals.national_environment_adjustment(
+        approval_pct=50.0, president_party="Republican"
+    )
+    with_dem_ballot = fundamentals.national_environment_adjustment(
+        approval_pct=50.0, president_party="Republican", generic_ballot_margin=10.0
+    )
+    assert with_dem_ballot > approval_only
+
+
+def test_national_environment_blend_uses_the_configured_weight():
+    approval_component = fundamentals.national_environment_adjustment(
+        approval_pct=42.0, president_party="Republican"
+    )
+    ballot_margin = 5.8
+    blended = fundamentals.national_environment_adjustment(
+        approval_pct=42.0, president_party="Republican", generic_ballot_margin=ballot_margin
+    )
+    weight = fundamentals.settings.generic_ballot_weight
+    expected = weight * (ballot_margin * fundamentals.settings.generic_ballot_coefficient) + (
+        1 - weight
+    ) * approval_component
+    assert abs(blended - expected) < 1e-9
 
 
 def test_fundamentals_vote_share_is_zero_sum_between_two_parties():

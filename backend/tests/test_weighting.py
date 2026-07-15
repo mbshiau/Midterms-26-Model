@@ -1,6 +1,6 @@
 from datetime import date
 
-from app.models import Poll, PollResult, Population
+from app.models import PollsterRating, Poll, PollResult, Population
 from app.services.weighting import (
     CandidateAverage,
     poll_weight,
@@ -10,10 +10,21 @@ from app.services.weighting import (
 )
 
 
-def make_poll(field_end_date, sample_size, results: dict[int, float], poll_id: int = 0) -> Poll:
+def make_rating(pollster_name: str, avg_error_pts: float) -> PollsterRating:
+    return PollsterRating(
+        pollster_name=pollster_name,
+        normalized_name=pollster_name.strip().lower(),
+        avg_error_pts=avg_error_pts,
+        source_url="https://pollingsource.com/pollsters",
+    )
+
+
+def make_poll(
+    field_end_date, sample_size, results: dict[int, float], poll_id: int = 0, pollster: str = "Test Pollster"
+) -> Poll:
     poll = Poll(
         id=poll_id,
-        pollster="Test Pollster",
+        pollster=pollster,
         field_start_date=field_end_date,
         field_end_date=field_end_date,
         release_date=field_end_date,
@@ -93,3 +104,56 @@ def test_two_party_normalize_rescales_to_sum_100_preserving_ratio():
     assert abs(normalized[1].weighted_mean / normalized[2].weighted_mean - 50.0 / 30.0) < 1e-9
     # std is left as an absolute percentage-point dispersion, unrescaled
     assert normalized[1].weighted_std == raw[1].weighted_std
+
+
+def test_poll_weight_upweights_a_higher_quality_pollster():
+    as_of = date(2026, 7, 10)
+    good_poll = make_poll(as_of, 1000, {1: 50.0}, pollster="Great Pollster")
+    bad_poll = make_poll(as_of, 1000, {1: 50.0}, pollster="Bad Pollster")
+    ratings = {
+        "great pollster": make_rating("Great Pollster", avg_error_pts=1.0),
+        "bad pollster": make_rating("Bad Pollster", avg_error_pts=20.0),
+    }
+
+    good_weight = poll_weight(good_poll, as_of, half_life_days=21, pollster_ratings=ratings)
+    bad_weight = poll_weight(bad_poll, as_of, half_life_days=21, pollster_ratings=ratings)
+
+    assert good_weight > bad_weight
+
+
+def test_poll_weight_matches_pollster_name_case_and_whitespace_insensitively():
+    as_of = date(2026, 7, 10)
+    poll = make_poll(as_of, 1000, {1: 50.0}, pollster="  YouGov  ")
+    ratings = {"yougov": make_rating("YouGov", avg_error_pts=1.0)}
+
+    with_rating = poll_weight(poll, as_of, half_life_days=21, pollster_ratings=ratings)
+    without_rating = poll_weight(poll, as_of, half_life_days=21, pollster_ratings=None)
+
+    assert with_rating > without_rating
+
+
+def test_poll_weight_is_unchanged_for_an_untracked_pollster():
+    as_of = date(2026, 7, 10)
+    poll = make_poll(as_of, 1000, {1: 50.0}, pollster="Some New Outfit")
+    ratings = {"yougov": make_rating("YouGov", avg_error_pts=1.0)}
+
+    tracked_missing = poll_weight(poll, as_of, half_life_days=21, pollster_ratings=ratings)
+    no_ratings_at_all = poll_weight(poll, as_of, half_life_days=21, pollster_ratings=None)
+
+    assert tracked_missing == no_ratings_at_all
+
+
+def test_weighted_polling_averages_pulls_toward_the_higher_quality_pollster():
+    as_of = date(2026, 7, 10)
+    good_poll = make_poll(as_of, 1000, {1: 60.0}, poll_id=1, pollster="Great Pollster")
+    bad_poll = make_poll(as_of, 1000, {1: 40.0}, poll_id=2, pollster="Bad Pollster")
+    ratings = {
+        "great pollster": make_rating("Great Pollster", avg_error_pts=1.0),
+        "bad pollster": make_rating("Bad Pollster", avg_error_pts=20.0),
+    }
+
+    averages = weighted_polling_averages([good_poll, bad_poll], as_of, half_life_days=21, pollster_ratings=ratings)
+
+    # An unweighted mean of 60/40 would land exactly on 50 -- pollster quality
+    # weighting should pull it toward the more accurate pollster's 60.
+    assert averages[1].weighted_mean > 50.0

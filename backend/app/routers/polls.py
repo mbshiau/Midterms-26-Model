@@ -9,6 +9,7 @@ from app.database import get_db
 from app.models import Poll, PollResult, Race
 from app.routers.deps import get_race_or_404
 from app.schemas import PollOut
+from app.services.pollster_ratings import get_pollster_ratings_by_name
 from app.services.weighting import poll_weights
 
 router = APIRouter(prefix="/races/{state_code}/polls", tags=["polls"])
@@ -23,7 +24,11 @@ def list_polls(race: Race = Depends(get_race_or_404), db: Session = Depends(get_
         .order_by(desc(Poll.field_end_date))
         .all()
     )
-    weights = poll_weights(polls, date.today(), settings.recency_half_life_days)
+    # Same pollster-quality-adjusted weighting the forecast itself uses (see
+    # app.services.forecasting.generate_forecast), so this displayed weight
+    # column always matches what actually fed the model.
+    pollster_ratings = get_pollster_ratings_by_name(db)
+    weights = poll_weights(polls, date.today(), settings.recency_half_life_days, pollster_ratings)
     return [
         PollOut.model_validate(poll).model_copy(update={"weight": weights[poll.id]})
         for poll in polls

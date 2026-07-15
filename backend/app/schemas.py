@@ -91,6 +91,12 @@ class FundamentalsBreakdownOut(BaseModel):
     president_approval_pct: float
     president_approval_as_of: date
     president_approval_source_url: str
+    # Optional: forecast snapshots generated before this feature existed have
+    # no generic-ballot data in their stored JSON at all.
+    generic_ballot_dem_pct: float | None = None
+    generic_ballot_rep_pct: float | None = None
+    generic_ballot_as_of: date | None = None
+    generic_ballot_source_url: str | None = None
     gubernatorial_elections_count: int
     senate_elections_count: int
     presidential_elections_count: int
