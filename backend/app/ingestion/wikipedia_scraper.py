@@ -183,9 +183,22 @@ def _parse_rows(table: Tag, candidate_columns: dict[str, int], source_url: str) 
         if not pollster or date_range is None or sample is None:
             continue
 
+        # moe/other/undecided are optional columns whose *header* index was
+        # found, but an individual row can still be shorter than the header
+        # implies (a ragged Wikipedia table row) -- guard each access
+        # separately rather than assuming every row has every column, or a
+        # single malformed row crashes the whole scheduled refresh (and,
+        # since that loop covers every state, silently blocks every race
+        # after this one too).
+        def cell_at(idx: int | None) -> str | None:
+            return cells[idx].get_text(strip=True) if idx is not None and idx < len(cells) else None
+
         results = {name: _parse_pct(cells[idx].get_text(strip=True)) for name, idx in candidate_columns.items()}
-        other = _parse_pct(cells[other_idx].get_text(strip=True)) if other_idx is not None else 0.0
-        undecided = _parse_pct(cells[undecided_idx].get_text(strip=True)) if undecided_idx is not None else 0.0
+        other_text = cell_at(other_idx)
+        undecided_text = cell_at(undecided_idx)
+        other = _parse_pct(other_text) if other_text is not None else 0.0
+        undecided = _parse_pct(undecided_text) if undecided_text is not None else 0.0
+        moe_text = cell_at(moe_idx)
 
         field_start, field_end = date_range
         polls.append(
@@ -196,7 +209,7 @@ def _parse_rows(table: Tag, candidate_columns: dict[str, int], source_url: str) 
                 release_date=field_end + timedelta(days=RELEASE_DATE_LAG_DAYS),
                 sample_size=sample[0],
                 population=sample[1],
-                margin_of_error=_parse_moe(cells[moe_idx].get_text(strip=True)) if moe_idx is not None else None,
+                margin_of_error=_parse_moe(moe_text) if moe_text is not None else None,
                 undecided_pct=round(other + undecided, 2),
                 source_url=source_url,
                 results=results,

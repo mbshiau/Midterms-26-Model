@@ -1844,4 +1844,16 @@ RACES = {
         ],
         "raw_polls": []  
     },
+    "ok": {
+        "state_name": "Oklahoma",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Oklahoma_gubernatorial_election",
+        
+        "candidates": [
+            {"name": "Republican Nominee (TBD)", "party": "Republican", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYOK-26-R"},
+            {"name": "Cyndi Munson", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/c/ca/Cyndi_Munson.jpg",  "kalshi_ticker": "GOVPARTYOK-26-D"},
+        ],
+        "raw_polls": []  
+    },
 }

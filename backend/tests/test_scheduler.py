@@ -1,6 +1,9 @@
+from unittest.mock import patch
 from zoneinfo import ZoneInfo
 
 from app.ingestion import scheduler
+from app.models import Race
+from app.services.forecasting import forecast_history
 
 
 def test_start_scheduler_sets_a_real_next_run_time():
@@ -37,6 +40,40 @@ def test_misfire_grace_time_is_generous_not_the_apscheduler_default():
         assert job.misfire_grace_time >= 300
     finally:
         scheduler.stop_scheduler()
+
+
+def test_one_races_scraping_failure_does_not_block_other_races(client, db_session):
+    # Regression test for a real production incident: a ragged Wikipedia
+    # table row crashed with an IndexError while parsing California's polls,
+    # and because the whole per-race loop was wrapped in a single
+    # try/except, every state processed after California in that run never
+    # got its poll refresh, Kalshi refresh, or forecast regeneration --
+    # silently, with no visible error to the end user. One race's failure
+    # must never block any other race.
+    def flaky_ingest_polls(db, race, race_seed, fetcher=None):
+        if race.state_code == "pa":
+            raise IndexError("simulated ragged Wikipedia row")
+        return 0
+
+    races = {r.state_code: r for r in db_session.query(Race).all()}
+    other_codes = [code for code in ("oh", "ca", "tx") if code in races]
+    snapshots_before = {code: len(forecast_history(db_session, races[code])) for code in other_codes}
+    pa_snapshots_before = len(forecast_history(db_session, races["pa"]))
+
+    with (
+        patch("app.ingestion.scheduler.fetch_current_approval", return_value=None),
+        patch("app.ingestion.scheduler.ingest_polls", side_effect=flaky_ingest_polls),
+        patch("app.ingestion.scheduler.fetch_market_odds", return_value=None),
+    ):
+        scheduler._run_refresh_job()
+
+    # PA itself crashed before reaching generate_forecast -- no new snapshot.
+    assert len(forecast_history(db_session, races["pa"])) == pa_snapshots_before
+
+    # Every other race still got refreshed, regardless of iteration order
+    # relative to PA.
+    for code in other_codes:
+        assert len(forecast_history(db_session, races[code])) == snapshots_before[code] + 1
 
 
 def test_next_run_lands_on_noon_or_7pm_eastern():

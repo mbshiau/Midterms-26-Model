@@ -31,6 +31,7 @@ AR = RACE_FUNDAMENTALS["ar"]
 WI = RACE_FUNDAMENTALS["wi"]
 ID = RACE_FUNDAMENTALS["id"]
 SD = RACE_FUNDAMENTALS["sd"]
+OK = RACE_FUNDAMENTALS["ok"]
 
 
 def test_gubernatorial_lean_favors_democratic_given_researched_data():
@@ -700,6 +701,24 @@ def test_south_dakota_senate_lean_favors_republican():
 
 def test_south_dakota_presidential_lean_favors_republican():
     lean = fundamentals.presidential_lean(SD["presidential_elections"], as_of=date(2026, 7, 10))
+    assert lean < -15
+
+
+def test_oklahoma_gubernatorial_lean_favors_republican():
+    # OK's gubernatorial races have run closer than its Senate/presidential
+    # numbers (2018 was a real single-digit-ish race), so this uses a looser
+    # threshold than the -15 used for the other two series below.
+    lean = fundamentals.gubernatorial_lean(OK["gubernatorial_elections"], as_of=date(2026, 7, 10))
+    assert lean < -10
+
+
+def test_oklahoma_senate_lean_favors_republican():
+    lean = fundamentals.senate_lean(OK["senate_elections"], as_of=date(2026, 7, 10))
+    assert lean < -15
+
+
+def test_oklahoma_presidential_lean_favors_republican():
+    lean = fundamentals.presidential_lean(OK["presidential_elections"], as_of=date(2026, 7, 10))
     assert lean < -15
 
 

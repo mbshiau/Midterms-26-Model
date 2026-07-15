@@ -64,37 +64,46 @@ def _run_refresh_job() -> None:
 
         races = db.query(Race).all()
         for race in races:
-            race_seed = get_race_seed(race.state_code)
-            live_fetcher = partial(
-                fetch_live_polls, wikipedia_page_title=race_seed["wikipedia_page_title"]
-            )
-            new_poll_count = ingest_polls(db, race, race_seed, fetcher=live_fetcher)
-            logger.info(
-                "scheduled refresh: %s — %d new poll(s) from Wikipedia",
-                race.state_code, new_poll_count,
-            )
-
-            candidates_with_tickers = (
-                db.query(Candidate)
-                .filter(Candidate.race_id == race.id, Candidate.kalshi_ticker.isnot(None))
-                .all()
-            )
-            for candidate in candidates_with_tickers:
-                scraped = fetch_market_odds(candidate.kalshi_ticker)
-                if scraped is None:
-                    logger.warning(
-                        "scheduled refresh: %s — Kalshi fetch failed for %s (%s)",
-                        race.state_code, candidate.name, candidate.kalshi_ticker,
-                    )
-                    continue
-                update_market_odds(db, candidate.id, scraped)
+            # Each race is isolated: a scraping quirk in one state's
+            # Wikipedia table or a Kalshi hiccup must never abort the loop
+            # and silently skip every remaining state's refresh (which is
+            # exactly what an exception here used to do, since this used to
+            # be one try/except around the whole loop instead of per-race).
+            try:
+                race_seed = get_race_seed(race.state_code)
+                live_fetcher = partial(
+                    fetch_live_polls, wikipedia_page_title=race_seed["wikipedia_page_title"]
+                )
+                new_poll_count = ingest_polls(db, race, race_seed, fetcher=live_fetcher)
                 logger.info(
-                    "scheduled refresh: %s — Kalshi odds for %s now %.1f%%",
-                    race.state_code, candidate.name, scraped.yes_price_pct,
+                    "scheduled refresh: %s — %d new poll(s) from Wikipedia",
+                    race.state_code, new_poll_count,
                 )
 
-            generate_forecast(db, race)
-            logger.info("scheduled refresh: %s forecast regenerated", race.state_code)
+                candidates_with_tickers = (
+                    db.query(Candidate)
+                    .filter(Candidate.race_id == race.id, Candidate.kalshi_ticker.isnot(None))
+                    .all()
+                )
+                for candidate in candidates_with_tickers:
+                    scraped = fetch_market_odds(candidate.kalshi_ticker)
+                    if scraped is None:
+                        logger.warning(
+                            "scheduled refresh: %s — Kalshi fetch failed for %s (%s)",
+                            race.state_code, candidate.name, candidate.kalshi_ticker,
+                        )
+                        continue
+                    update_market_odds(db, candidate.id, scraped)
+                    logger.info(
+                        "scheduled refresh: %s — Kalshi odds for %s now %.1f%%",
+                        race.state_code, candidate.name, scraped.yes_price_pct,
+                    )
+
+                generate_forecast(db, race)
+                logger.info("scheduled refresh: %s forecast regenerated", race.state_code)
+            except Exception:
+                logger.exception("scheduled refresh: %s failed, continuing with remaining races", race.state_code)
+                db.rollback()
     except Exception:
         logger.exception("scheduled refresh job failed")
     finally:

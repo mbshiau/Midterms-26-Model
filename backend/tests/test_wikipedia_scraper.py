@@ -136,6 +136,49 @@ def test_fetch_general_election_polls_end_to_end():
     assert susquehanna.field_end_date == date(2026, 3, 1)
 
 
+def test_fetch_general_election_polls_survives_a_ragged_row():
+    # Regression test: a real production incident where one row in a live
+    # Wikipedia table had fewer <td>s than the header implies (missing the
+    # trailing Other/Undecided cells) -- cells[undecided_idx] raised
+    # IndexError and crashed the whole scheduled refresh job for every
+    # state processed after this one. A ragged row must be parsed with
+    # graceful fallbacks (no MoE, 0% other/undecided), not crash.
+    ragged_html = """
+    <table class="wikitable">
+    <tbody><tr valign="bottom">
+    <th>Poll source</th>
+    <th>Date(s)</th>
+    <th>Sample size</th>
+    <th>Margin of error</th>
+    <th>Shapiro (D)</th>
+    <th>Garrity (R)</th>
+    <th>Other</th>
+    <th>Undecided</th></tr>
+    <tr>
+    <td>PennLive</td>
+    <td>June 18-25, 2026</td>
+    <td>644 (RV)</td>
+    <td>&#177; 4.14%</td>
+    <td>54%</td>
+    <td>29%</td></tr>
+    </tbody></table>
+    """
+    with patch(
+        "app.ingestion.wikipedia_scraper.fetch_wikipedia_html",
+        return_value=f"<html><body>{ragged_html}</body></html>",
+    ):
+        polls = fetch_general_election_polls(
+            "2026_Pennsylvania_gubernatorial_election",
+            {"Shapiro": "Josh Shapiro", "Garrity": "Stacy Garrity"},
+        )
+
+    assert len(polls) == 1
+    poll = polls[0]
+    assert poll.results == {"Josh Shapiro": 54.0, "Stacy Garrity": 29.0}
+    assert poll.undecided_pct == 0.0
+    assert poll.margin_of_error == 4.14  # MoE column was present on this row
+
+
 def test_fetch_general_election_polls_returns_empty_on_network_failure():
     with patch("app.ingestion.wikipedia_scraper.fetch_wikipedia_html", return_value=None):
         polls = fetch_general_election_polls(
