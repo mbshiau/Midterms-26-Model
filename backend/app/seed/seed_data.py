@@ -1675,7 +1675,7 @@ RACES = {
                 "results": {"Xavier Becerra": 58.0, "Steve Hilton": 35.0},
             },
             {
-                "pollster": "California Elections and Policy Poll (CEPP)",
+                "pollster": "Berkeley IGS",
                 "sponsor": None,
                 "field_start_date": "2026-05-19",
                 "field_end_date": "2026-05-24",

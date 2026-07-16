@@ -78,6 +78,63 @@ def test_same_poll_cited_via_different_url_is_not_duplicated(db_session, tables)
     assert second_count == 0  # same pollster + field dates -> not a duplicate
 
 
+def test_aliased_pollster_name_is_not_duplicated(db_session, tables):
+    # Regression test for a real production incident: California's seed data
+    # cites a pollster as "California Elections and Policy Poll (CEPP)", but
+    # Wikipedia's own polling table abbreviates the same pollster as just
+    # "CEPP" -- without POLLSTER_NAME_ALIASES, the same real poll got
+    # re-ingested as a second, differently-named row on every scheduled
+    # refresh, silently double-weighting it in the polling average.
+    race = make_race(db_session, state_code="ca")
+    race_seed = {
+        "candidates": [
+            {"name": "Xavier Becerra", "party": "Democratic", "incumbent": False},
+            {"name": "Steve Hilton", "party": "Republican", "incumbent": False},
+        ],
+        "raw_polls": [],
+    }
+
+    def seed_fetcher(candidates):
+        return [
+            {
+                "pollster": "California Elections and Policy Poll (CEPP)",
+                "sponsor": None,
+                "field_start_date": "2026-05-23",
+                "field_end_date": "2026-05-26",
+                "release_date": "2026-06-01",
+                "sample_size": 735,
+                "population": "LV",
+                "margin_of_error": 3.6,
+                "undecided_pct": 5.0,
+                "source_url": "https://www.politico.com/f/?id=0000019e-804f-d4e8-afde-e04f9b1e0000",
+                "results": {"Xavier Becerra": 58.0, "Steve Hilton": 35.0},
+            }
+        ]
+
+    def wikipedia_fetcher(candidates):
+        return [
+            {
+                "pollster": "CEPP",
+                "sponsor": None,
+                "field_start_date": "2026-05-23",
+                "field_end_date": "2026-05-26",
+                "release_date": "2026-05-29",
+                "sample_size": 735,
+                "population": "LV",
+                "margin_of_error": 3.6,
+                "undecided_pct": 5.0,
+                "source_url": "https://en.wikipedia.org/wiki/2026_California_gubernatorial_election",
+                "results": {"Xavier Becerra": 58.0, "Steve Hilton": 35.0},
+            }
+        ]
+
+    first_count = ingest_polls(db_session, race, race_seed, fetcher=seed_fetcher)
+    second_count = ingest_polls(db_session, race, race_seed, fetcher=wikipedia_fetcher)
+
+    assert first_count == 1
+    assert second_count == 0  # "CEPP" is a known alias -> not a duplicate
+
+
 def test_polls_are_scoped_per_race(db_session, tables):
     race_a = make_race(db_session, "pa")
     race_b = Race(

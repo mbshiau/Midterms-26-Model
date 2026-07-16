@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 
 from app.ingestion.wikipedia_scraper import (
     _clean_pollster_name,
+    _extra_candidate_column_count,
     _find_polling_table,
     _parse_date_range,
     _parse_moe,
@@ -177,6 +178,55 @@ def test_fetch_general_election_polls_survives_a_ragged_row():
     assert poll.results == {"Josh Shapiro": 54.0, "Stacy Garrity": 29.0}
     assert poll.undecided_pct == 0.0
     assert poll.margin_of_error == 4.14  # MoE column was present on this row
+
+
+def test_find_polling_table_skips_a_primary_era_trial_heat_table():
+    # Regression test for a real production bug: California's Wikipedia page
+    # has several pre-primary "trial heat" tables testing hypothetical
+    # matchups among many possible nominees (e.g. Becerra vs. Bianco vs.
+    # Hilton vs. Mahan) before the real head-to-head general-election table
+    # further down. Since the eventual nominees were also primary
+    # candidates, their surnames appear in both tables -- naively picking the
+    # first table whose headers merely *contain* both surnames grabbed the
+    # trial heat instead of the real matchup. The real general-election
+    # table must be the one where our two candidates are the *only* ones.
+    trial_heat_and_real_tables_html = """
+    <table class="wikitable">
+    <tbody><tr>
+    <th>Poll source</th><th>Date(s)administered</th><th>Sample size</th><th>Margin of error</th>
+    <th>Xavier Becerra (D)</th><th>Chad Bianco (R)</th><th>Steve Hilton (R)</th><th>Matt Mahan (D)</th>
+    </tr>
+    <tr><td>Some Pollster</td><td>March 1, 2026</td><td>800 (RV)</td><td>3.5%</td>
+    <td>30%</td><td>20%</td><td>25%</td><td>15%</td></tr>
+    </tbody></table>
+    <table class="wikitable">
+    <tbody><tr>
+    <th>Poll source</th><th>Date(s)administered</th><th>Sample size</th><th>Margin of error</th>
+    <th>Xavier Becerra (D)</th><th>Steve Hilton (R)</th><th>Other</th><th>Undecided</th>
+    </tr>
+    <tr><td>Kreate Strategies</td><td>June 13-17, 2026</td><td>900 (LV)</td><td>3.3%</td>
+    <td>58%</td><td>33%</td><td>–</td><td>8%</td></tr>
+    </tbody></table>
+    """
+    soup = BeautifulSoup(f"<html><body>{trial_heat_and_real_tables_html}</body></html>", "html.parser")
+
+    table = _find_polling_table(soup, ["Becerra", "Hilton"])
+
+    headers = [th.get_text(strip=True).lower() for th in table.find("tr").find_all("th")]
+    assert "chad bianco (r)" not in " ".join(headers)
+    assert "matt mahan (d)" not in " ".join(headers)
+
+
+def test_extra_candidate_column_count_counts_unrelated_party_tagged_columns():
+    headers = [
+        "poll source",
+        "xavier becerra (d)",
+        "chad bianco (r)",
+        "steve hilton (r)",
+        "matt mahan (d)",
+    ]
+    assert _extra_candidate_column_count(headers, ["becerra", "hilton"]) == 2
+    assert _extra_candidate_column_count(headers, ["becerra", "bianco", "hilton", "mahan"]) == 0
 
 
 def test_fetch_general_election_polls_returns_empty_on_network_failure():

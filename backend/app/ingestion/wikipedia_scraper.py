@@ -100,16 +100,44 @@ def _header_texts(table: Tag) -> list[str]:
     return [th.get_text(strip=True).lower() for th in header_row.find_all(["th"])]
 
 
+def _extra_candidate_column_count(headers: list[str], surnames_lower: list[str]) -> int:
+    """Counts header columns that look like a *different* candidate's name
+    (a "Firstname Lastname (D/R/I)" column not belonging to any of our
+    target surnames) -- i.e. how many nominees this table tests beyond our
+    race's actual two (or more). A pre-primary "trial heat" table testing
+    several hypothetical matchups happens to mention our eventual nominees
+    too (they were primary candidates once), so requiring the surnames to
+    merely be *present* isn't enough to find the real general-election
+    table -- it has to be the one where they're the *only* candidates."""
+    return sum(
+        1
+        for h in headers
+        if re.search(r"\([dri]\)\s*$", h) and not any(s in h for s in surnames_lower)
+    )
+
+
 def _find_polling_table(soup: BeautifulSoup, candidate_surnames: list[str]) -> Tag | None:
     surnames_lower = [s.lower() for s in candidate_surnames]
+    matches: list[tuple[int, Tag]] = []
     for table in soup.find_all("table", class_="wikitable"):
         headers = _header_texts(table)
         header_blob = " ".join(headers)
         if "sample" not in header_blob or "poll source" not in header_blob:
             continue
         if all(surname in header_blob for surname in surnames_lower):
-            return table
-    return None
+            matches.append((_extra_candidate_column_count(headers, surnames_lower), table))
+
+    if not matches:
+        return None
+
+    # Prefer an exact head-to-head match (no extra candidates beyond our
+    # race's own) -- a table that also tests other hypothetical nominees is
+    # a primary-era trial heat, not the actual general-election polling
+    # table. Among equally-exact matches, the later one in document order is
+    # the real one: Wikipedia lists primary-era trial heats before the
+    # (post-primary) general-election polling section.
+    min_extra = min(extra for extra, _ in matches)
+    return [table for extra, table in matches if extra == min_extra][-1]
 
 
 def _clean_pollster_name(cell: Tag) -> str:

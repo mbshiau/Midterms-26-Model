@@ -121,22 +121,38 @@ def get_or_create_candidates(db: Session, race: Race, race_seed: dict) -> dict[s
     return by_name
 
 
+# Wikipedia sometimes abbreviates a pollster's name differently than our
+# curated seed data does (e.g. Wikipedia's "CEPP" vs. seed_data.py's full
+# "California Elections and Policy Poll (CEPP)") -- without treating these
+# as the same pollster, the same real poll gets ingested twice under two
+# different pollster strings on every scheduled refresh. Keyed by lowercased
+# alias -> the canonical (seed data's) spelling.
+POLLSTER_NAME_ALIASES = {
+    "cepp": "california elections and policy poll (cepp)",
+}
+
+
+def _normalize_pollster_for_dedup(name: str) -> str:
+    normalized = name.strip().lower()
+    return POLLSTER_NAME_ALIASES.get(normalized, normalized)
+
+
 def _poll_exists(db: Session, race: Race, parsed: dict) -> bool:
     """A poll is identified by race + pollster + field dates (not source_url):
     the same poll can legitimately be cited via different URLs — a curated
     press release for the seed data vs. the Wikipedia aggregator page the
     live scraper always cites — and that must never produce a duplicate."""
-    return (
+    target = _normalize_pollster_for_dedup(parsed["pollster"])
+    same_dates = (
         db.query(Poll)
         .filter(
             Poll.race_id == race.id,
-            Poll.pollster == parsed["pollster"],
             Poll.field_start_date == parsed["field_start_date"],
             Poll.field_end_date == parsed["field_end_date"],
         )
-        .first()
-        is not None
+        .all()
     )
+    return any(_normalize_pollster_for_dedup(p.pollster) == target for p in same_dates)
 
 
 def ingest_polls(
