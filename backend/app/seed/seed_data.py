@@ -1856,4 +1856,16 @@ RACES = {
         ],
         "raw_polls": []  
     },
+    "mn": {
+        "state_name": "Minnesota",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Minnesota_gubernatorial_election",
+        
+        "candidates": [
+            {"name": "Republican Nominee (TBD)", "party": "Republican", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYMN-26-R"},
+            {"name": "Amy Klobuchar", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Amy_Klobuchar%2C_official_portrait%2C_113th_Congress.jpg",  "kalshi_ticker": "GOVPARTYMN-26-D"},
+        ],
+        "raw_polls": []  
+    },
 }
