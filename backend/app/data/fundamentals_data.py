@@ -980,8 +980,7 @@ RACE_FUNDAMENTALS = {
         # pushed high to keep the blend anchored to real polling instead of
         # that fabricated placeholder, same mechanism VT uses (see below).
         "model_overrides": {"poll_weight_floor": 0.85, "poll_weight_ceiling": 0.9},
-
-      "gubernatorial_elections": [
+        "gubernatorial_elections": [
             {"year": 2014, "dem_share": 52.98, "incumbent_party": None},  
             {"year": 2018, "dem_share": 58.60, "incumbent_party": "D"},  
             {"year": 2022, "dem_share": 59.84, "incumbent_party": None},  
@@ -1001,6 +1000,27 @@ RACE_FUNDAMENTALS = {
         "registration_snapshots": [
             {"date": "2026-07-01", "dem_lead": 133_323}
         ]
+    },
+
+    "tn": {
+         "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 24.51, "incumbent_party": "R"},  
+            {"year": 2018, "dem_share": 39.29, "incumbent_party": None},  
+            {"year": 2022, "dem_share": 33.64, "incumbent_party": "R"},  
+      ],
+   
+        "senate_elections": [
+            {"year": 2018, "dem_share": 44.53}, 
+            {"year": 2020, "dem_share": 36.11},  
+            {"year": 2024, "dem_share": 34.87},  
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 36.37},  
+            {"year": 2020, "dem_share": 38.17},  
+            {"year": 2024, "dem_share": 34.93},  
+        ],
+       
+        "registration_snapshots": []
     },
     
 }
