@@ -3,7 +3,6 @@ import { Link, useParams } from "react-router-dom";
 import { api } from "../api/client";
 import type { ForecastHistory, ForecastSnapshot, KalshiOdds, Poll, Race, Simulations } from "../api/types";
 import { ForecastNeedle } from "../components/ForecastNeedle";
-import { WinProbabilityMeter } from "../components/WinProbabilityMeter";
 import { ModelCompositionCard } from "../components/ModelCompositionCard";
 import { ForecastHistoryChart } from "../components/ForecastHistoryChart";
 import { WinProbabilityHistoryChart } from "../components/WinProbabilityHistoryChart";
@@ -11,7 +10,6 @@ import { PollTrendChart } from "../components/PollTrendChart";
 import { SimulationHistograms } from "../components/SimulationHistograms";
 import { PollTable } from "../components/PollTable";
 import { KalshiOddsCard } from "../components/KalshiOddsCard";
-import { partyAbbrev } from "../lib/partyColor";
 
 const NAV_HEIGHT_PX = 52;
 
@@ -27,10 +25,10 @@ function Card({
   return (
     <section
       id={id}
-      className="rounded-lg border p-5"
-      style={{ borderColor: "var(--border)", backgroundColor: "var(--surface)", scrollMarginTop: NAV_HEIGHT_PX + 12 }}
+      className="glass-panel rounded-lg p-5"
+      style={{ scrollMarginTop: NAV_HEIGHT_PX + 12 }}
     >
-      <h2 className="font-title mb-4 text-base font-semibold" style={{ color: "var(--text-primary)" }}>
+      <h2 className="font-title mb-4 text-2xl font-semibold" style={{ color: "var(--text-primary)" }}>
         {title}
       </h2>
       {children}
@@ -109,13 +107,8 @@ export function StateForecastPage() {
     );
   }
 
-  const candidateSubtitle = (forecast?.results ?? polls?.[0]?.results)
-    ?.map((r) => `${r.candidate.name} (${partyAbbrev(r.candidate.party)})`)
-    .join(" vs. ");
-
   const sections = [
     { id: "forecast-summary", label: "Summary", visible: true },
-    { id: "win-probability", label: "Win probability", visible: !!forecast },
     { id: "model-composition", label: "Model composition", visible: !!forecast },
     { id: "forecast-history", label: "Forecast history", visible: !!history },
     { id: "win-probability-history", label: "Win probability history", visible: !!history },
@@ -128,15 +121,11 @@ export function StateForecastPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-8" style={{ color: "var(--text-secondary)" }}>
       <header className="mb-8 mt-2 text-center">
-        <h1 className="font-title text-2xl font-semibold" style={{ color: "var(--text-primary)" }}>
+        <h1 className="font-title text-4xl font-semibold sm:text-5xl" style={{ color: "var(--text-primary)" }}>
           {race
             ? `${new Date(race.election_date + "T00:00:00").getFullYear()} ${race.state_name} ${race.office} Forecast`
             : "Loading forecast…"}
         </h1>
-        <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
-          {candidateSubtitle ?? ""}
-
-        </p>
       </header>
 
       <nav
@@ -202,19 +191,13 @@ export function StateForecastPage() {
         )}
 
         {forecast && (
-          <Card id="win-probability" title="Win probability">
-            <WinProbabilityMeter results={forecast.results} />
-          </Card>
-        )}
-
-        {forecast && (
           <Card id="model-composition" title="Model composition: polls + fundamentals">
             <ModelCompositionCard forecast={forecast} stateName={race?.state_name ?? stateCode} />
           </Card>
         )}
 
         {history && (
-          <Card id="forecast-history" title="Forecast history vs. actual result">
+          <Card id="forecast-history" title="Forecast history">
             <ForecastHistoryChart history={history} />
           </Card>
         )}
@@ -225,9 +208,9 @@ export function StateForecastPage() {
           </Card>
         )}
 
-        {polls && (
+        {polls && race && (
           <Card id="polling-trend" title="Polling trend">
-            <PollTrendChart polls={polls} />
+            <PollTrendChart polls={polls} electionDate={race.election_date} />
           </Card>
         )}
 

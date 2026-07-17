@@ -113,9 +113,13 @@ export function WinProbabilityHistoryChart({ history }: { history: ForecastHisto
                 dataKey={name}
                 stroke={color}
                 strokeWidth={2}
-                dot={{ r: 4, fill: color, strokeWidth: 2, stroke: "var(--surface)" }}
+                // A single-snapshot race has no line segment to draw at all
+                // -- fall back to a visible dot so it isn't blank, otherwise
+                // no dots.
+                dot={data.length === 1 ? { r: 4, fill: color, strokeWidth: 2, stroke: "var(--surface)" } : false}
                 activeDot={{ r: 5, fill: color, strokeWidth: 2, stroke: "var(--surface)" }}
                 isAnimationActive={false}
+                connectNulls
               />
             );
           })}
