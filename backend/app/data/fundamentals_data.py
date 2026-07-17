@@ -1022,6 +1022,53 @@ RACE_FUNDAMENTALS = {
        
         "registration_snapshots": []
     },
+    "hi": {
+         "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 57.15, "incumbent_party": None},  
+            {"year": 2018, "dem_share": 65.03, "incumbent_party": "D"},  
+            {"year": 2022, "dem_share": 63.16, "incumbent_party": None},  
+      ],
+   
+        "senate_elections": [
+            {"year": 2018, "dem_share": 71.15}, 
+            {"year": 2022, "dem_share": 73.23},  
+            {"year": 2024, "dem_share": 66.95},  
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 67.44},  
+            {"year": 2020, "dem_share": 65.03},  
+            {"year": 2024, "dem_share": 61.78},  
+        ],
+       
+        "registration_snapshots": []
+    },
+    "ak": {
+         "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 51.81, "incumbent_party": "R"},  
+            {"year": 2018, "dem_share": 46.33, "incumbent_party": None},  
+            {"year": 2022, "dem_share": 32.49, "incumbent_party": "R"},  
+      ],
+   
+        # 2016 (Murkowski d. Metcalfe/Stock) and 2022 (Murkowski d.
+        # Tshibaka) are both excluded as outliers -- 2022's top-four RCV
+        # system produced an all-Republican final round (Chesbro (D) was
+        # eliminated early with a small first-round share), so there's no
+        # non-Republican finalist whose share would represent the state's
+        # Democratic-aligned coalition the way the fusion-ticket convention
+        # does for AK's gubernatorial races. Left at a single election
+        # (2020, Sullivan d. Gross) rather than backfilling further back,
+        # per instruction.
+        "senate_elections": [
+            {"year": 2020, "dem_share": 43.31},
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 41.61},  
+            {"year": 2020, "dem_share": 44.74},  
+            {"year": 2024, "dem_share": 43.16},  
+        ],
+       
+        "registration_snapshots": []
+    }
     
 }
 

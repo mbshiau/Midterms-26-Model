@@ -1933,5 +1933,61 @@ RACES = {
             ],
         "raw_polls": []
     },
+    "hi": {
+        "state_name": "Hawaii",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Hawaii_gubernatorial_election",
+
+        "candidates": [
+            {"name": "Republican Nominee (TBD)", "party": "Republican", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYHI-26-R"},
+            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYHI-26-D"}
+            ],
+        "raw_polls": []
+    },
+    "ak": {
+        "state_name": "Alaska",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Alaska_gubernatorial_election",
+
+        # Alaska's real ballot is a 6-candidate nonpartisan blanket primary
+        # (no "Nominee (TBD)" concept applies), but this race is seeded as
+        # a clean two-candidate matchup instead -- Begich (D) and Wilson (R)
+        # are the two finalists in Alaska Survey Research's simulated final
+        # RCV round, so this collapses the same way any other RCV race can
+        # once a pollster publishes a final-round projection (see the
+        # earlier discussion of AK's RCV modeling options).
+        # Unlike every other state, the guessed GOVPARTYAK-26-{R|D} tickers
+        # 404 on Kalshi -- likely because Alaska's real 6-candidate ballot
+        # means Kalshi (if it lists this race at all) uses per-candidate
+        # tickers instead of per-party ones. Left null until real tickers
+        # are confirmed rather than guessed.
+        "candidates": [
+            {"name": "Tom Begich", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": "Bernadette Wilson", "party": "Republican", "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+        ],
+        "raw_polls": [
+            {
+                "pollster": "Alaska Survey Research",
+                "sponsor": None,
+                "field_start_date": "2026-06-30",
+                "field_end_date": "2026-07-01",
+                "release_date": "2026-07-08",
+                "sample_size": 1528,
+                "population": "LV",
+                "margin_of_error": 2.7,
+                # Simulated final RCV round (not the first-round 6-candidate
+                # topline) -- Begich 51 / Wilson 49, no undecided reported
+                # for this round.
+                "undecided_pct": 0.0,
+                "source_url": "https://bsky.app/profile/alaskasurvey.bsky.social/post/3mq5ys4ybsc2r",
+                "results": {
+                    "Tom Begich": 51.0,
+                    "Bernadette Wilson": 49.0,
+                },
+            },
+        ]
+    },
 }
 
