@@ -11,6 +11,7 @@ import { PollTrendChart } from "../components/PollTrendChart";
 import { SimulationHistograms } from "../components/SimulationHistograms";
 import { PollTable } from "../components/PollTable";
 import { KalshiOddsCard } from "../components/KalshiOddsCard";
+import { partyAbbrev } from "../lib/partyColor";
 
 const NAV_HEIGHT_PX = 52;
 
@@ -35,12 +36,6 @@ function Card({
       {children}
     </section>
   );
-}
-
-function partyAbbrev(party: string): string {
-  if (party === "Democratic") return "D";
-  if (party === "Republican") return "R";
-  return party.slice(0, 1);
 }
 
 export function StateForecastPage() {

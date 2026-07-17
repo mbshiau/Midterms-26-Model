@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import usa from "@svg-maps/usa";
-import { partyColorVar, probabilityTier, type ProbabilityTier } from "../lib/partyColor";
+import { partyAbbrev, partyColorVar, probabilityTier, type ProbabilityTier } from "../lib/partyColor";
 
 interface StateLocation {
   id: string;
@@ -46,7 +46,7 @@ const TIERS: ProbabilityTier[] = [50, 60, 75, 95];
 // against each path's own bounding box, so scale/rotate happen in place
 // instead of around the shared SVG viewBox origin.
 const LOCATION_TRANSFORMS: Record<string, string> = {
-  ak: "scale(0.65)",
+  ak: "scale(0.75)",
   hi: "scale(1.6) rotate(-40deg)",
 };
 
@@ -189,9 +189,11 @@ export function UsMap({ getVisual, isClickable, onStateClick, getTooltip }: UsMa
                 <div key={c.name} className="flex items-center justify-between gap-3">
                   <span className="flex items-center gap-1.5">
                     <span
-                      className="inline-block h-2 w-2 rounded-full"
+                      className="inline-flex h-4 w-4 flex-shrink-0 items-center justify-center text-[9px] font-bold text-white"
                       style={{ backgroundColor: partyColorVar(c.party) }}
-                    />
+                    >
+                      {partyAbbrev(c.party)}
+                    </span>
                     <span style={{ color: "var(--text-secondary)" }}>{c.name}</span>
                   </span>
                   <span className="font-semibold tabular-nums">{c.voteShare.toFixed(1)}%</span>

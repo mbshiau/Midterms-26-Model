@@ -18,7 +18,7 @@ const TIER_LABELS: { tier: ProbabilityTier; label: string }[] = [
 function TierSwatch({ slug, tier }: { slug: "democratic" | "republican"; tier: ProbabilityTier }) {
   return (
     <span
-      className="inline-block h-2.5 w-2.5 rounded-full"
+      className="inline-block h-2.5 w-2.5"
       style={{ backgroundColor: `var(--party-${slug}-${tier})` }}
     />
   );
@@ -108,6 +108,7 @@ export function MapPage() {
         : "No net governorship flips";
 
   return (
+    <div className="dashboard-background">
     <div className="mx-auto max-w-4xl px-4 pt-16 pb-8" style={{ color: "var(--text-secondary)"}}>
       <header className="mb-8 text-center">
         {entries.length > 0 ? (
@@ -125,16 +126,54 @@ export function MapPage() {
         )}
         
         {lastUpdated > 0 && (
-          <p className="mt-1 text-s" style={{ color: "var(--text-muted)" }}>
+          <p className="mt-1 text-base" style={{ color: "black" }}>
             LAST UPDATED: {new Date(lastUpdated).toLocaleString()}
           </p>
         )}
       </header>
 
-      <section
-        className="rounded-lg border p-5"
-        style={{ borderColor: "var(--border)", backgroundColor: "var(--surface)" }}
-      >
+      <section className="glass-panel rounded-lg p-5">
+        <div className="mb-4 flex flex-col gap-3 text-sm">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            <span className="font-medium" style={{ color: "var(--text-secondary)" }}>
+              Win probability:
+            </span>
+            {TIER_LABELS.map(({ tier, label }) => (
+              <span key={`d-${tier}`} className="flex items-center gap-1.5">
+                <TierSwatch slug="democratic" tier={tier} />
+                <span style={{ color: "var(--text-muted)" }}>{label}</span>
+              </span>
+            ))}
+          </div>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            <span className="font-medium opacity-0" style={{ color: "var(--text-secondary)" }} aria-hidden>
+              Win probability:
+            </span>
+            {TIER_LABELS.map(({ tier, label }) => (
+              <span key={`r-${tier}`} className="flex items-center gap-1.5">
+                <TierSwatch slug="republican" tier={tier} />
+                <span style={{ color: "var(--text-muted)" }}>{label}</span>
+              </span>
+            ))}
+          </div>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-b pb-3" style={{ borderColor: "var(--border)" }}>
+            <span className="flex items-center gap-2">
+              <span
+                className="inline-block h-2.5 w-2.5"
+                style={{
+                  background:
+                    "repeating-linear-gradient(45deg, var(--text-primary), var(--text-primary) 2px, var(--surface) 2px, var(--surface) 4px)",
+                }}
+              />
+              <span style={{ color: "var(--text-secondary)" }}>Projected flip</span>
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="inline-block h-2.5 w-2.5" style={{ backgroundColor: "var(--gridline)" }} />
+              <span style={{ color: "var(--text-secondary)" }}>Coming soon</span>
+            </span>
+          </div>
+        </div>
+
         <UsMap
           getVisual={(id) => {
             const entry = racesByState[id];
@@ -181,47 +220,6 @@ export function MapPage() {
             };
           }}
         />
-
-        <div className="mt-4 flex flex-col gap-3 text-sm">
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            <span className="font-medium" style={{ color: "var(--text-secondary)" }}>
-              Win probability:
-            </span>
-            {TIER_LABELS.map(({ tier, label }) => (
-              <span key={`d-${tier}`} className="flex items-center gap-1.5">
-                <TierSwatch slug="democratic" tier={tier} />
-                <span style={{ color: "var(--text-muted)" }}>{label}</span>
-              </span>
-            ))}
-          </div>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            <span className="font-medium opacity-0" style={{ color: "var(--text-secondary)" }} aria-hidden>
-              Win probability:
-            </span>
-            {TIER_LABELS.map(({ tier, label }) => (
-              <span key={`r-${tier}`} className="flex items-center gap-1.5">
-                <TierSwatch slug="republican" tier={tier} />
-                <span style={{ color: "var(--text-muted)" }}>{label}</span>
-              </span>
-            ))}
-          </div>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-t pt-3" style={{ borderColor: "var(--border)" }}>
-            <span className="flex items-center gap-2">
-              <span
-                className="inline-block h-2.5 w-2.5 rounded-full"
-                style={{
-                  background:
-                    "repeating-linear-gradient(45deg, var(--party-democratic-75), var(--party-democratic-75) 2px, var(--surface) 2px, var(--surface) 4px)",
-                }}
-              />
-              <span style={{ color: "var(--text-secondary)" }}>Projected flip</span>
-            </span>
-            <span className="flex items-center gap-2">
-              <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "var(--gridline)" }} />
-              <span style={{ color: "var(--text-secondary)" }}>Coming soon</span>
-            </span>
-          </div>
-        </div>
       </section>
 
       <p className="mt-4 text-xs" style={{ color: "var(--text-muted)" }}>
@@ -236,6 +234,7 @@ export function MapPage() {
         </a>{" "}
         (based on amCharts), used under CC BY-NC 4.0.
       </p>
+    </div>
     </div>
   );
 }

@@ -11,6 +11,13 @@ export function partyColorVar(party: string): string {
   return `var(--party-${slug})`;
 }
 
+/** Single-letter party label shown inside a candidate's color swatch. */
+export function partyAbbrev(party: string): string {
+  if (party === "Democratic") return "D";
+  if (party === "Republican") return "R";
+  return party.slice(0, 1).toUpperCase();
+}
+
 export type ProbabilityTier = 50 | 60 | 75 | 95;
 
 /** One of 4 confidence tiers per party: 95+ / 75-95 / 60-75 / 50-60. Winner
