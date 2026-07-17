@@ -202,7 +202,11 @@ export function UsMap({ getVisual, isClickable, onStateClick, getTooltip }: UsMa
                 <span className="font-semibold" style={{ color: partyColorVar(tooltip.winner.party) }}>
                   {tooltip.winner.name}
                 </span>{" "}
-                projected to win ({formatWinProbability(tooltip.winner.probability)})
+                projected to win 
+
+                <span style = {{ color: partyColorVar(tooltip.winner.party) }}>
+                &nbsp;({formatWinProbability(tooltip.winner.probability)})
+                </span>
               </div>
             )}
             {tooltip.candidates.length >= 2 &&
