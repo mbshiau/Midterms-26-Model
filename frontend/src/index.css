@@ -61,9 +61,14 @@ body {
   background-image:
     linear-gradient(rgba(252, 252, 251, 0.6), rgba(252, 252, 251, 0.78)),
     url("/dashboard-background.png");
-  background-size: cover;
+  /* Fill the full width and let height scale proportionally -- any excess
+     past the page's height crops off the bottom rather than leaving empty
+     side gutters (which `contain` would) or cropping the sides (which
+     `cover` would on a page taller than the image's own aspect ratio). */
+  background-size: 100% auto;
   background-position: top center;
-  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
   min-height: 100vh;
 }
 

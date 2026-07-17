@@ -8,23 +8,32 @@ const OUTER_R = 150;
 const INNER_R = 106;
 const NEEDLE_LENGTH = 128;
 const NEEDLE_BASE_HALF_WIDTH = 7;
-const GRADIENT_ID = "forecast-needle-gradient";
+const CLIP_ID = "forecast-needle-clip";
+const SVG_W = 340;
+const SVG_H = 185;
 
 // Left (angle 180°) is fully Democratic, right (angle 0°) is fully
-// Republican -- a gradient's x1→x2 runs left-to-right, so stop position
-// 0% = 180° = darkest blue and 100% = 0° = darkest red. Positions/colors
-// mirror the same 4-tier confidence breakpoints (50/60/75/95) used
-// everywhere else in the app (the map, etc), just blended continuously
-// instead of stepped into blocks.
-const GRADIENT_STOPS: { position: number; color: string }[] = [
-  { position: 2.5, color: "var(--party-democratic-95)" },
-  { position: 15, color: "var(--party-democratic-75)" },
-  { position: 32.5, color: "var(--party-democratic-60)" },
-  { position: 45, color: "var(--party-democratic-50)" },
-  { position: 55, color: "var(--party-republican-50)" },
-  { position: 67.5, color: "var(--party-republican-60)" },
-  { position: 85, color: "var(--party-republican-75)" },
-  { position: 97.5, color: "var(--party-republican-95)" },
+// Republican. SVG has no native angle-based ("conic") gradient, and a plain
+// linearGradient varies by x-coordinate -- at a fixed angle, the inner and
+// outer edge of the arc sit at different x (unless the angle is exactly
+// 90°), so the same point on the dial could read as two different colors
+// depending on radius. Fixing that while keeping a smooth blend (rather
+// than stepped bands) means reaching for CSS's real conic-gradient, applied
+// via a foreignObject clipped to the arc shape -- color there is purely a
+// function of angle around the center point, so radius never affects it.
+// Stop positions/colors mirror the same 4-tier confidence breakpoints
+// (50/60/75/95) used everywhere else in the app (the map, etc), expressed
+// in degrees across the 180° arc (0deg = angle 180 = full Democratic,
+// 180deg = angle 0 = full Republican).
+const GRADIENT_STOPS: { angleDeg: number; color: string }[] = [
+  { angleDeg: 4.5, color: "var(--party-democratic-95)" },
+  { angleDeg: 27, color: "var(--party-democratic-75)" },
+  { angleDeg: 58.5, color: "var(--party-democratic-60)" },
+  { angleDeg: 81, color: "var(--party-democratic-50)" },
+  { angleDeg: 99, color: "var(--party-republican-50)" },
+  { angleDeg: 121.5, color: "var(--party-republican-60)" },
+  { angleDeg: 153, color: "var(--party-republican-75)" },
+  { angleDeg: 175.5, color: "var(--party-republican-95)" },
 ];
 
 function polarPoint(radius: number, angleDeg: number): { x: number; y: number } {
@@ -110,17 +119,30 @@ export function ForecastNeedle({ results }: { results: ForecastResult[] }) {
   const needleLeftBase = polarPoint(NEEDLE_BASE_HALF_WIDTH, needleAngle + 90);
   const needleRightBase = polarPoint(NEEDLE_BASE_HALF_WIDTH, needleAngle - 90);
 
+  // CSS conic-gradient() angles start at 12 o'clock and increase clockwise,
+  // whereas our polarPoint() angles start at 3 o'clock and increase
+  // counter-clockwise -- "from 270deg" rotates the gradient's own 0deg mark
+  // to 9 o'clock (our angle 180, full Democratic), so walking the stops
+  // from 0deg to 180deg sweeps left -> top -> right, matching angle 180 -> 0.
+  const conicGradient = `conic-gradient(from 270deg at ${CX}px ${CY}px, ${GRADIENT_STOPS.map(
+    (s) => `${s.color} ${s.angleDeg}deg`
+  ).join(", ")})`;
+
   return (
     <div>
-      <svg viewBox="0 0 340 185" className="w-full" style={{ maxHeight: 210 }} role="img" aria-label="Forecast needle">
+      <svg viewBox={`0 0 ${SVG_W} ${SVG_H}`} className="w-full" style={{ maxHeight: 210 }} role="img" aria-label="Forecast needle">
         <defs>
-          <linearGradient id={GRADIENT_ID} x1="0%" y1="0%" x2="100%" y2="0%">
-            {GRADIENT_STOPS.map((stop) => (
-              <stop key={stop.position} offset={`${stop.position}%`} stopColor={stop.color} />
-            ))}
-          </linearGradient>
+          <clipPath id={CLIP_ID}>
+            <path d={bandPath(INNER_R, OUTER_R, 0, 180)} />
+          </clipPath>
         </defs>
-        <path d={bandPath(INNER_R, OUTER_R, 0, 180)} fill={`url(#${GRADIENT_ID})`} />
+        <foreignObject x={0} y={0} width={SVG_W} height={SVG_H} clipPath={`url(#${CLIP_ID})`}>
+          <div
+            // @ts-expect-error -- xmlns is required on foreignObject content but isn't in React's HTML div typings
+            xmlns="http://www.w3.org/1999/xhtml"
+            style={{ width: `${SVG_W}px`, height: `${SVG_H}px`, background: conicGradient }}
+          />
+        </foreignObject>
         <polygon
           points={`${needleTip.x},${needleTip.y} ${needleLeftBase.x},${needleLeftBase.y} ${needleRightBase.x},${needleRightBase.y}`}
           fill="var(--text-primary)"

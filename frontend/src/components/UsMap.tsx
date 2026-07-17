@@ -199,10 +199,26 @@ export function UsMap({ getVisual, isClickable, onStateClick, getTooltip }: UsMa
                 className="mt-1 border-t pt-1 text-xs"
                 style={{ borderColor: "var(--border)", color: "var(--text-muted)" }}
               >
-                <span style={{ color: "var(--text-secondary)" }}>{tooltip.winner.name}</span>{" "}
+                <span className="font-semibold" style={{ color: partyColorVar(tooltip.winner.party) }}>
+                  {tooltip.winner.name}
+                </span>{" "}
                 projected to win ({formatWinProbability(tooltip.winner.probability)})
               </div>
             )}
+            {tooltip.candidates.length >= 2 &&
+              (() => {
+                const byShareDesc = [...tooltip.candidates].sort((a, b) => b.voteShare - a.voteShare);
+                const leader = byShareDesc[0];
+                const margin = leader.voteShare - byShareDesc[1].voteShare;
+                return (
+                  <div className="text-xs" style={{ color: "var(--text-muted)" }}>
+                    Margin:{" "}
+                    <span className="font-semibold tabular-nums" style={{ color: partyColorVar(leader.party) }}>
+                      {partyAbbrev(leader.party)} +{margin.toFixed(1)}
+                    </span>
+                  </div>
+                );
+              })()}
           </div>
         </div>
       )}
