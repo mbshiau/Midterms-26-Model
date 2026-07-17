@@ -15,7 +15,6 @@ export interface MapTooltipCandidate {
 }
 
 export interface MapTooltipContent {
-  comingSoon?: boolean;
   candidates?: MapTooltipCandidate[];
   winner?: { name: string; party: string; probability: number } | null;
 }
@@ -168,7 +167,7 @@ export function UsMap({ getVisual, isClickable, onStateClick, getTooltip }: UsMa
           );
         })}
       </svg>
-      {hoveredLocation && (
+      {hoveredLocation && tooltip?.candidates && (
         <div
           className="pointer-events-none absolute z-10 rounded-md border px-3 py-2 text-sm shadow-md"
           style={{
@@ -180,36 +179,31 @@ export function UsMap({ getVisual, isClickable, onStateClick, getTooltip }: UsMa
           }}
         >
           <div className="font-medium">{hoveredLocation.name}</div>
-          {(tooltip?.comingSoon || !tooltip?.candidates) && (
-            <div style={{ color: "var(--text-muted)" }}>Coming soon</div>
-          )}
-          {tooltip?.candidates && (
-            <div className="mt-1 flex flex-col gap-1">
-              {tooltip.candidates.map((c) => (
-                <div key={c.name} className="flex items-center justify-between gap-3">
-                  <span className="flex items-center gap-1.5">
-                    <span
-                      className="inline-flex h-4 w-4 flex-shrink-0 items-center justify-center text-[9px] font-bold text-white"
-                      style={{ backgroundColor: partyColorVar(c.party) }}
-                    >
-                      {partyAbbrev(c.party)}
-                    </span>
-                    <span style={{ color: "var(--text-secondary)" }}>{c.name}</span>
+          <div className="mt-1 flex flex-col gap-1">
+            {tooltip.candidates.map((c) => (
+              <div key={c.name} className="flex items-center justify-between gap-3">
+                <span className="flex items-center gap-1.5">
+                  <span
+                    className="inline-flex h-4 w-4 flex-shrink-0 items-center justify-center text-[9px] font-bold text-white"
+                    style={{ backgroundColor: partyColorVar(c.party) }}
+                  >
+                    {partyAbbrev(c.party)}
                   </span>
-                  <span className="font-semibold tabular-nums">{c.voteShare.toFixed(1)}%</span>
-                </div>
-              ))}
-              {tooltip.winner && (
-                <div
-                  className="mt-1 border-t pt-1 text-xs"
-                  style={{ borderColor: "var(--border)", color: "var(--text-muted)" }}
-                >
-                  <span style={{ color: "var(--text-secondary)" }}>{tooltip.winner.name}</span>{" "}
-                  projected to win ({formatWinProbability(tooltip.winner.probability)})
-                </div>
-              )}
-            </div>
-          )}
+                  <span style={{ color: "var(--text-secondary)" }}>{c.name}</span>
+                </span>
+                <span className="font-semibold tabular-nums">{c.voteShare.toFixed(1)}%</span>
+              </div>
+            ))}
+            {tooltip.winner && (
+              <div
+                className="mt-1 border-t pt-1 text-xs"
+                style={{ borderColor: "var(--border)", color: "var(--text-muted)" }}
+              >
+                <span style={{ color: "var(--text-secondary)" }}>{tooltip.winner.name}</span>{" "}
+                projected to win ({formatWinProbability(tooltip.winner.probability)})
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
