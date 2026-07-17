@@ -40,6 +40,16 @@ const TOOLTIP_OFFSET = 14;
 const PARTY_SLUGS = ["democratic", "republican"] as const;
 const TIERS: ProbabilityTier[] = [50, 60, 75, 95];
 
+// The base map's Alaska/Hawaii insets are stock-sized/oriented -- shrink
+// Alaska down and enlarge + rotate Hawaii for a more readable inset layout.
+// `transformBox: "fill-box"` makes `transform-origin: center` resolve
+// against each path's own bounding box, so scale/rotate happen in place
+// instead of around the shared SVG viewBox origin.
+const LOCATION_TRANSFORMS: Record<string, string> = {
+  ak: "scale(0.65)",
+  hi: "scale(1.6) rotate(-40deg)",
+};
+
 function stripePatternId(slug: string, tier: ProbabilityTier): string {
   return `stripe-${slug}-${tier}`;
 }
@@ -121,6 +131,13 @@ export function UsMap({ getVisual, isClickable, onStateClick, getTooltip }: UsMa
                 cursor: clickable ? "pointer" : "not-allowed",
                 opacity: hovered === location.id ? 0.8 : 1,
                 transition: "opacity 100ms ease",
+                ...(LOCATION_TRANSFORMS[location.id]
+                  ? {
+                      transformBox: "fill-box",
+                      transformOrigin: "center",
+                      transform: LOCATION_TRANSFORMS[location.id],
+                    }
+                  : {}),
               }}
               onMouseEnter={(e) => {
                 setHovered(location.id);

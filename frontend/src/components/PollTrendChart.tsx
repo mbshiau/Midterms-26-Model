@@ -107,8 +107,8 @@ export function PollTrendChart({ polls }: { polls: Poll[] }) {
             dataKey={c.name}
             stroke={partyColorVar(c.party)}
             strokeWidth={2}
-            dot={{ r: 4, strokeWidth: 2, stroke: "var(--surface)" }}
-            activeDot={{ r: 5, strokeWidth: 2, stroke: "var(--surface)" }}
+            dot={{ r: 4, fill: partyColorVar(c.party), strokeWidth: 2, stroke: "var(--surface)" }}
+            activeDot={{ r: 5, fill: partyColorVar(c.party), strokeWidth: 2, stroke: "var(--surface)" }}
             connectNulls
           />
         ))}

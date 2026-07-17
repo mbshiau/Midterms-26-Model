@@ -1868,4 +1868,32 @@ RACES = {
         ],
         "raw_polls": []  
     },
+    "ct": {
+        "state_name": "Connecticut",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Connecticut_gubernatorial_election",
+        
+        "candidates": [
+            {"name": "Ryan Fazio", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Fazio-State-Senate_%28cropped%29.jpg",  "kalshi_ticker": "GOVPARTYCT-26-R"},
+            {"name": "Ned Lamont", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/b/b8/Governor_Ned_Lamont_of_Connecticut%2C_official_portrait.jpg",  "kalshi_ticker": "GOVPARTYCT-26-D"},
+        ],
+        "raw_polls": [{
+                "pollster": "University of New Hampshire",
+                "sponsor": None,
+                "field_start_date": "2026-06-18",
+                "field_end_date": "2026-06-23",
+                "release_date": "2026-06-30",
+                "sample_size": 828,
+                "population": "LV",
+                "margin_of_error": 3.4,
+                # Reported as Lamont 49 / Fazio 36 / other 2 / undecided 12 --
+                # the 2% "other" is folded into undecided_pct per this
+                # dataset's minor-candidate convention (see NH's Ayotte/
+                # Warmington polls for the same pattern).
+                "undecided_pct": 14.0,
+                "source_url": "https://scholars.unh.edu/cgi/viewcontent.cgi?article=1971&context=survey_center_polls",
+                "results": {"Ned Lamont": 49.0, "Ryan Fazio": 36.0},
+            },]  
+    },
 }
