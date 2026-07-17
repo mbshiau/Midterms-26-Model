@@ -54,6 +54,13 @@ function stripePatternId(slug: string, tier: ProbabilityTier): string {
   return `stripe-${slug}-${tier}`;
 }
 
+// A Monte Carlo win probability is never truly 100% -- rounding a
+// 99.5%+ result to a flat "100%" overstates the model's own certainty.
+function formatWinProbability(probability: number): string {
+  const pct = probability * 100;
+  return pct >= 99.5 ? ">99%" : `${pct.toFixed(0)}%`;
+}
+
 export function UsMap({ getVisual, isClickable, onStateClick, getTooltip }: UsMapProps) {
   const [hovered, setHovered] = useState<string | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0, containerWidth: 0, containerHeight: 0 });
@@ -196,7 +203,7 @@ export function UsMap({ getVisual, isClickable, onStateClick, getTooltip }: UsMa
                   style={{ borderColor: "var(--border)", color: "var(--text-muted)" }}
                 >
                   <span style={{ color: "var(--text-secondary)" }}>{tooltip.winner.name}</span>{" "}
-                  projected to win ({(tooltip.winner.probability * 100).toFixed(0)}%)
+                  projected to win ({formatWinProbability(tooltip.winner.probability)})
                 </div>
               )}
             </div>

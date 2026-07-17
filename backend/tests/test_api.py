@@ -11,7 +11,7 @@ def test_races_lists_all_seeded_states(client):
     assert codes == {
         "pa", "oh", "ga", "me", "ia", "ny", "sc", "tx", "fl", "nv", "il", "or", 
         "mi", "ne", "ks", "az", "nh", "co", "vt", "ma", "md", "ca", "nm", "al", 
-        "ar", "wi", "id", "sd", "ok", "mn", "ct"
+        "ar", "wi", "id", "sd", "ok", "mn", "ct", "wy"
     }
 
 
@@ -49,7 +49,7 @@ def test_races_expose_current_holder_party(client):
     assert races["ok"]["current_holder_party"] == "Republican"  # Stitt (R), open seat
     assert races["mn"]["current_holder_party"] == "Democratic" # Walz (D), open seat
     assert races["ct"]["current_holder_party"] == "Democratic" # Lamont(inc) is on the ballot
-
+    assert races["wy"]["current_holder_party"] == "Republican" # Gordon (R), term-limited open seat
 
 def test_candidates_expose_a_photo_url_when_a_real_wikipedia_photo_exists(client):
     forecast = client.get("/races/pa/forecast").json()
@@ -701,6 +701,7 @@ def test_all_twentynine_forecasts_are_independent(client):
     ok = client.get("/races/ok/forecast").json()
     mn = client.get("/races/mn/forecast").json()
     ct = client.get("/races/ct/forecast").json()
+    wy = client.get("/races/wy/forecast").json()
     ids = {
         pa["id"], oh["id"], ga["id"], me["id"], ia["id"],
         ny["id"], sc["id"], tx["id"], fl["id"], nv["id"],
@@ -708,9 +709,9 @@ def test_all_twentynine_forecasts_are_independent(client):
         az["id"], nh["id"], co["id"], vt["id"], ma["id"],
         md["id"], ca["id"], nm["id"], al["id"], ar["id"],
         wi["id"], idaho["id"], sd["id"], ok["id"], mn["id"],
-        ct["id"]
+        ct["id"], wy["id"]
     }
-    assert len(ids) == 31
+    assert len(ids) == 32
 
     # Generic TBD-style placeholders (an unsettled primary) are deliberately
     # reused verbatim across states (VT and WI both have a "Democratic
@@ -723,7 +724,7 @@ def test_all_twentynine_forecasts_are_independent(client):
         real_names({r["candidate"]["name"] for r in race["results"]})
         for race in (pa, oh, ga, me, ia, ny, sc, tx, fl, nv, il, orr, mi, ne,
                       ks, az, nh, co, vt, ma, md, ca, nm, al, ar, wi, idaho, sd,
-                    ok, mn, ct)
+                    ok, mn, ct, wy)
     ]
     for i, names_a in enumerate(name_sets):
         for names_b in name_sets[i + 1 :]:
