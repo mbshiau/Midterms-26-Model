@@ -29,7 +29,7 @@ function Card({
       className="rounded-lg border p-5"
       style={{ borderColor: "var(--border)", backgroundColor: "var(--surface)", scrollMarginTop: NAV_HEIGHT_PX + 12 }}
     >
-      <h2 className="mb-4 text-base font-semibold" style={{ color: "var(--text-primary)" }}>
+      <h2 className="font-title mb-4 text-base font-semibold" style={{ color: "var(--text-primary)" }}>
         {title}
       </h2>
       {children}
@@ -133,7 +133,7 @@ export function StateForecastPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-8" style={{ color: "var(--text-secondary)" }}>
       <header className="mb-8 mt-2 text-center">
-        <h1 className="text-2xl font-semibold" style={{ color: "var(--text-primary)" }}>
+        <h1 className="font-title text-2xl font-semibold" style={{ color: "var(--text-primary)" }}>
           {race
             ? `${new Date(race.election_date + "T00:00:00").getFullYear()} ${race.state_name} ${race.office} Forecast`
             : "Loading forecast…"}

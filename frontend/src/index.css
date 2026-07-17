@@ -40,3 +40,14 @@ body {
   background: var(--page);
   color: var(--text-secondary);
 }
+
+/* Page/section titles (the dashboard header, the state-page header, and
+   each Card's section heading) -- not the small muted field labels inside
+   cards, which stay in the body font. text-transform handles the all-caps
+   requirement so the underlying strings stay normal-case (tooltips, aria
+   labels, etc. aren't affected). */
+.font-title {
+  font-family: "Barlow Condensed", system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}

@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import type { ForecastSnapshot, Race } from "../api/types";
+import { GooeyText, type GooeyTextEntry } from "../components/GooeyText";
 import { UsMap } from "../components/UsMap";
 import type { ProbabilityTier } from "../lib/partyColor";
+
+const TITLE = "2026 Gubernatorial Election Forecast";
 
 const TIER_LABELS: { tier: ProbabilityTier; label: string }[] = [
   { tier: 95, label: "95%+" },
@@ -76,28 +79,54 @@ export function MapPage() {
     .map((ts) => new Date(ts).getTime())
     .reduce((max, ts) => Math.max(max, ts), 0);
 
+  // Net governorships projected to change party hands vs. who holds the
+  // seat today -- a flip toward each party cancels a flip toward the
+  // other, same "isFlip" definition UsMap's tooltip already uses.
+  const netDemGovernorships = entries.reduce((net, r) => {
+    if (!r.leadingParty) return net;
+    if (r.leadingParty === "Democratic" && r.race.current_holder_party === "Republican") return net + 1;
+    if (r.leadingParty === "Republican" && r.race.current_holder_party === "Democratic") return net - 1;
+    return net;
+  }, 0);
+
+  const partyFavoredLine: GooeyTextEntry = [
+    { text: `Dems favored in ${demCount}`, color: "var(--party-democratic)" },
+    { text: "   ·   " },
+    { text: `GOP favored in ${repCount}`, color: "var(--party-republican)" },
+  ];
+  const netSeatLine: GooeyTextEntry =
+    netDemGovernorships > 0
+      ? [{
+          text: `Projected: Dems net +${netDemGovernorships} governorship${netDemGovernorships === 1 ? "" : "s"}`,
+          color: "var(--party-democratic)",
+        }]
+      : netDemGovernorships < 0
+        ? [{
+            text: `Projected: GOP net +${-netDemGovernorships} governorship${netDemGovernorships === -1 ? "" : "s"}`,
+            color: "var(--party-republican)",
+          }]
+        : "No net governorship flips";
+
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8" style={{ color: "var(--text-secondary)"}}>
+    <div className="mx-auto max-w-4xl px-4 pt-16 pb-8" style={{ color: "var(--text-secondary)"}}>
       <header className="mb-8 text-center">
-        <h1 className="text-2xl font-semibold" style={{ color: "var(--text-primary)" }}>
-          2026 Governor Race Forecasts
-        </h1>
-        {entries.length > 0 && (
-          <p className="mt-1 text-sm">
-            <span style={{ color: "var(--party-democratic)" }}>Democrats favored in {demCount} state{demCount === 1 ? "" : "s"}</span>
-            {" · "}
-            <span style={{ color: "var(--party-republican)" }}>Republicans favored in {repCount} state{repCount === 1 ? "" : "s"}</span>
-          </p>
+        {entries.length > 0 ? (
+          <GooeyText
+            texts={[TITLE, partyFavoredLine, netSeatLine]}
+            morphTime={1}
+            cooldownTime={2.5}
+            className="h-10 sm:h-12 md:h-14"
+            textClassName="font-title px-2 text-2xl font-semibold sm:text-4xl md:text-5xl"
+          />
+        ) : (
+          <h1 className="font-title text-2xl font-semibold" style={{ color: "var(--text-primary)" }}>
+            {TITLE}
+          </h1>
         )}
-        <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
-          Click a state to view its forecast.{" "}
-          {availableStateNames.length > 0
-            ? `Models built so far: ${availableStateNames.join(", ")}.`
-            : "Loading available states…"}
-        </p>
+        
         {lastUpdated > 0 && (
-          <p className="mt-1 text-xs" style={{ color: "var(--text-muted)" }}>
-            Model last updated {new Date(lastUpdated).toLocaleString()}
+          <p className="mt-1 text-s" style={{ color: "var(--text-muted)" }}>
+            LAST UPDATED: {new Date(lastUpdated).toLocaleString()}
           </p>
         )}
       </header>
