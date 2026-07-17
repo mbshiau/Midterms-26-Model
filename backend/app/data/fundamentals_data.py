@@ -972,6 +972,36 @@ RACE_FUNDAMENTALS = {
             {"date": "2026-07-01", "dem_lead": -181_975}
         ]
     },
+    "ri": {
+        # Ken Block is a legitimate independent polling ~20% -- there's no
+        # real historical series to ground his fundamentals-only estimate
+        # (fundamentals_vote_share hardcodes a flat 50% for any non-D/R
+        # party, see fundamentals.py), so poll_weight_floor/ceiling are
+        # pushed high to keep the blend anchored to real polling instead of
+        # that fabricated placeholder, same mechanism VT uses (see below).
+        "model_overrides": {"poll_weight_floor": 0.85, "poll_weight_ceiling": 0.9},
+
+      "gubernatorial_elections": [
+            {"year": 2014, "dem_share": 52.98, "incumbent_party": None},  
+            {"year": 2018, "dem_share": 58.60, "incumbent_party": "D"},  
+            {"year": 2022, "dem_share": 59.84, "incumbent_party": None},  
+      ],
+   
+        "senate_elections": [
+            {"year": 2018, "dem_share": 61.58}, 
+            {"year": 2020, "dem_share": 66.48},  
+            {"year": 2024, "dem_share": 60.05},  
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 58.31},  
+            {"year": 2020, "dem_share": 60.60},  
+            {"year": 2024, "dem_share": 57.08},  
+        ],
+       
+        "registration_snapshots": [
+            {"date": "2026-07-01", "dem_lead": 133_323}
+        ]
+    },
     
 }
 

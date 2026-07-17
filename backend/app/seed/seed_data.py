@@ -1908,5 +1908,18 @@ RACES = {
         ],
         "raw_polls": []  
     },
+    "ri": {
+        "state_name": "Rhode Island",
+        "office": "Governor",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_Rhode_Island_gubernatorial_election",
+
+        "candidates": [
+            {"name": "Republican Nominee (TBD)", "party": "Republican", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYRI-26-R"},
+            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYRI-26-D"},
+            {"name": "Ken Block", "party": "Independent", "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+        ],
+        "raw_polls": []
+    },
 }
 

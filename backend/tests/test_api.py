@@ -11,7 +11,7 @@ def test_races_lists_all_seeded_states(client):
     assert codes == {
         "pa", "oh", "ga", "me", "ia", "ny", "sc", "tx", "fl", "nv", "il", "or", 
         "mi", "ne", "ks", "az", "nh", "co", "vt", "ma", "md", "ca", "nm", "al", 
-        "ar", "wi", "id", "sd", "ok", "mn", "ct", "wy"
+        "ar", "wi", "id", "sd", "ok", "mn", "ct", "wy", "ri"
     }
 
 
@@ -50,6 +50,7 @@ def test_races_expose_current_holder_party(client):
     assert races["mn"]["current_holder_party"] == "Democratic" # Walz (D), open seat
     assert races["ct"]["current_holder_party"] == "Democratic" # Lamont(inc) is on the ballot
     assert races["wy"]["current_holder_party"] == "Republican" # Gordon (R), term-limited open seat
+    assert races["ri"]["current_holder_party"] == "Democratic" # McKee (D), open seat
 
 def test_candidates_expose_a_photo_url_when_a_real_wikipedia_photo_exists(client):
     forecast = client.get("/races/pa/forecast").json()
