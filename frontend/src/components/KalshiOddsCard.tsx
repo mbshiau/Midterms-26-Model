@@ -1,28 +1,34 @@
-import { useState } from "react";
 import type { KalshiOdds } from "../api/types";
-import { partyColorVar } from "../lib/partyColor";
+import { partyAbbrev, partyColorVar } from "../lib/partyColor";
 
-function Thumbnail({ odds }: { odds: KalshiOdds }) {
-  const [photoFailed, setPhotoFailed] = useState(false);
-  const { photo_url, name } = odds.candidate;
+function HeroPanel({ odds, borderSide }: { odds: KalshiOdds; borderSide: "left" | "right" }) {
   const color = partyColorVar(odds.candidate.party);
+  const cents = Math.round(odds.win_probability_pct);
 
-  if (photo_url && !photoFailed) {
-    return (
-      <img
-        src={photo_url}
-        alt={name}
-        onError={() => setPhotoFailed(true)}
-        className="h-8 w-8 flex-shrink-0 rounded-full object-cover"
-        style={{ border: `2px solid ${color}` }}
-      />
-    );
-  }
   return (
-    <span
-      className="inline-block h-2.5 w-2.5 flex-shrink-0 rounded-full"
-      style={{ backgroundColor: color }}
-    />
+    <div
+      className={`flex-1 p-5 ${borderSide === "left" ? "sm:border-r" : ""}`}
+      style={{ borderColor: "var(--border)" }}
+    >
+      <div className="text-xs font-semibold tracking-wide" style={{ color: "var(--text-muted)" }}>
+        {partyAbbrev(odds.candidate.party)} WIN
+      </div>
+      <div className="text-sm font-medium" style={{ color }}>
+        {odds.candidate.name}
+      </div>
+      <div className="font-title text-6xl font-bold leading-none tabular-nums" style={{ color }}>
+        {cents}¢
+      </div>
+      <a
+        href={odds.source_url}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-2 inline-block text-xs underline"
+        style={{ color: "var(--text-muted)" }}
+      >
+        {odds.ticker}
+      </a>
+    </div>
   );
 }
 
@@ -37,49 +43,85 @@ export function KalshiOddsCard({ odds }: { odds: KalshiOdds[] }) {
 
   const sorted = [...odds].sort((a, b) => b.win_probability_pct - a.win_probability_pct);
   const mostRecent = sorted.reduce((latest, o) => (o.as_of > latest ? o.as_of : latest), sorted[0].as_of);
+  const isTwoWay = sorted.length === 2;
 
   return (
     <div>
-      <div className="flex h-6 w-full gap-[2px]" role="img" aria-label="Kalshi win probability by candidate">
-        {sorted.map((o) => (
-          <div
-            key={o.candidate.id}
-            className="h-full first:rounded-l-[4px] last:rounded-r-[4px]"
+      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <div className="flex items-baseline gap-3">
+          <h3
+            className="font-title text-3xl font-bold"
             style={{
-              width: `${Math.max(o.win_probability_pct, 0.5)}%`,
-              backgroundColor: partyColorVar(o.candidate.party),
+              backgroundImage: `linear-gradient(90deg, ${partyColorVar("Democratic")}, ${partyColorVar("Republican")})`,
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              color: "transparent",
             }}
-            title={`${o.candidate.name}: ${o.win_probability_pct.toFixed(1)}%`}
-          />
-        ))}
+          >
+            Markets
+          </h3>
+          <span className="text-xs font-semibold tracking-wide" style={{ color: "var(--text-muted)" }}>
+            KALSHI PREDICTION MARKET
+          </span>
+        </div>
+        <div className="flex items-center gap-1.5 text-xs" style={{ color: "var(--text-muted)" }}>
+          <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "#22c55e" }} />
+          LIVE · {new Date(mostRecent).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+        </div>
       </div>
 
-      <div className="mt-4 flex flex-col gap-3">
-        {sorted.map((o) => (
-          <div key={o.candidate.id} className="flex items-center gap-3">
-            <Thumbnail odds={o} />
-            <span className="flex-1 text-sm" style={{ color: "var(--text-secondary)" }}>
-              {o.candidate.name}
-            </span>
-            <span className="text-sm font-semibold tabular-nums" style={{ color: "var(--text-primary)" }}>
-              {o.win_probability_pct.toFixed(1)}%
-            </span>
-            <a
-              href={o.source_url}
-              target="_blank"
-              rel="noreferrer"
-              className="text-xs underline"
-              style={{ color: "var(--text-muted)" }}
-            >
-              {o.ticker}
-            </a>
-          </div>
-        ))}
-      </div>
+      <div
+        className="overflow-hidden rounded-lg border"
+        style={{ borderColor: "var(--border)", backgroundColor: "var(--page)" }}
+      >
+        <div className={`flex flex-col ${isTwoWay ? "sm:flex-row" : ""}`}>
+          {isTwoWay ? (
+            sorted.map((o, i) => (
+              <HeroPanel key={o.candidate.id} odds={o} borderSide={i === 0 ? "left" : "right"} />
+            ))
+          ) : (
+            <div className="flex flex-wrap gap-4 p-5">
+              {sorted.map((o) => (
+                <div key={o.candidate.id} className="flex-1 min-w-[140px]">
+                  <div className="text-xs font-semibold tracking-wide" style={{ color: "var(--text-muted)" }}>
+                    {partyAbbrev(o.candidate.party)} WIN
+                  </div>
+                  <div className="text-sm font-medium" style={{ color: partyColorVar(o.candidate.party) }}>
+                    {o.candidate.name}
+                  </div>
+                  <div
+                    className="font-title text-4xl font-bold tabular-nums"
+                    style={{ color: partyColorVar(o.candidate.party) }}
+                  >
+                    {Math.round(o.win_probability_pct)}¢
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-      <p className="mt-3 text-xs" style={{ color: "var(--text-muted)" }}>
-        As of {new Date(mostRecent).toLocaleString()}.
-      </p>
+        <div className="flex h-2 w-full" style={{ borderTop: "1px solid var(--border)" }}>
+          {sorted.map((o) => (
+            <div
+              key={o.candidate.id}
+              className="h-full"
+              style={{
+                width: `${Math.max(o.win_probability_pct, 0.5)}%`,
+                backgroundColor: partyColorVar(o.candidate.party),
+              }}
+              title={`${o.candidate.name}: ${o.win_probability_pct.toFixed(1)}%`}
+            />
+          ))}
+        </div>
+
+        <div className="flex items-center justify-between px-5 py-2 text-xs font-medium">
+          <span style={{ color: partyColorVar(sorted[0].candidate.party) }}>{sorted[0].candidate.name}</span>
+          <span style={{ color: partyColorVar(sorted[sorted.length - 1].candidate.party) }}>
+            {sorted[sorted.length - 1].candidate.name}
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,7 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api } from "../api/client";
-import type { ForecastHistory, ForecastSnapshot, KalshiOdds, Poll, Race, Simulations } from "../api/types";
+import type {
+  ForecastHistory,
+  ForecastSnapshot,
+  KalshiOdds,
+  Poll,
+  Race,
+  Simulations,
+} from "../api/types";
 import { ForecastNeedle } from "../components/ForecastNeedle";
 import { InfoButton } from "../components/InfoButton";
 import { ForecastHistoryChart } from "../components/ForecastHistoryChart";
@@ -19,7 +26,7 @@ function Card({
   children,
 }: {
   id?: string;
-  title: string;
+  title?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -28,9 +35,14 @@ function Card({
       className="glass-panel rounded-lg p-5"
       style={{ scrollMarginTop: NAV_HEIGHT_PX + 12 }}
     >
-      <h2 className="font-title mb-4 text-2xl font-semibold" style={{ color: "var(--text-primary)" }}>
-        {title}
-      </h2>
+      {title && (
+        <h2
+          className="font-title mb-4 text-2xl font-semibold"
+          style={{ color: "var(--text-primary)" }}
+        >
+          {title}
+        </h2>
+      )}
       {children}
     </section>
   );
@@ -96,8 +108,15 @@ export function StateForecastPage() {
 
   if (notFound) {
     return (
-      <div className="mx-auto max-w-5xl px-4 py-8" style={{ color: "var(--text-secondary)" }}>
-        <Link to="/" className="text-sm underline" style={{ color: "var(--text-muted)" }}>
+      <div
+        className="mx-auto max-w-5xl px-4 py-8"
+        style={{ color: "var(--text-secondary)" }}
+      >
+        <Link
+          to="/"
+          className="text-sm underline"
+          style={{ color: "var(--text-muted)" }}
+        >
           ← Back to map
         </Link>
         <p className="mt-4" style={{ color: "var(--text-muted)" }}>
@@ -109,121 +128,143 @@ export function StateForecastPage() {
 
   const sections = [
     { id: "forecast-summary", label: "Summary", visible: true },
-    { id: "forecast-history", label: "Forecast history", visible: !!history },
-    { id: "win-probability-history", label: "Win probability history", visible: !!history },
-    { id: "polling-trend", label: "Polling trend", visible: !!polls },
-    { id: "simulation-distribution", label: "Simulations", visible: !!simulations },
-    { id: "latest-polls", label: "Latest polls", visible: !!polls },
-    { id: "kalshi-odds", label: "Kalshi odds", visible: kalshiOdds.length > 0 },
+    { id: "forecast-history", label: "Forecast History", visible: !!history },
+    {
+      id: "win-probability-history",
+      label: "Win Probability History",
+      visible: !!history,
+    },
+    { id: "polling-trend", label: "Polling Trend", visible: !!polls },
+    {
+      id: "simulation-distribution",
+      label: "Simulations",
+      visible: !!simulations,
+    },
+    { id: "latest-polls", label: "Latest Polls", visible: !!polls },
+    { id: "kalshi-odds", label: "Kalshi Odds", visible: kalshiOdds.length > 0 },
   ].filter((s) => s.visible);
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8" style={{ color: "var(--text-secondary)" }}>
-      <header className="mb-8 mt-2 text-center">
-        <h1 className="font-title text-4xl font-semibold sm:text-5xl" style={{ color: "var(--text-primary)" }}>
-          {race
-            ? `${new Date(race.election_date + "T00:00:00").getFullYear()} ${race.state_name} ${race.office} Forecast`
-            : "Loading forecast…"}
-        </h1>
-      </header>
-      <InfoButton />
-
+    <div style={{ color: "var(--text-secondary)" }}>
       <nav
-        className="sticky top-0 z-20 mb-6 flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-b px-1 py-2 text-sm"
-        style={{ borderColor: "var(--border)", backgroundColor: "var(--page)", minHeight: NAV_HEIGHT_PX }}
+        className="sticky top-0 z-20 border-b text-sm"
+        style={{
+          borderColor: "var(--border)",
+          backgroundColor: "var(--page)",
+        }}
       >
-        <Link
-          to="/"
-          className="inline-flex flex-shrink-0 items-center gap-1 rounded-md px-2.5 py-1.5 underline"
-          style={{ color: "var(--text-muted)" }}
-        >
-          ← Back to map
-        </Link>
-        {sections.length > 1 && (
-          <div className="flex flex-wrap items-center gap-x-1 gap-y-1">
-            {sections.map((s) => (
-              <a
-                key={s.id}
-                href={`#${s.id}`}
-                className="rounded-md px-2.5 py-1.5 hover:underline"
-                style={{ color: "var(--text-secondary)" }}
-              >
-                {s.label}
-              </a>
-            ))}
-          </div>
-        )}
+        <div className="relative flex items-center px-4 py-2" style={{ minHeight: NAV_HEIGHT_PX }}>
+          <Link
+            to="/"
+            className="absolute left-4 inline-flex flex-shrink-0 items-center gap-1 rounded-md px-2.5 py-1.5 underline"
+            style={{ color: "var(--text-muted)" }}
+          >
+            ← Back to map
+          </Link>
+          {sections.length > 1 && (
+            <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-center gap-x-1 gap-y-1">
+              {sections.map((s) => (
+                <a
+                  key={s.id}
+                  href={`#${s.id}`}
+                  className="rounded-md px-2.5 py-1.5 hover:underline"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  {s.label}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
       </nav>
 
-      {error && (
-        <div
-          className="mb-6 rounded-md border p-3 text-sm"
-          style={{ borderColor: "var(--party-republican)", color: "var(--party-republican)" }}
-        >
-          {error}
-        </div>
-      )}
-
-      <div className="flex flex-col gap-6">
-        {forecast ? (
-          <Card id="forecast-summary" title="Forecast summary">
-            <ForecastNeedle results={forecast.results} />
-          </Card>
-        ) : (
-          <Card id="forecast-summary" title="Forecast summary">
-            <p style={{ color: "var(--text-muted)" }}>
-              No forecast available yet. The server generates one automatically on startup and
-              refreshes it as new polls are ingested.
-            </p>
-          </Card>
-        )}
-
-        {history && (
-          <Card id="forecast-history" title="Forecast history">
-            <ForecastHistoryChart history={history} />
-          </Card>
-        )}
-
-        {history && (
-          <Card id="win-probability-history" title="Win probability history">
-            <WinProbabilityHistoryChart history={history} />
-          </Card>
-        )}
-
-        {polls && race && (
-          <Card id="polling-trend" title="Polling trend">
-            <PollTrendChart polls={polls} electionDate={race.election_date} />
-          </Card>
-        )}
-
-        {simulations && (
-          <Card
-            id="simulation-distribution"
-            title={`Simulation distribution (${simulations.n_simulations.toLocaleString()} runs)`}
+      <div className="mx-auto max-w-5xl px-4 py-8">
+        <header className="mb-8 mt-2 text-center">
+          <h1
+            className="font-title text-4xl font-semibold sm:text-5xl"
+            style={{ color: "var(--text-primary)" }}
           >
-            <SimulationHistograms histograms={simulations.histograms} />
-          </Card>
+            {race
+              ? `${new Date(race.election_date + "T00:00:00").getFullYear()} ${race.state_name} ${race.office} Forecast`
+              : "Loading forecast…"}
+          </h1>
+        </header>
+        <InfoButton />
+
+        {error && (
+          <div
+            className="mb-6 rounded-md border p-3 text-sm"
+            style={{
+              borderColor: "var(--party-republican)",
+              color: "var(--party-republican)",
+            }}
+          >
+            {error}
+          </div>
         )}
 
-        {polls && (
-          <Card id="latest-polls" title="Latest polls">
-            <PollTable polls={polls} />
-          </Card>
-        )}
+        <div className="flex flex-col gap-6">
+          {forecast ? (
+            <Card id="forecast-summary" title="Forecast summary">
+              <ForecastNeedle results={forecast.results} />
+            </Card>
+          ) : (
+            <Card id="forecast-summary" title="Forecast summary">
+              <p style={{ color: "var(--text-muted)" }}>
+                No forecast available yet. The server generates one
+                automatically on startup and refreshes it as new polls are
+                ingested.
+              </p>
+            </Card>
+          )}
 
-        {kalshiOdds.length > 0 && (
-          <Card id="kalshi-odds" title="Kalshi prediction market">
-            <KalshiOddsCard odds={kalshiOdds} />
-          </Card>
-        )}
+          {history && (
+            <Card id="forecast-history" title="Forecast history">
+              <ForecastHistoryChart history={history} />
+            </Card>
+          )}
 
-        {forecast && (
-          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-            Snapshot #{forecast.id} · {forecast.n_polls_used} polls used · method{" "}
-            {forecast.method_version} · generated{" "}
-            {new Date(forecast.created_at).toLocaleString()}
-          </p>
-        )}
+          {history && (
+            <Card id="win-probability-history" title="Win probability history">
+              <WinProbabilityHistoryChart history={history} />
+            </Card>
+          )}
+
+          {polls && race && (
+            <Card id="polling-trend" title="Polling trend">
+              <PollTrendChart polls={polls} electionDate={race.election_date} />
+            </Card>
+          )}
+
+          {simulations && (
+            <Card
+              id="simulation-distribution"
+              title={`Simulation distribution (${simulations.n_simulations.toLocaleString()} runs)`}
+            >
+              <SimulationHistograms histograms={simulations.histograms} />
+            </Card>
+          )}
+
+          {polls && (
+            <Card id="latest-polls" title="Latest polls">
+              <PollTable polls={polls} />
+            </Card>
+          )}
+
+          {kalshiOdds.length > 0 && (
+            <Card id="kalshi-odds">
+              <KalshiOddsCard odds={kalshiOdds} />
+            </Card>
+          )}
+
+          {forecast && (
+            <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+              Snapshot #{forecast.id} · {forecast.n_polls_used} polls used ·
+              method {forecast.method_version} · generated{" "}
+              {new Date(forecast.created_at).toLocaleString()}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
