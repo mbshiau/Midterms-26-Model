@@ -78,8 +78,7 @@ export function KalshiOddsCard({ odds }: { odds: KalshiOdds[] }) {
       </div>
 
       <p className="mt-3 text-xs" style={{ color: "var(--text-muted)" }}>
-        Live prediction-market prices from Kalshi, refreshed twice daily. Shown for reference only
-        -- not part of the forecast above. As of {new Date(mostRecent).toLocaleString()}.
+        As of {new Date(mostRecent).toLocaleString()}.
       </p>
     </div>
   );

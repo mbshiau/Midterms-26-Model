@@ -28,7 +28,9 @@ function formatTick(ts: number): string {
 function HistoryTooltip({ active, payload }: any) {
   if (!active || !payload?.length) return null;
   const point = payload[0]?.payload;
-  const meanEntries = payload.filter((entry: any) => !entry.dataKey.endsWith("Range"));
+  const meanEntries = payload
+    .filter((entry: any) => !entry.dataKey.endsWith("Range"))
+    .sort((a: any, b: any) => b.value - a.value);
 
   return (
     <div

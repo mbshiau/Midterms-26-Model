@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { api } from "../api/client";
 import type { ForecastHistory, ForecastSnapshot, KalshiOdds, Poll, Race, Simulations } from "../api/types";
 import { ForecastNeedle } from "../components/ForecastNeedle";
-import { ModelCompositionCard } from "../components/ModelCompositionCard";
+import { InfoButton } from "../components/InfoButton";
 import { ForecastHistoryChart } from "../components/ForecastHistoryChart";
 import { WinProbabilityHistoryChart } from "../components/WinProbabilityHistoryChart";
 import { PollTrendChart } from "../components/PollTrendChart";
@@ -109,7 +109,6 @@ export function StateForecastPage() {
 
   const sections = [
     { id: "forecast-summary", label: "Summary", visible: true },
-    { id: "model-composition", label: "Model composition", visible: !!forecast },
     { id: "forecast-history", label: "Forecast history", visible: !!history },
     { id: "win-probability-history", label: "Win probability history", visible: !!history },
     { id: "polling-trend", label: "Polling trend", visible: !!polls },
@@ -127,6 +126,7 @@ export function StateForecastPage() {
             : "Loading forecast…"}
         </h1>
       </header>
+      <InfoButton />
 
       <nav
         className="sticky top-0 z-20 mb-6 flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-b px-1 py-2 text-sm"
@@ -164,18 +164,6 @@ export function StateForecastPage() {
         </div>
       )}
 
-      {forecast && forecast.n_polls_used === 0 && (
-        <div
-          className="mb-6 rounded-md border p-3 text-sm"
-          style={{ borderColor: "var(--border)", backgroundColor: "var(--page)", color: "var(--text-secondary)" }}
-        >
-          No general-election polling has been published for this race yet — the matchup is too
-          new. This forecast is <strong>fundamentals-only</strong> (100% weight on historical
-          lean, incumbency, registration trend, and national environment) and will incorporate
-          real polls automatically as soon as any are released.
-        </div>
-      )}
-
       <div className="flex flex-col gap-6">
         {forecast ? (
           <Card id="forecast-summary" title="Forecast summary">
@@ -187,12 +175,6 @@ export function StateForecastPage() {
               No forecast available yet. The server generates one automatically on startup and
               refreshes it as new polls are ingested.
             </p>
-          </Card>
-        )}
-
-        {forecast && (
-          <Card id="model-composition" title="Model composition: polls + fundamentals">
-            <ModelCompositionCard forecast={forecast} stateName={race?.state_name ?? stateCode} />
           </Card>
         )}
 

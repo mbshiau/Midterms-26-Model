@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ForecastResult } from "../api/types";
-import { partyColorVar } from "../lib/partyColor";
+import { favoriteLabel, partyColorVar } from "../lib/partyColor";
 
 const CX = 170;
 const CY = 168;
@@ -96,9 +96,7 @@ function CandidateLabel({
         <div className="text-2xl font-semibold leading-tight" style={{ color: "var(--text-primary)" }}>
           {result.mean_vote_share.toFixed(1)}%
         </div>
-        <div className="text-xs tabular-nums" style={{ color: "var(--text-muted)" }}>
-          {result.ci_low.toFixed(1)}–{result.ci_high.toFixed(1)}%
-        </div>
+      
       </div>
     </div>
   );
@@ -150,11 +148,15 @@ export function ForecastNeedle({ results }: { results: ForecastResult[] }) {
         <circle cx={CX} cy={CY} r={9} fill="var(--text-primary)" stroke="var(--surface)" strokeWidth={2} />
       </svg>
 
-      <p className="-mt-2 text-center text-sm" style={{ color: "var(--text-muted)" }}>
-        <span className="font-semibold" style={{ color: "var(--text-primary)" }}>
+      <p className="-mt-2 text-center text-2xl font-bold" style={{ color: "var(--text-muted)" }}>
+        <span className="font-bold" style={{ color: partyColorVar(leader.candidate.party) }}>
           {leader.candidate.name}
         </span>{" "}
-        favored, {formatPct(leader.win_probability)}
+        is the{" "}
+        <span className="font-bold" style={{ color: partyColorVar(leader.candidate.party) }}>
+          {favoriteLabel(leader.candidate.party, leader.win_probability)}
+        </span>
+        , {formatPct(leader.win_probability)}
       </p>
 
       <div className="mt-4 flex items-start justify-between gap-4">

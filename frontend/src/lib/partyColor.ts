@@ -36,3 +36,16 @@ export function probabilityColorVar(party: string, winProbability: number): stri
   const t = probabilityTier(party, winProbability);
   return t ? `var(--party-${t.slug}-${t.tier})` : "var(--text-muted)";
 }
+
+const TIER_LABELS: Record<ProbabilityTier, string> = {
+  95: "Strong Favorite",
+  75: "Favorite",
+  60: "Narrow Favorite",
+  50: "Slight Favorite",
+};
+
+/** Confidence-tier label for the leading candidate, e.g. "Strong Favorite" at 95%+. */
+export function favoriteLabel(party: string, winProbability: number): string {
+  const t = probabilityTier(party, winProbability);
+  return t ? TIER_LABELS[t.tier] : "Favorite";
+}
