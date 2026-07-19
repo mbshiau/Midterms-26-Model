@@ -31,58 +31,123 @@ interface RaceLean {
   history: ForecastHistory | null;
 }
 
-interface CandidateMove {
+type ViewMode = "since-refresh" | "this-week" | "closest";
+
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+interface CandidateMetric {
   name: string;
   party: string;
-  deltaPts: number;
+  /** Meaning depends on the active view: a vote-share delta in points for
+   * the two "movers" modes, or the current mean vote share for "closest". */
+  value: number;
 }
 
-interface Mover {
+interface RaceMetricRow {
   stateCode: string;
   stateName: string;
-  candidates: CandidateMove[];
-  maxAbsDeltaPts: number;
+  candidates: CandidateMetric[];
+  /** Row ordering key for the active view -- callers sort by this before
+   * storing the row, since the two movers modes want descending order
+   * (biggest shift first) while closest races wants ascending (smallest
+   * margin first). */
+  sortValue: number;
 }
 
-// Compares the two most recent forecast snapshots for a race and reports how
-// much each candidate's vote share moved between them. Races with fewer than
-// two snapshots (nothing to compare against yet) are skipped.
-function computeMover(entry: RaceLean): Mover | null {
-  const snapshots = entry.history?.snapshots;
-  if (!snapshots || snapshots.length < 2 || !entry.forecast) return null;
-
-  const sorted = [...snapshots].sort(
-    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-  );
-  const latest = sorted[sorted.length - 1];
-  const previous = sorted[sorted.length - 2];
-
+// Compares two forecast snapshots for a race and reports how much each
+// candidate's vote share moved between them.
+function computeRaceMove(
+  entry: RaceLean,
+  baseline: ForecastHistory["snapshots"][number],
+  latest: ForecastHistory["snapshots"][number]
+): RaceMetricRow | null {
   const candidates = latest.results
     .map((r) => {
-      const priorResult = previous.results.find((p) => p.candidate.id === r.candidate.id);
+      const priorResult = baseline.results.find((p) => p.candidate.id === r.candidate.id);
       if (!priorResult) return null;
       return {
         name: r.candidate.name,
         party: r.candidate.party,
-        deltaPts: r.mean_vote_share - priorResult.mean_vote_share,
+        value: r.mean_vote_share - priorResult.mean_vote_share,
       };
     })
-    .filter((c): c is CandidateMove => c !== null)
-    .sort((a, b) => b.deltaPts - a.deltaPts);
+    .filter((c): c is CandidateMetric => c !== null)
+    .sort((a, b) => b.value - a.value);
   if (candidates.length === 0) return null;
 
   return {
     stateCode: entry.race.state_code,
     stateName: entry.race.state_name,
     candidates,
-    maxAbsDeltaPts: Math.max(...candidates.map((c) => Math.abs(c.deltaPts))),
+    sortValue: Math.max(...candidates.map((c) => Math.abs(c.value))),
   };
 }
+
+// Races with fewer than two snapshots (nothing to compare against yet) are
+// skipped.
+function computeSinceRefreshRow(entry: RaceLean): RaceMetricRow | null {
+  const snapshots = entry.history?.snapshots;
+  if (!snapshots || snapshots.length < 2) return null;
+  const sorted = [...snapshots].sort(
+    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+  );
+  return computeRaceMove(entry, sorted[sorted.length - 2], sorted[sorted.length - 1]);
+}
+
+// Compares the latest snapshot against the most recent one that's at least a
+// week old. Races whose full history doesn't yet span a week are skipped
+// rather than falling back to whatever's oldest, since that would silently
+// understate "this week"'s movement for a race just added to the model.
+function computeThisWeekRow(entry: RaceLean): RaceMetricRow | null {
+  const snapshots = entry.history?.snapshots;
+  if (!snapshots || snapshots.length < 2) return null;
+  const sorted = [...snapshots].sort(
+    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+  );
+  const latest = sorted[sorted.length - 1];
+  const cutoff = new Date(latest.created_at).getTime() - WEEK_MS;
+  const eligibleBaselines = sorted.filter((s) => new Date(s.created_at).getTime() <= cutoff);
+  if (eligibleBaselines.length === 0) return null;
+  return computeRaceMove(entry, eligibleBaselines[eligibleBaselines.length - 1], latest);
+}
+
+// Current vote share for each candidate, ranked by how close the top two are
+// -- the smallest margin is the closest race.
+function computeClosestRow(entry: RaceLean): RaceMetricRow | null {
+  if (!entry.forecast) return null;
+  const sorted = [...entry.forecast.results].sort((a, b) => b.mean_vote_share - a.mean_vote_share);
+  if (sorted.length < 2) return null;
+  const margin = sorted[0].mean_vote_share - sorted[1].mean_vote_share;
+
+  return {
+    stateCode: entry.race.state_code,
+    stateName: entry.race.state_name,
+    candidates: sorted.map((r) => ({
+      name: r.candidate.name,
+      party: r.candidate.party,
+      value: r.mean_vote_share,
+    })),
+    sortValue: margin,
+  };
+}
+
+const SECTION_TITLES: Record<ViewMode, string> = {
+  "since-refresh": "Biggest movers since last refresh",
+  "this-week": "Biggest movers this week",
+  closest: "Closest races",
+};
+
+const EMPTY_MESSAGES: Record<ViewMode, string> = {
+  "since-refresh": "Not enough forecast history yet to show movement — check back after the next refresh.",
+  "this-week": "Not enough forecast history yet spanning a full week — check back soon.",
+  closest: "No forecasts available yet.",
+};
 
 export function MapPage() {
   const navigate = useNavigate();
   const [racesByState, setRacesByState] = useState<Record<string, RaceLean>>({});
   const [moverSearch, setMoverSearch] = useState("");
+  const [viewMode, setViewMode] = useState<ViewMode>("since-refresh");
 
   useEffect(() => {
     let cancelled = false;
@@ -166,19 +231,30 @@ export function MapPage() {
           }]
         : "No net governorship flips";
 
-  const movers = entries
-    .map(computeMover)
-    .filter((m): m is Mover => m !== null)
-    .sort((a, b) => b.maxAbsDeltaPts - a.maxAbsDeltaPts);
+  const sinceRefreshRows = entries
+    .map(computeSinceRefreshRow)
+    .filter((r): r is RaceMetricRow => r !== null)
+    .sort((a, b) => b.sortValue - a.sortValue);
+  const thisWeekRows = entries
+    .map(computeThisWeekRow)
+    .filter((r): r is RaceMetricRow => r !== null)
+    .sort((a, b) => b.sortValue - a.sortValue);
+  const closestRows = entries
+    .map(computeClosestRow)
+    .filter((r): r is RaceMetricRow => r !== null)
+    .sort((a, b) => a.sortValue - b.sortValue);
+
+  const activeRows =
+    viewMode === "since-refresh" ? sinceRefreshRows : viewMode === "this-week" ? thisWeekRows : closestRows;
 
   const moverQuery = moverSearch.trim().toLowerCase();
-  const filteredMovers = moverQuery
-    ? movers.filter(
-        (m) =>
-          m.stateName.toLowerCase().includes(moverQuery) ||
-          m.candidates.some((c) => c.name.toLowerCase().includes(moverQuery))
+  const filteredRows = moverQuery
+    ? activeRows.filter(
+        (r) =>
+          r.stateName.toLowerCase().includes(moverQuery) ||
+          r.candidates.some((c) => c.name.toLowerCase().includes(moverQuery))
       )
-    : movers;
+    : activeRows;
 
   return (
     <div className="dashboard-background">
@@ -295,13 +371,26 @@ export function MapPage() {
       </section>
 
       <section className="glass-panel mt-6 rounded-lg p-5">
-        <h2 className="font-title mb-4 text-2xl font-semibold" style={{ color: "var(--text-primary)" }}>
-          Biggest movers since last refresh
-        </h2>
-        {movers.length === 0 ? (
-          <p style={{ color: "var(--text-muted)" }}>
-            Not enough forecast history yet to show movement — check back after the next refresh.
-          </p>
+        <div className="relative mb-4 inline-block">
+          <select
+            value={viewMode}
+            onChange={(e) => setViewMode(e.target.value as ViewMode)}
+            className="title-select font-title cursor-pointer appearance-none py-1 pr-7 text-2xl font-semibold"
+            style={{ color: "var(--text-primary)", backgroundColor: "transparent" }}
+          >
+            <option value="since-refresh">{SECTION_TITLES["since-refresh"]}</option>
+            <option value="this-week">{SECTION_TITLES["this-week"]}</option>
+            <option value="closest">{SECTION_TITLES["closest"]}</option>
+          </select>
+          <span
+            className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 text-xl"
+            style={{ color: "var(--text-muted)" }}
+          >
+            ▾
+          </span>
+        </div>
+        {activeRows.length === 0 ? (
+          <p style={{ color: "var(--text-muted)" }}>{EMPTY_MESSAGES[viewMode]}</p>
         ) : (
           <>
             <input
@@ -316,7 +405,7 @@ export function MapPage() {
                 color: "var(--text-primary)",
               }}
             />
-            {filteredMovers.length === 0 ? (
+            {filteredRows.length === 0 ? (
               <p style={{ color: "var(--text-muted)" }}>No states match “{moverSearch}”.</p>
             ) : (
               <div className="max-h-[620px] overflow-y-auto">
@@ -342,15 +431,15 @@ export function MapPage() {
                         className="border-b py-2 pl-4 text-left font-medium"
                         style={{ borderColor: "var(--border)", color: "var(--text-muted)" }}
                       >
-                        Shift
+                        {viewMode === "closest" ? "Current split" : "Shift"}
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredMovers.map((m) => (
+                    {filteredRows.map((row) => (
                       <tr
-                        key={m.stateCode}
-                        onClick={() => navigate(`/states/${m.stateCode}`)}
+                        key={row.stateCode}
+                        onClick={() => navigate(`/states/${row.stateCode}`)}
                         className="cursor-pointer border-b transition-opacity hover:opacity-70"
                         style={{ borderColor: "var(--border)" }}
                       >
@@ -358,11 +447,11 @@ export function MapPage() {
                           className="py-3 pr-4 pl-12 align-top font-medium"
                           style={{ color: "var(--text-primary)" }}
                         >
-                          {m.stateName}
+                          {row.stateName}
                         </td>
                         <td className="py-3 pr-4 pl-4 align-top">
                           <div className="flex flex-col gap-1.5">
-                            {m.candidates.map((c) => (
+                            {row.candidates.map((c) => (
                               <span key={c.name} style={{ color: "var(--text-secondary)" }}>
                                 {c.name}
                               </span>
@@ -371,14 +460,15 @@ export function MapPage() {
                         </td>
                         <td className="py-3 pl-4 align-top">
                           <div className="flex flex-col gap-1.5">
-                            {m.candidates.map((c) => (
+                            {row.candidates.map((c) => (
                               <span
                                 key={c.name}
                                 className="font-semibold tabular-nums"
                                 style={{ color: partyColorVar(c.party) }}
                               >
-                                {partyAbbrev(c.party)} {c.deltaPts >= 0 ? "▲" : "▼"}{" "}
-                                {Math.abs(c.deltaPts).toFixed(1)} pts
+                                {viewMode === "closest"
+                                  ? `${c.value.toFixed(1)}%`
+                                  : `${partyAbbrev(c.party)} ${c.value >= 0 ? "▲" : "▼"} ${Math.abs(c.value).toFixed(1)} pts`}
                               </span>
                             ))}
                           </div>

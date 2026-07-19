@@ -72,6 +72,18 @@ body {
   min-height: 100vh;
 }
 
+/* A <select> styled to look like a .font-title section heading when closed,
+   but whose dropdown list (the <option>s) should read as normal body text
+   -- text-transform/font-size set directly on `option` overrides what it'd
+   otherwise inherit from the select's own .font-title styling. */
+.title-select option {
+  text-transform: none;
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: normal;
+}
+
 .glass-panel {
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(20px) saturate(160%);
