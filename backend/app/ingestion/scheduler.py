@@ -31,12 +31,19 @@ from app.data.fundamentals_data import PRESIDENT
 from app.ingestion.approval_scraper import fetch_current_approval
 from app.ingestion.generic_ballot_scraper import fetch_current_generic_ballot
 from app.ingestion.kalshi_scraper import fetch_market_odds
+from app.ingestion.news_scraper import build_news_query, fetch_race_news
 from app.ingestion.pipeline import fetch_live_polls, ingest_polls
 from app.models import Candidate, Race
+from app.services.ai_summary import (
+    generate_article_relevance,
+    generate_market_analysis,
+    update_race_intelligence,
+)
 from app.services.approval import update_approval
-from app.services.forecasting import generate_forecast
+from app.services.forecasting import generate_forecast, latest_forecast
 from app.services.generic_ballot import update_generic_ballot
-from app.services.market_odds import update_market_odds
+from app.services.market_odds import get_market_odds, update_market_odds
+from app.services.news import get_recent_news, update_news
 from app.services.races import get_race_seed
 
 logger = logging.getLogger(__name__)
@@ -55,6 +62,40 @@ REFRESH_TIMEZONE = "America/New_York"
 # late. A generous grace window means a delayed check still fires instead of
 # vanishing.
 MISFIRE_GRACE_SECONDS = 3600
+
+
+def refresh_race_intelligence(db, race: Race, candidates: list[Candidate]) -> None:
+    """News + AI-summary step for one race's Race Intelligence section (see
+    app.services.news / app.services.ai_summary), called from the scheduled
+    refresh below.
+
+    Deliberately does not raise -- callers wrap this in their own
+    try/except so a news-scrape or AI-provider hiccup here never prevents
+    that race's forecast (the actually load-bearing output) from
+    regenerating."""
+    scraped_news = fetch_race_news(build_news_query(race.state_name, race.office))
+    new_count = update_news(db, race.id, scraped_news)
+    if new_count:
+        logger.info("scheduled refresh: %s — %d new headline(s)", race.state_code, new_count)
+    articles = get_recent_news(db, race.id)
+
+    # Per-article relevance blurb is generated once and cached (see
+    # NewsArticle.ai_relevance) -- only for articles that don't have one yet,
+    # so an unchanged headline isn't re-summarized (and re-billed) on every
+    # refresh, just newly-scraped ones.
+    for article in articles:
+        if article.ai_relevance is None:
+            relevance = generate_article_relevance(race, article)
+            if relevance is not None:
+                article.ai_relevance = relevance
+    db.commit()
+
+    candidates_by_id = {c.id: c for c in candidates}
+    kalshi_rows = list(get_market_odds(db, [c.id for c in candidates]).values())
+    snapshot = latest_forecast(db, race)
+    market_analysis = generate_market_analysis(race, snapshot, kalshi_rows, candidates_by_id)
+
+    update_race_intelligence(db, race.id, market_analysis)
 
 
 def _run_refresh_job() -> None:
@@ -99,11 +140,8 @@ def _run_refresh_job() -> None:
                     race.state_code, new_poll_count,
                 )
 
-                candidates_with_tickers = (
-                    db.query(Candidate)
-                    .filter(Candidate.race_id == race.id, Candidate.kalshi_ticker.isnot(None))
-                    .all()
-                )
+                candidates = db.query(Candidate).filter(Candidate.race_id == race.id).all()
+                candidates_with_tickers = [c for c in candidates if c.kalshi_ticker is not None]
                 for candidate in candidates_with_tickers:
                     scraped = fetch_market_odds(candidate.kalshi_ticker)
                     if scraped is None:
@@ -116,6 +154,18 @@ def _run_refresh_job() -> None:
                     logger.info(
                         "scheduled refresh: %s — Kalshi odds for %s now %.1f%%",
                         race.state_code, candidate.name, scraped.yes_price_pct,
+                    )
+
+                try:
+                    refresh_race_intelligence(db, race, candidates)
+                    logger.info("scheduled refresh: %s race intelligence updated", race.state_code)
+                except Exception:
+                    # A news-scrape or AI-provider hiccup here must never block the
+                    # forecast regeneration below -- Race Intelligence is
+                    # display-only context, the forecast is the load-bearing
+                    # output (see refresh_race_intelligence's docstring).
+                    logger.exception(
+                        "scheduled refresh: %s race intelligence update failed, continuing", race.state_code
                     )
 
                 generate_forecast(db, race)

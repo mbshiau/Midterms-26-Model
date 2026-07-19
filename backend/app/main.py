@@ -8,7 +8,7 @@ from app import database
 from app.config import settings
 from app.ingestion.pipeline import ingest_polls
 from app.ingestion.scheduler import start_scheduler, stop_scheduler
-from app.routers import forecast, kalshi, polls, races, simulations
+from app.routers import forecast, kalshi, polls, race_intelligence, races, simulations
 from app.schema_sync import sync_schema
 from app.services.approval import seed_default_approval
 from app.services.forecasting import generate_forecast, latest_forecast
@@ -54,6 +54,14 @@ async def lifespan(app: FastAPI):
             # manual /simulate call), not process restarts.
             if latest_forecast(db, race) is None:
                 generate_forecast(db, race)
+            # Race Intelligence (news + AI summary) is deliberately NOT
+            # bootstrapped here, unlike the forecast above -- unlike poll
+            # ingestion at startup (which uses the seed-only fetcher, never
+            # fetch_live_polls), refresh_race_intelligence always makes a
+            # real network call to Google News. Startup must stay hermetic
+            # (the test suite's `client` fixture runs this lifespan on every
+            # test), so the section is empty until the first scheduled
+            # refresh (see app.ingestion.scheduler) rather than at boot.
     finally:
         db.close()
 
@@ -78,6 +86,7 @@ app.include_router(polls.router)
 app.include_router(forecast.router)
 app.include_router(simulations.router)
 app.include_router(kalshi.router)
+app.include_router(race_intelligence.router)
 
 
 @app.get("/health")

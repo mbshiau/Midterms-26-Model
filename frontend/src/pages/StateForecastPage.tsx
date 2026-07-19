@@ -7,6 +7,7 @@ import type {
   KalshiOdds,
   Poll,
   Race,
+  RaceIntelligence,
   Simulations,
 } from "../api/types";
 import { ForecastNeedle } from "../components/ForecastNeedle";
@@ -17,6 +18,8 @@ import { PollTrendChart } from "../components/PollTrendChart";
 import { SimulationHistograms } from "../components/SimulationHistograms";
 import { PollTable } from "../components/PollTable";
 import { KalshiOddsCard } from "../components/KalshiOddsCard";
+import { NewsHeadlinesCard } from "../components/NewsHeadlinesCard";
+import { AIMarketAnalysisCard } from "../components/AIMarketAnalysisCard";
 
 const NAV_HEIGHT_PX = 52;
 
@@ -56,6 +59,7 @@ export function StateForecastPage() {
   const [history, setHistory] = useState<ForecastHistory | null>(null);
   const [simulations, setSimulations] = useState<Simulations | null>(null);
   const [kalshiOdds, setKalshiOdds] = useState<KalshiOdds[]>([]);
+  const [raceIntelligence, setRaceIntelligence] = useState<RaceIntelligence | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [notFound, setNotFound] = useState(false);
 
@@ -78,6 +82,12 @@ export function StateForecastPage() {
         setKalshiOdds(await api.getKalshiOdds(stateCode));
       } catch {
         setKalshiOdds([]);
+      }
+
+      try {
+        setRaceIntelligence(await api.getRaceIntelligence(stateCode));
+      } catch {
+        setRaceIntelligence(null);
       }
 
       try {
@@ -141,7 +151,9 @@ export function StateForecastPage() {
       visible: !!simulations,
     },
     { id: "latest-polls", label: "Latest Polls", visible: !!polls },
-    { id: "kalshi-odds", label: "Kalshi Odds", visible: kalshiOdds.length > 0 },
+    { id: "latest-news", label: "Latest News", visible: !!raceIntelligence },
+    { id: "kalshi-odds", label: "Prediction Markets", visible: kalshiOdds.length > 0 },
+    { id: "ai-market-analysis", label: "AI Market Analysis", visible: !!raceIntelligence },
   ].filter((s) => s.visible);
 
   return (
@@ -251,10 +263,43 @@ export function StateForecastPage() {
             </Card>
           )}
 
-          {kalshiOdds.length > 0 && (
-            <Card id="kalshi-odds">
-              <KalshiOddsCard odds={kalshiOdds} />
-            </Card>
+          {(raceIntelligence || kalshiOdds.length > 0) && (
+            <div className="mt-4 flex flex-col gap-6">
+              <div className="flex items-center gap-3">
+                <div className="h-px flex-1" style={{ backgroundColor: "var(--border)" }} />
+                <h2
+                  className="font-title text-lg font-semibold uppercase tracking-wide"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  Race Intelligence
+                </h2>
+                <div className="h-px flex-1" style={{ backgroundColor: "var(--border)" }} />
+              </div>
+              <p className="-mt-4 text-center text-xs" style={{ color: "var(--text-muted)" }}>
+                Context for the forecast above — news and market sentiment. Not part of the model itself.
+              </p>
+
+              {raceIntelligence && (
+                <Card id="latest-news" title="Latest news">
+                  <NewsHeadlinesCard articles={raceIntelligence.news_articles} />
+                </Card>
+              )}
+
+              {kalshiOdds.length > 0 && (
+                <Card id="kalshi-odds">
+                  <KalshiOddsCard odds={kalshiOdds} />
+                </Card>
+              )}
+
+              {raceIntelligence && (
+                <Card id="ai-market-analysis" title="AI market analysis">
+                  <AIMarketAnalysisCard
+                    analysis={raceIntelligence.market_analysis}
+                    generatedAt={raceIntelligence.market_analysis_generated_at}
+                  />
+                </Card>
+              )}
+            </div>
           )}
 
           {forecast && (

@@ -1,7 +1,7 @@
 import enum
 from datetime import date, datetime, timezone
 
-from sqlalchemy import Enum, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import Enum, Float, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy import Date, DateTime, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -228,11 +228,75 @@ class MarketOdds(Base):
     yes_price_pct: Mapped[float] = mapped_column(Float, nullable=False)
     as_of: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     source_url: Mapped[str] = mapped_column(Text, nullable=False)
+    # The value/timestamp this row held immediately before the most recent
+    # scrape overwrote it -- None until the second successful scrape ever
+    # happens for this candidate. Lets the Race Intelligence "what changed"
+    # card report e.g. "Kalshi moved from 76% to 79%" without a separate
+    # history table, the same way ForecastSnapshot history already lets the
+    # win-probability delta be computed by comparing the two latest rows.
+    previous_yes_price_pct: Mapped[float | None] = mapped_column(Float, nullable=True)
+    previous_as_of: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, default=lambda: datetime.now(timezone.utc)
     )
 
     candidate: Mapped["Candidate"] = relationship()
+
+
+class NewsArticle(Base):
+    """One scraped headline for a race, from Google News RSS (see
+    app.ingestion.news_scraper) -- display-only context for the Race
+    Intelligence section, never fed into the forecasting model. Unique on
+    (race_id, url) so re-scraping the same query is a no-op upsert rather
+    than accumulating duplicates; pruned to the most recent
+    NEWS_ARTICLES_PER_RACE rows per race on every refresh (see
+    app.services.news.update_news)."""
+
+    __tablename__ = "news_articles"
+    __table_args__ = (UniqueConstraint("race_id", "url", name="uq_news_articles_race_url"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    race_id: Mapped[int] = mapped_column(ForeignKey("races.id"), nullable=False)
+    headline: Mapped[str] = mapped_column(Text, nullable=False)
+    source: Mapped[str] = mapped_column(String(200), nullable=False)
+    url: Mapped[str] = mapped_column(Text, nullable=False)
+    published_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    # Per-article 1-2 sentence AI blurb (what the headline suggests happened
+    # + why it's relevant to this race) -- see
+    # app.services.ai_summary.generate_article_relevance. None until that's
+    # run at least once for this article; generated once and cached here
+    # rather than per page-load, same rationale as RaceIntelligence's fields.
+    ai_relevance: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, default=lambda: datetime.now(timezone.utc)
+    )
+
+    race: Mapped["Race"] = relationship()
+
+
+class RaceIntelligence(Base):
+    """Cached AI-generated context for a race's Race Intelligence section --
+    currently just a model-vs-Kalshi comparison
+    (app.services.ai_summary.generate_market_analysis), written by an
+    OpenAI-compatible LLM provider (currently UF Navigator -- a separate,
+    standalone integration from the Anthropic-powered tooling elsewhere in
+    this repo). Generated once per scheduled refresh and served from here
+    rather than calling the LLM on every page load. One row per race,
+    upserted in place -- same convention as
+    PresidentApproval/GenericBallot/MarketOdds. Deliberately excluded from
+    app.services.forecasting.generate_forecast: display-only, like Kalshi."""
+
+    __tablename__ = "race_intelligence"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    race_id: Mapped[int] = mapped_column(ForeignKey("races.id"), unique=True, nullable=False)
+    market_analysis: Mapped[str | None] = mapped_column(Text, nullable=True)
+    market_analysis_generated_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=lambda: datetime.now(timezone.utc)
+    )
+
+    race: Mapped["Race"] = relationship()
 
 
 class ActualResult(Base):

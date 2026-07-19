@@ -92,5 +92,26 @@ class Settings(BaseSettings):
     kalshi_private_key_path: str = ""
     kalshi_base_url: str = "https://api.elections.kalshi.com/trade-api/v2"
 
+    # Race Intelligence section (see app.services.ai_summary /
+    # app.services.news / app.routers.race_intelligence): news headlines are
+    # free/keyless (Google News RSS), but the AI-generated news briefing,
+    # model-vs-Kalshi comparison, and per-article relevance blurbs need an
+    # LLM -- a separate, standalone integration from the Anthropic-powered
+    # tooling used elsewhere in this project's own development. Currently
+    # UF Navigator (an OpenAI-compatible gateway), but any OpenAI-compatible
+    # provider works by swapping base_url/model. Left blank by default so a
+    # dev environment without a key just serves cached/empty AI text instead
+    # of erroring, same convention as the Kalshi credentials above.
+    uf_navigator_api_key: str = ""
+    uf_navigator_base_url: str = "https://api.ai.it.ufl.edu/v1"
+    uf_navigator_model: str = "gpt-oss-120b"
+    # Pace between real calls so a scheduled refresh (which can make dozens
+    # of calls across every race) doesn't get rate-limited -- app.services.
+    # ai_summary sleeps at least this long between consecutive calls. Set to
+    # 0 in tests. Gemini's free tier needed 13s for its 5-requests/minute
+    # cap; UF Navigator's actual limit is unconfirmed, so this starts low
+    # and should be raised if 429s show up.
+    ai_min_seconds_between_calls: float = 2.0
+
 
 settings = Settings()

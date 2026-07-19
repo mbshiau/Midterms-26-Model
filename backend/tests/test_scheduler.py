@@ -1,9 +1,12 @@
-from unittest.mock import patch
+from datetime import datetime, timezone
+from unittest.mock import MagicMock, patch
 from zoneinfo import ZoneInfo
 
 from app.ingestion import scheduler
-from app.models import Race
+from app.ingestion.news_scraper import ScrapedNewsArticle
+from app.models import Candidate, NewsArticle, Race
 from app.services.forecasting import forecast_history
+from app.services.news import get_recent_news
 
 
 def test_start_scheduler_sets_a_real_next_run_time():
@@ -64,6 +67,7 @@ def test_one_races_scraping_failure_does_not_block_other_races(client, db_sessio
         patch("app.ingestion.scheduler.fetch_current_approval", return_value=None),
         patch("app.ingestion.scheduler.ingest_polls", side_effect=flaky_ingest_polls),
         patch("app.ingestion.scheduler.fetch_market_odds", return_value=None),
+        patch("app.ingestion.scheduler.fetch_race_news", return_value=[]),
     ):
         scheduler._run_refresh_job()
 
@@ -74,6 +78,60 @@ def test_one_races_scraping_failure_does_not_block_other_races(client, db_sessio
     # relative to PA.
     for code in other_codes:
         assert len(forecast_history(db_session, races[code])) == snapshots_before[code] + 1
+
+
+def test_refresh_race_intelligence_generates_relevance_only_for_new_articles(monkeypatch, client, db_session):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "uf_navigator_api_key", "test-key")
+
+    race = db_session.query(Race).filter(Race.state_code == "pa").first()
+    candidates = db_session.query(Candidate).filter(Candidate.race_id == race.id).all()
+
+    already_summarized = NewsArticle(
+        race_id=race.id,
+        headline="Already summarized",
+        source="Example",
+        url="https://example.com/existing",
+        published_at=datetime.now(timezone.utc),
+        ai_relevance="Existing blurb -- must not be overwritten.",
+    )
+    db_session.add(already_summarized)
+    db_session.commit()
+
+    scraped = [
+        ScrapedNewsArticle(
+            headline="Already summarized",
+            source="Example",
+            url="https://example.com/existing",
+            published_at=datetime.now(timezone.utc),
+        ),
+        ScrapedNewsArticle(
+            headline="Brand new headline",
+            source="Example",
+            url="https://example.com/new",
+            published_at=datetime.now(timezone.utc),
+        ),
+    ]
+
+    fake_client = MagicMock()
+    fake_choice = MagicMock()
+    fake_choice.message.content = "Freshly generated blurb."
+    fake_response = MagicMock()
+    fake_response.choices = [fake_choice]
+    fake_client.chat.completions.create.return_value = fake_response
+
+    with (
+        patch("app.ingestion.scheduler.fetch_race_news", return_value=scraped),
+        patch("app.services.ai_summary._client", return_value=fake_client),
+    ):
+        scheduler.refresh_race_intelligence(db_session, race, candidates)
+
+    articles = {a.url: a for a in get_recent_news(db_session, race.id)}
+    assert articles["https://example.com/existing"].ai_relevance == "Existing blurb -- must not be overwritten."
+    assert articles["https://example.com/new"].ai_relevance == "Freshly generated blurb."
+    # Only the new article needed an AI call -- the existing one already had a blurb.
+    assert fake_client.chat.completions.create.call_count == 1
 
 
 def test_next_run_lands_on_noon_or_7pm_eastern():

@@ -5,6 +5,15 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app import database
+from app.config import settings
+
+
+@pytest.fixture(autouse=True)
+def _no_ai_rate_limit_pause(monkeypatch):
+    # app.services.ai_summary paces real AI-provider calls to avoid rate
+    # limiting -- without this, any test that exercises that pacing would
+    # spend real wall-clock seconds sleeping.
+    monkeypatch.setattr(settings, "ai_min_seconds_between_calls", 0.0)
 
 
 @pytest.fixture()

@@ -1,4 +1,12 @@
-import type { ForecastHistory, ForecastSnapshot, KalshiOdds, Poll, Race, Simulations } from "./types";
+import type {
+  ForecastHistory,
+  ForecastSnapshot,
+  KalshiOdds,
+  Poll,
+  Race,
+  RaceIntelligence,
+  Simulations,
+} from "./types";
 
 const BASE = "/api";
 
@@ -22,6 +30,8 @@ export const api = {
     request<ForecastHistory>(`/races/${stateCode}/forecast/history`),
   getSimulations: (stateCode: string) => request<Simulations>(`/races/${stateCode}/simulations`),
   getKalshiOdds: (stateCode: string) => request<KalshiOdds[]>(`/races/${stateCode}/kalshi`),
+  getRaceIntelligence: (stateCode: string) =>
+    request<RaceIntelligence>(`/races/${stateCode}/intelligence`),
   simulate: (
     stateCode: string,
     params?: {

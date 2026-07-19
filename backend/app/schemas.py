@@ -158,6 +158,40 @@ class ForecastHistoryOut(BaseModel):
     election_date: date
 
 
+class NewsArticleOut(BaseModel):
+    """One scraped headline for the race -- display-only context, not part
+    of the forecasting model. ai_relevance is a per-article 1-2 sentence
+    AI-generated blurb (see app.services.ai_summary.generate_article_relevance)
+    -- None until that generation has run at least once for this article."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    headline: str
+    source: str
+    url: str
+    published_at: datetime
+    ai_relevance: str | None = None
+
+    @field_serializer("published_at")
+    def _serialize_published_at(self, value: datetime) -> str:
+        return _as_utc_isoformat(value)
+
+
+class RaceIntelligenceOut(BaseModel):
+    """The Race Intelligence section's data: recent headlines (each with an
+    AI relevance blurb) and an AI-generated model-vs-Kalshi comparison.
+    Kalshi odds themselves are served by the existing /kalshi endpoint, not
+    duplicated here."""
+
+    news_articles: list[NewsArticleOut]
+    market_analysis: str | None
+    market_analysis_generated_at: datetime | None
+
+    @field_serializer("market_analysis_generated_at")
+    def _serialize_generated_at(self, value: datetime | None) -> str | None:
+        return _as_utc_isoformat(value) if value is not None else None
+
+
 class KalshiOddsOut(BaseModel):
     """A candidate's latest Kalshi market price -- a standalone prediction-
     market data point, not part of the forecasting model's blend."""

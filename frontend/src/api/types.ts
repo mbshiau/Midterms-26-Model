@@ -115,3 +115,18 @@ export interface KalshiOdds {
   as_of: string;
   source_url: string;
 }
+
+export interface NewsArticle {
+  headline: string;
+  source: string;
+  url: string;
+  published_at: string;
+  /** 1-2 sentence AI blurb: what the headline suggests + why it's relevant. Null until generated. */
+  ai_relevance: string | null;
+}
+
+export interface RaceIntelligence {
+  news_articles: NewsArticle[];
+  market_analysis: string | null;
+  market_analysis_generated_at: string | null;
+}
