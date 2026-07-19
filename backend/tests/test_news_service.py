@@ -5,7 +5,13 @@ import pytest
 from app.database import Base
 from app.ingestion.news_scraper import ScrapedNewsArticle
 from app.models import NewsArticle, Race
-from app.services.news import ARTICLES_PER_RACE, MAX_ARTICLE_AGE_DAYS, get_recent_news, update_news
+from app.services.news import (
+    ARTICLES_PER_RACE,
+    MAX_ARTICLE_AGE_DAYS,
+    get_recent_news,
+    purge_irrelevant_articles,
+    update_news,
+)
 
 
 @pytest.fixture()
@@ -115,3 +121,52 @@ def test_update_news_prunes_articles_older_than_the_age_cutoff(db_session, race)
 
     remaining = db_session.query(NewsArticle).filter(NewsArticle.race_id == race.id).all()
     assert [a.headline for a in remaining] == ["Headline 1"]
+
+
+def test_purge_irrelevant_articles_removes_rows_naming_a_different_state(db_session, race):
+    # Regression test for a real observed bug: rows stored before
+    # filter_relevant_articles existed (or before a query tightening) stay
+    # forever otherwise -- update_news's own pruning only drops rows by age
+    # or by rank beyond ARTICLES_PER_RACE, neither of which catches a
+    # recent, small-count race's already-stored bad headline.
+    now = datetime.now(timezone.utc)
+    db_session.add_all(
+        [
+            NewsArticle(
+                race_id=race.id,
+                headline="Nebraska Governor Election 2026: Latest Polls",
+                source="Example",
+                url="https://example.com/other-state",
+                published_at=now,
+            ),
+            NewsArticle(
+                race_id=race.id,
+                headline="Test State governor race tightens ahead of debate",
+                source="Example",
+                url="https://example.com/relevant",
+                published_at=now,
+            ),
+        ]
+    )
+    db_session.commit()
+
+    purged = purge_irrelevant_articles(db_session, race.id, "Test State", ["Nebraska"])
+
+    assert purged == 1
+    remaining = db_session.query(NewsArticle).filter(NewsArticle.race_id == race.id).all()
+    assert [a.headline for a in remaining] == ["Test State governor race tightens ahead of debate"]
+
+
+def test_purge_irrelevant_articles_returns_zero_when_nothing_to_remove(db_session, race):
+    db_session.add(
+        NewsArticle(
+            race_id=race.id,
+            headline="Headline with no state name",
+            source="Example",
+            url="https://example.com/ok",
+            published_at=datetime.now(timezone.utc),
+        )
+    )
+    db_session.commit()
+
+    assert purge_irrelevant_articles(db_session, race.id, "Test State", ["Nebraska"]) == 0

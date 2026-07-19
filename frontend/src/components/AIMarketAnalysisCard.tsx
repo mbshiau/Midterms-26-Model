@@ -1,4 +1,4 @@
-import { AIGeneratedNote } from "./AIGeneratedNote";
+import { GeneratedAtNote } from "./GeneratedAtNote";
 
 export function AIMarketAnalysisCard({
   analysis,
@@ -20,7 +20,7 @@ export function AIMarketAnalysisCard({
       <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
         {analysis}
       </p>
-      <AIGeneratedNote generatedAt={generatedAt} />
+      <GeneratedAtNote generatedAt={generatedAt} />
     </div>
   );
 }

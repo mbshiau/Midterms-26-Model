@@ -43,12 +43,6 @@ export function NewsHeadlinesCard({ articles }: { articles: NewsArticle[] }) {
           </div>
           {article.ai_relevance && (
             <p className="mt-1.5 text-xs leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-              <span
-                className="mr-1.5 inline-block rounded px-1 py-0.5 align-middle text-[10px] font-semibold tracking-wide"
-                style={{ backgroundColor: "var(--gridline)", color: "var(--text-muted)" }}
-              >
-                AI
-              </span>
               {article.ai_relevance}
             </p>
           )}

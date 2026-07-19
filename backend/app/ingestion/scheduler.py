@@ -31,7 +31,7 @@ from app.data.fundamentals_data import PRESIDENT
 from app.ingestion.approval_scraper import fetch_current_approval
 from app.ingestion.generic_ballot_scraper import fetch_current_generic_ballot
 from app.ingestion.kalshi_scraper import fetch_market_odds
-from app.ingestion.news_scraper import build_news_query, fetch_race_news
+from app.ingestion.news_scraper import build_news_query, fetch_race_news, filter_relevant_articles
 from app.ingestion.pipeline import fetch_live_polls, ingest_polls
 from app.models import Candidate, Race
 from app.services.ai_summary import (
@@ -43,7 +43,7 @@ from app.services.approval import update_approval
 from app.services.forecasting import generate_forecast, latest_forecast
 from app.services.generic_ballot import update_generic_ballot
 from app.services.market_odds import get_market_odds, update_market_odds
-from app.services.news import get_recent_news, update_news
+from app.services.news import get_recent_news, purge_irrelevant_articles, update_news
 from app.services.races import get_race_seed
 
 logger = logging.getLogger(__name__)
@@ -73,10 +73,22 @@ def refresh_race_intelligence(db, race: Race, candidates: list[Candidate]) -> No
     try/except so a news-scrape or AI-provider hiccup here never prevents
     that race's forecast (the actually load-bearing output) from
     regenerating."""
+    other_state_names = [r.state_name for r in db.query(Race).filter(Race.id != race.id).all()]
+
     scraped_news = fetch_race_news(build_news_query(race.state_name, race.office))
+    scraped_news = filter_relevant_articles(scraped_news, race.state_name, other_state_names)
     new_count = update_news(db, race.id, scraped_news)
     if new_count:
         logger.info("scheduled refresh: %s — %d new headline(s)", race.state_code, new_count)
+
+    # Also re-validate whatever's already stored -- filtering the fresh
+    # scrape above only stops *new* contamination; rows saved before this
+    # filter existed (or before it was tightened) stay until something
+    # actively re-checks them (see purge_irrelevant_articles).
+    purged = purge_irrelevant_articles(db, race.id, race.state_name, other_state_names)
+    if purged:
+        logger.info("scheduled refresh: %s — purged %d irrelevant headline(s)", race.state_code, purged)
+
     articles = get_recent_news(db, race.id)
 
     # Per-article relevance blurb is generated once and cached (see

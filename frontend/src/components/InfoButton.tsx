@@ -81,6 +81,12 @@ export function InfoButton() {
             linked market, are for reference only — they are never blended into or used as an input to
             the forecast above them.
           </p>
+          <p>
+            The <strong>Race Intelligence</strong> section (news relevance notes and the market-vs-model
+            comparison) is AI-generated from recent headlines and the data above — it's written by a
+            language model, not an editor, and like Kalshi it's shown for context only and never feeds
+            back into the forecast itself.
+          </p>
         </div>
       </div>
     </div>

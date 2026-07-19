@@ -14,9 +14,11 @@ list-shaped since callers here want "no headlines yet" rather than
 """
 
 import logging
+import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
+from typing import Protocol, TypeVar
 from urllib.parse import urlencode
 from xml.etree import ElementTree
 
@@ -94,7 +96,48 @@ def fetch_race_news(query: str) -> list[ScrapedNewsArticle]:
 
 
 def build_news_query(state_name: str, office: str) -> str:
-    """The search query Google News RSS runs against -- state + office is
-    specific enough to surface race coverage without being so narrow (e.g.
-    candidate names) that it misses stories that mention the race generically."""
-    return f"{state_name} {office} election"
+    """The search query Google News RSS runs against. Quoting "<state>
+    <office>" forces Google to require that phrase rather than doing a loose
+    keyword match -- unquoted, a query like "Texas Governor election" was
+    observed pulling in unrelated same-topic roundups, e.g. NYT's templated
+    "<Other State> Governor Election 2026: Latest Polls" series and stories
+    about a different state's candidate, neither of which mention Texas at
+    all. `election` stays unquoted outside the phrase as a loose relevance
+    signal. See also filter_relevant_articles for a second line of defense
+    against whatever still slips through."""
+    return f'"{state_name} {office}" election'
+
+
+class _HasHeadline(Protocol):
+    headline: str
+
+
+_T = TypeVar("_T", bound=_HasHeadline)
+
+
+def filter_relevant_articles(articles: list[_T], state_name: str, other_state_names: list[str]) -> list[_T]:
+    """Drops articles whose headline names a *different* state and doesn't
+    name this race's own state -- the concrete failure mode seen from the
+    unquoted query above (a same-topic roundup about another state's
+    governor race). Kept deliberately permissive otherwise: plenty of
+    genuinely relevant headlines (e.g. "Becerra leads in new statewide
+    poll") never mention the state by name at all, so this only rejects
+    headlines that give a *positive* signal of being about somewhere else.
+
+    Generic over anything with a `.headline` string -- used both on freshly
+    scraped ScrapedNewsArticle batches and on already-stored NewsArticle ORM
+    rows (see app.services.news.purge_irrelevant_articles), since a row
+    stored before this filter existed needs the exact same check applied
+    retroactively."""
+    own_pattern = re.compile(rf"\b{re.escape(state_name)}\b", re.IGNORECASE)
+    other_patterns = [re.compile(rf"\b{re.escape(name)}\b", re.IGNORECASE) for name in other_state_names]
+
+    kept = []
+    for article in articles:
+        if own_pattern.search(article.headline):
+            kept.append(article)
+            continue
+        if any(pattern.search(article.headline) for pattern in other_patterns):
+            continue
+        kept.append(article)
+    return kept

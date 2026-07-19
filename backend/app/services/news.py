@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 
 from sqlalchemy.orm import Session
 
-from app.ingestion.news_scraper import ScrapedNewsArticle
+from app.ingestion.news_scraper import ScrapedNewsArticle, filter_relevant_articles
 from app.models import NewsArticle
 
 ARTICLES_PER_RACE = 10
@@ -80,3 +80,23 @@ def update_news(db: Session, race_id: int, scraped: list[ScrapedNewsArticle]) ->
     db.commit()
 
     return new_count
+
+
+def purge_irrelevant_articles(db: Session, race_id: int, state_name: str, other_state_names: list[str]) -> int:
+    """Re-checks every currently-stored article for this race against
+    filter_relevant_articles and deletes any that now fail it.
+
+    update_news's own pruning only drops rows by age or by rank beyond
+    ARTICLES_PER_RACE -- it has no way to remove a row that's still recent
+    and the race has few enough articles that it was never pushed out by
+    count, even though it should never have been stored in the first place
+    (e.g. articles ingested before filter_relevant_articles existed, or from
+    before a change to it). Returns the count of rows removed."""
+    existing = db.query(NewsArticle).filter(NewsArticle.race_id == race_id).all()
+    relevant_ids = {a.id for a in filter_relevant_articles(existing, state_name, other_state_names)}
+    irrelevant = [a for a in existing if a.id not in relevant_ids]
+    for row in irrelevant:
+        db.delete(row)
+    if irrelevant:
+        db.commit()
+    return len(irrelevant)
