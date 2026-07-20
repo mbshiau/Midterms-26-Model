@@ -118,22 +118,29 @@ def _historical_lean_weights(
     """(governor, senate, president) weights; president is the remainder so
     the three always sum to 1 regardless of how the first two are tuned.
 
-    The two global defaults (`settings.gubernatorial_lean_weight` /
-    `settings.senate_lean_weight`) assume the *same-office* race is the
-    stronger signal -- correct as written for a Governor race. For a
-    Senate race, the state's own Senate history should be the stronger
-    signal instead, so `office == "Senate"` swaps which default lands in
-    which slot before overrides are applied. `model_overrides` (already
-    resolved for `office` by `_resolve_overrides` -- see
-    fundamentals_breakdown) can still replace either of the two global
-    defaults for one specific state -- e.g. Phil Scott's Vermont, where the
-    governor's own race is a far stronger signal than the state's
-    Senate/presidential results, uses gov=0.70/sen=0.15."""
+    For a Governor race, the two global defaults
+    (`settings.gubernatorial_lean_weight` / `settings.senate_lean_weight`)
+    apply as written -- the same-office race is the stronger signal. For a
+    **Senate** race, gubernatorial history is excluded entirely by default
+    (weight 0) rather than merely de-emphasized: a state's governor race is
+    often decided by dynamics (a popular incumbent, a scandal, an unusually
+    strong/weak nominee) that don't reliably transfer to a Senate matchup,
+    so it's dropped from the blend by default and its weight simply falls
+    to president (the remainder) -- Senate history keeps the same weight it
+    would have gotten from the old gov/Senate swap
+    (`settings.gubernatorial_lean_weight`, still the stronger of the two
+    non-president inputs). `model_overrides` (already resolved for `office`
+    by `_resolve_overrides` -- see fundamentals_breakdown) can still
+    override either weight for one specific state/office -- e.g. Phil
+    Scott's Vermont, where the governor's own race is a far stronger signal
+    than the state's Senate/presidential results, uses gov=0.70/sen=0.15;
+    or a future Senate race where gubernatorial history genuinely should
+    count, via `{"Senate": {"gubernatorial_lean_weight": <value>}}`."""
     model_overrides = model_overrides or {}
-    default_gov = settings.gubernatorial_lean_weight
-    default_sen = settings.senate_lean_weight
     if office == "Senate":
-        default_gov, default_sen = default_sen, default_gov
+        default_gov, default_sen = 0.0, settings.gubernatorial_lean_weight
+    else:
+        default_gov, default_sen = settings.gubernatorial_lean_weight, settings.senate_lean_weight
     w_gov = model_overrides.get("gubernatorial_lean_weight", default_gov)
     w_sen = model_overrides.get("senate_lean_weight", default_sen)
     return w_gov, w_sen, 1 - w_gov - w_sen

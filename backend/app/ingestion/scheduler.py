@@ -172,10 +172,18 @@ def _run_refresh_job() -> None:
                     refresh_race_intelligence(db, race, candidates)
                     logger.info("scheduled refresh: %s race intelligence updated", race.slug)
                 except Exception:
-                    # A news-scrape or AI-provider hiccup here must never block the
-                    # forecast regeneration below -- Race Intelligence is
-                    # display-only context, the forecast is the load-bearing
-                    # output (see refresh_race_intelligence's docstring).
+                    # A news-scrape, AI-provider, or DB hiccup here must never
+                    # block the forecast regeneration below -- Race
+                    # Intelligence is display-only context, the forecast is
+                    # the load-bearing output (see refresh_race_intelligence's
+                    # docstring). rollback() *before* touching `race` below is
+                    # required, not optional: a failed flush leaves the
+                    # session's transaction dead, and `race.slug` lazy-loads
+                    # `race.office` -- querying a dead transaction raises
+                    # PendingRollbackError, which would silently replace this
+                    # log line with an unhandled crash that aborts every
+                    # remaining race in the loop.
+                    db.rollback()
                     logger.exception(
                         "scheduled refresh: %s race intelligence update failed, continuing", race.slug
                     )
@@ -183,8 +191,8 @@ def _run_refresh_job() -> None:
                 generate_forecast(db, race)
                 logger.info("scheduled refresh: %s forecast regenerated", race.slug)
             except Exception:
-                logger.exception("scheduled refresh: %s failed, continuing with remaining races", race.slug)
                 db.rollback()
+                logger.exception("scheduled refresh: %s failed, continuing with remaining races", race.slug)
     except Exception:
         logger.exception("scheduled refresh job failed")
     finally:

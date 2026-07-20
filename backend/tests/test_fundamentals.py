@@ -777,37 +777,39 @@ def test_historical_lean_weights_override_still_sums_to_one():
     assert abs((w_gov + w_sen + w_pres) - 1.0) < 1e-9
 
 
-def test_historical_lean_weights_swap_dominance_for_a_senate_race():
-    # The global defaults favor the same-office race: for a Governor race
-    # gov weight dominates (the default), for a Senate race the two
-    # defaults should swap so the state's own Senate history dominates
-    # instead.
-    gov_w_gov, gov_w_sen, _ = fundamentals._historical_lean_weights(office="Governor")
-    sen_w_gov, sen_w_sen, _ = fundamentals._historical_lean_weights(office="Senate")
-    assert gov_w_gov == sen_w_sen
-    assert gov_w_sen == sen_w_gov
-    assert sen_w_sen > sen_w_gov
+def test_historical_lean_weights_exclude_gubernatorial_by_default_for_senate():
+    # For every Senate race, gubernatorial history is excluded from the
+    # blend by default (weight 0) -- not merely de-emphasized -- and its
+    # freed weight falls to president. Senate keeps the weight it would
+    # have gotten from the old gov/Senate swap (settings.gubernatorial_lean_weight).
+    gov_w_gov, gov_w_sen, gov_w_pres = fundamentals._historical_lean_weights(office="Governor")
+    sen_w_gov, sen_w_sen, sen_w_pres = fundamentals._historical_lean_weights(office="Senate")
+    assert sen_w_gov == 0.0
+    assert sen_w_sen == fundamentals.settings.gubernatorial_lean_weight
+    assert sen_w_pres > gov_w_pres  # president absorbs the weight gov used to carry
+    assert gov_w_gov == fundamentals.settings.gubernatorial_lean_weight
+    assert gov_w_sen == fundamentals.settings.senate_lean_weight
 
 
-def test_historical_lean_weights_office_swap_still_sums_to_one():
+def test_historical_lean_weights_office_default_still_sums_to_one():
     w_gov, w_sen, w_pres = fundamentals._historical_lean_weights(office="Senate")
     assert abs((w_gov + w_sen + w_pres) - 1.0) < 1e-9
 
 
 def test_office_scoped_override_only_affects_that_office():
-    # Ohio's real override: {"Senate": {"gubernatorial_lean_weight": 0.0}}
-    # zeroes gov weight for the Senate race only -- the Governor race must
-    # keep the normal (unswapped, gov-dominant) default.
-    overrides = {"Senate": {"gubernatorial_lean_weight": 0.0}}
+    # A future state whose Senate race genuinely should count gubernatorial
+    # history could override it back up -- scoped to Senate only, the
+    # Governor race's own default must stay untouched.
+    overrides = {"Senate": {"gubernatorial_lean_weight": 0.20}}
     gov_w_gov, _, _ = fundamentals._historical_lean_weights(
         fundamentals._resolve_overrides(overrides, "Governor"), "Governor"
     )
     sen_w_gov, sen_w_sen, sen_w_pres = fundamentals._historical_lean_weights(
         fundamentals._resolve_overrides(overrides, "Senate"), "Senate"
     )
-    assert gov_w_gov == fundamentals.settings.gubernatorial_lean_weight
-    assert sen_w_gov == 0.0
-    assert sen_w_sen == fundamentals.settings.gubernatorial_lean_weight  # swapped default for Senate
+    assert gov_w_gov == fundamentals.settings.gubernatorial_lean_weight  # unaffected by the Senate-scoped override
+    assert sen_w_gov == 0.20
+    assert sen_w_sen == fundamentals.settings.gubernatorial_lean_weight  # unswapped default, untouched by the override
     assert abs((sen_w_gov + sen_w_sen + sen_w_pres) - 1.0) < 1e-9
 
 
@@ -821,10 +823,8 @@ def test_ohio_senate_fundamentals_breakdown_excludes_gubernatorial_lean():
     pres = fundamentals.presidential_lean(OH["presidential_elections"], date(2026, 7, 10))
     # gub is still reported for transparency, but must contribute 0 to the
     # combined lean -- verified by reconstructing combined from sen/pres
-    # alone using the swapped Senate defaults (gov weight forced to 0).
-    _, w_sen, w_pres = fundamentals._historical_lean_weights(
-        {"gubernatorial_lean_weight": 0.0}, "Senate"
-    )
+    # alone using the default Senate weights (gov excluded by default).
+    _, w_sen, w_pres = fundamentals._historical_lean_weights(office="Senate")
     assert breakdown.gubernatorial_lean_pts == gub
     assert abs(breakdown.combined_historical_lean_pts - (w_sen * sen + w_pres * pres)) < 1e-9
 

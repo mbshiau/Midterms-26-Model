@@ -2449,11 +2449,79 @@ SENATE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": "2026_United_States_Senate_election_in_West_Virginia",
         "candidates": [
-            {"name": "Shelley Moore Capito", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/3/37/Shelley_Moore_Capito_official_Senate_photo_%28cropped_2%29.jpg", "kalshi_ticker": "SENATEWV-26-R"},
+            {"name": "Shelley Moore Capito", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/3/37/Shelley_Moore_Capito_official_Senate_photo_%28cropped_2%29.jpg", "kalshi_ticker": "SENATEWV-26-R"},
             {"name": "Rachel Fetty Anderson", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "SENATEWV-26-D"},
         ],
         "raw_polls": []
-    }
-    
+    },
+    "me":{
+        "state_name": "Maine",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Maine",
+        # Polls below are the 3 individual polls in the article's "General
+        # election" -> "Polling" -> "Susan Collins vs. Troy Jackson" table --
+        # the "Aggregate polls" sub-table right above it (a single row
+        # sourced to Race to the WH, a poll-of-polls average, not a named
+        # poll) is deliberately excluded, per instruction. undecided_pct is
+        # the complement (100 - Collins% - Jackson%), per this file's usual
+        # convention (all 3 rows already sum exactly, no discrepancy here).
+        "candidates": [
+            {"name": "Susan Collins", "party": "Republican", "incumbent": True, "photo_url": "https://iwrc.ieeeusa.org/wp-content/uploads/2025/05/Susan_Collins.jpg", "kalshi_ticker": "KXMESENATEPERSON-26-SCOL"},
+            {"name": "Troy Jackson", "party": "Democratic", "incumbent": False, "photo_url": "https://npr.brightspotcdn.com/dims4/default/b1f73c0/2147483647/strip/true/crop/1920x1183+0+271/resize/880x542!/quality/90/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2Fda%2Fce%2F6a7446d14ee5952476e858c56d21%2Fthumbnail-troyjackson.jpg", "kalshi_ticker": "KXMESENATEPERSON-26-TJAC"},
+        ],
+        "raw_polls": [
+            {
+                "pollster": "Wedgewood Polls",
+                "sponsor": None,
+                "field_start_date": "2026-07-04",
+                "field_end_date": "2026-07-06",
+                "release_date": "2026-07-07",
+                "sample_size": 405,
+                "population": "LV",
+                "margin_of_error": 5.8,
+                "undecided_pct": 9.0,
+                "source_url": "https://drive.google.com/file/d/1D7onbq7aV59X8lq2-YatdLNakqqCYTnB/view",
+                "results": {"Susan Collins": 43.0, "Troy Jackson": 48.0},
+            },
+            {
+                "pollster": "Public Policy Polling",
+                "sponsor": "Platner campaign",
+                "field_start_date": "2026-07-07",
+                "field_end_date": "2026-07-07",
+                "release_date": "2026-07-08",
+                "sample_size": 785,
+                "population": "LV",
+                "margin_of_error": None,
+                "undecided_pct": 7.0,
+                "source_url": "https://www.politico.com/news/2026/07/08/graham-platner-polls-replacements-senate-00990664",
+                "results": {"Susan Collins": 44.0, "Troy Jackson": 49.0},
+            },
+            {
+                "pollster": "Z to A Research",
+                "sponsor": "Pro-Shah group",
+                "field_start_date": "2026-07-07",
+                "field_end_date": "2026-07-08",
+                "release_date": "2026-07-09",
+                "sample_size": 988,
+                "population": "LV",
+                "margin_of_error": 3.1,
+                "undecided_pct": 5.0,
+                "source_url": "https://www.notus.org/2026-election/platner-replacements-poll-maine-senate",
+                "results": {"Susan Collins": 48.0, "Troy Jackson": 47.0},
+            },
+        ],
+    },
+    "il": {
+        "state_name": "Illinois",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Illinois",
+        "candidates": [
+            {"name": "Don Tracy", "party": "Republican", "incumbent": False, "photo_url": "https://ipmnewsroom.org/wp-content/uploads/2025/08/DonTracy.webp", "kalshi_ticker": "SENATEIL-26-R"},
+            {"name": "Juliana Stratton", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Juliana_Stratton_2023_%28cropped%29.jpg/250px-Juliana_Stratton_2023_%28cropped%29.jpg", "kalshi_ticker": "SENATEIL-26-D"},
+        ],
+        "raw_polls": []
+    },
 }
 
