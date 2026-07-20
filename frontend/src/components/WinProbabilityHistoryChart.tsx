@@ -10,6 +10,7 @@ import {
   YAxis,
 } from "recharts";
 import type { ForecastHistory } from "../api/types";
+import { ChartLegend } from "./ChartLegend";
 import { partyColorVar } from "../lib/partyColor";
 
 interface HistoryPoint {
@@ -53,9 +54,15 @@ export function WinProbabilityHistoryChart({ history }: { history: ForecastHisto
     return <p style={{ color: "var(--text-muted)" }}>No forecast history yet.</p>;
   }
 
+  // Winner-first: sorted by the *latest* snapshot's win probability, so the
+  // legend and line-draw order match who the model currently favors, not
+  // just whatever order candidates happened to be inserted in.
+  const latestWinProbability = new Map(
+    snapshots[snapshots.length - 1].results.map((r) => [r.candidate.name, r.win_probability])
+  );
   const candidateNames = Array.from(
     new Set(snapshots.flatMap((s) => s.results.map((r) => r.candidate.name)))
-  );
+  ).sort((a, b) => (latestWinProbability.get(b) ?? -1) - (latestWinProbability.get(a) ?? -1));
   const candidateByName = new Map(
     snapshots[0].results.map((r) => [r.candidate.name, r.candidate])
   );
@@ -97,7 +104,16 @@ export function WinProbabilityHistoryChart({ history }: { history: ForecastHisto
             width={40}
           />
           <Tooltip content={<WinProbTooltip />} />
-          <Legend wrapperStyle={{ fontSize: 13, color: "var(--text-secondary)" }} iconType="line" iconSize={16} />
+          <Legend
+            content={
+              <ChartLegend
+                items={candidateNames.map((name) => ({
+                  name,
+                  color: partyColorVar(candidateByName.get(name)?.party ?? ""),
+                }))}
+              />
+            }
+          />
           <ReferenceLine
             x={electionTs}
             stroke="var(--text-muted)"

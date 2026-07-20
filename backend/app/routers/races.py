@@ -17,11 +17,12 @@ def list_races(db: Session = Depends(get_db)):
         candidates = db.query(Candidate).filter(Candidate.race_id == race.id).all()
         out.append(
             RaceOut(
+                slug=race.slug,
                 state_code=race.state_code,
                 state_name=race.state_name,
                 office=race.office,
                 election_date=race.election_date,
-                current_holder_party=current_holder_party(race.state_code, candidates),
+                current_holder_party=current_holder_party(race, candidates),
             )
         )
     return out

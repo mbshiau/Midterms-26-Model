@@ -24,23 +24,23 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const api = {
   getRaces: () => request<Race[]>("/races"),
-  getPolls: (stateCode: string) => request<Poll[]>(`/races/${stateCode}/polls`),
-  getForecast: (stateCode: string) => request<ForecastSnapshot>(`/races/${stateCode}/forecast`),
-  getForecastHistory: (stateCode: string) =>
-    request<ForecastHistory>(`/races/${stateCode}/forecast/history`),
-  getSimulations: (stateCode: string) => request<Simulations>(`/races/${stateCode}/simulations`),
-  getKalshiOdds: (stateCode: string) => request<KalshiOdds[]>(`/races/${stateCode}/kalshi`),
-  getRaceIntelligence: (stateCode: string) =>
-    request<RaceIntelligence>(`/races/${stateCode}/intelligence`),
+  getPolls: (slug: string) => request<Poll[]>(`/races/${slug}/polls`),
+  getForecast: (slug: string) => request<ForecastSnapshot>(`/races/${slug}/forecast`),
+  getForecastHistory: (slug: string) =>
+    request<ForecastHistory>(`/races/${slug}/forecast/history`),
+  getSimulations: (slug: string) => request<Simulations>(`/races/${slug}/simulations`),
+  getKalshiOdds: (slug: string) => request<KalshiOdds[]>(`/races/${slug}/kalshi`),
+  getRaceIntelligence: (slug: string) =>
+    request<RaceIntelligence>(`/races/${slug}/intelligence`),
   simulate: (
-    stateCode: string,
+    slug: string,
     params?: {
       n_simulations?: number;
       recency_half_life_days?: number;
       historical_error_stdev?: number;
     }
   ) =>
-    request<ForecastSnapshot>(`/races/${stateCode}/simulate`, {
+    request<ForecastSnapshot>(`/races/${slug}/simulate`, {
       method: "POST",
       body: JSON.stringify(params ?? {}),
     }),

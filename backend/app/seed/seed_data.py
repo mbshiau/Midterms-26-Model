@@ -1991,3 +1991,238 @@ RACES = {
     },
 }
 
+# 2026 U.S. Senate races, keyed by state_code -- same shape as RACES above
+# (state_name, office, election_date, wikipedia_page_title, candidates,
+# raw_polls), just for the Senate rather than Governor. Empty until a state
+# is added here: app.services.races.seed_all_races reads both this dict and
+# RACES, and app.data.fundamentals_data.RACE_FUNDAMENTALS already has
+# gubernatorial_elections/senate_elections/presidential_elections/
+# registration_snapshots pre-populated for every state below the district
+# level, so adding a new Senate state here (real candidates + a real,
+# sourced polling average, following the same standard as RACES) is
+# typically all that's needed -- no separate fundamentals research required
+# unless that state isn't already in RACE_FUNDAMENTALS.
+SENATE_RACES: dict = {
+    "oh": {
+        "state_name": "Ohio",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_special_election_in_Ohio",
+        # Special election for the seat JD Vance vacated to become VP; Gov.
+        # DeWine appointed Husted to hold it, and Husted is now running to
+        # keep it -- incumbent per the Wikipedia infobox. Brown is the
+        # Democratic former senator (lost his old seat in 2024) running as
+        # challenger for this one. Polls below are every individual poll
+        # listed in the article's "Polling" -> "General election" table for
+        # the actual Husted-vs-Brown matchup (the poll-of-polls aggregator
+        # rows at the top of that section, and the separate "Husted vs. Tim
+        # Ryan" hypothetical-matchup table, are both excluded as neither is
+        # a real named poll of the real matchup). undecided_pct is the
+        # complement (100 - Husted% - Brown%), per this file's usual
+        # convention, so it won't always exactly equal the article's own
+        # "Undecided" column where an "Other" column is also broken out
+        # separately.
+        "candidates": [
+            {"name": "Jon Husted", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Sen._Jon_Husted_official_portrait%2C_119th_Congress_%28cropped%29.jpg", "kalshi_ticker": "SENATEOHS-26-R"},
+            {"name": "Sherrod Brown", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/6/66/Sherrod_Brown_117th_Congress_%282%29_%28cropped%29.jpg", "kalshi_ticker": "SENATEOHS-26-D"},
+        ],
+        "raw_polls": [
+            {
+                "pollster": "Bowling Green State University/YouGov",
+                "sponsor": None,
+                "field_start_date": "2025-02-14",
+                "field_end_date": "2025-02-21",
+                "release_date": "2025-03-05",
+                "sample_size": 800,
+                "population": "RV",
+                "margin_of_error": 4.0,
+                "undecided_pct": 12.0,
+                "source_url": "https://scholarworks.bgsu.edu/cgi/viewcontent.cgi?article=1007&context=depo",
+                "results": {"Jon Husted": 47.0, "Sherrod Brown": 41.0},
+            },
+            {
+                "pollster": "Bowling Green State University/YouGov",
+                "sponsor": None,
+                "field_start_date": "2025-04-18",
+                "field_end_date": "2025-04-24",
+                "release_date": "2025-04-29",
+                "sample_size": 800,
+                "population": "RV",
+                "margin_of_error": 4.1,
+                "undecided_pct": 5.0,
+                "source_url": "https://scholarworks.bgsu.edu/cgi/viewcontent.cgi?article=1007&context=depo",
+                "results": {"Jon Husted": 49.0, "Sherrod Brown": 46.0},
+            },
+            {
+                "pollster": "Emerson College",
+                "sponsor": None,
+                "field_start_date": "2025-08-18",
+                "field_end_date": "2025-08-19",
+                "release_date": "2025-08-21",
+                "sample_size": 1000,
+                "population": "RV",
+                "margin_of_error": 3.0,
+                "undecided_pct": 6.0,
+                "source_url": "https://emersoncollegepolling.com/ohio-2026/",
+                "results": {"Jon Husted": 50.0, "Sherrod Brown": 44.0},
+            },
+            {
+                "pollster": "Hart Research",
+                "sponsor": "Ohio Federation of Teachers",
+                "field_start_date": "2025-09-19",
+                "field_end_date": "2025-09-22",
+                "release_date": "2025-11-11",
+                "sample_size": 800,
+                "population": "LV",
+                "margin_of_error": 3.5,
+                "undecided_pct": 7.0,
+                "source_url": "https://oft-aft.org/sites/default/files/media/documents/2025/ME-15080%20Hart%20Ohio%20Senate%20Race.pdf",
+                "results": {"Jon Husted": 45.0, "Sherrod Brown": 48.0},
+            },
+            {
+                "pollster": "Bowling Green State University/YouGov",
+                "sponsor": None,
+                "field_start_date": "2025-10-02",
+                "field_end_date": "2025-10-14",
+                "release_date": "2025-10-19",
+                "sample_size": 800,
+                "population": "RV",
+                "margin_of_error": 4.5,
+                "undecided_pct": 3.0,
+                "source_url": "https://www.bgsu.edu/arts-and-sciences/democracy-and-public-policy-research-network/bgsu-poll.html",
+                "results": {"Jon Husted": 48.0, "Sherrod Brown": 49.0},
+            },
+            {
+                "pollster": "Emerson College",
+                "sponsor": None,
+                "field_start_date": "2025-12-06",
+                "field_end_date": "2025-12-08",
+                "release_date": "2025-12-11",
+                "sample_size": 850,
+                "population": "RV",
+                "margin_of_error": 3.3,
+                "undecided_pct": 5.0,
+                "source_url": "https://emersoncollegepolling.com/ohio-2026-poll-democrats-make-gains-in-races-for-governor-and-us-senate/",
+                "results": {"Jon Husted": 49.0, "Sherrod Brown": 46.0},
+            },
+            {
+                "pollster": "EMC Research",
+                "sponsor": "Ohio Environmental Council",
+                "field_start_date": "2026-02-10",
+                "field_end_date": "2026-02-22",
+                "release_date": "2026-03-10",
+                "sample_size": 1343,
+                "population": "LV",
+                "margin_of_error": 2.7,
+                "undecided_pct": 2.0,
+                "source_url": "https://theoec.org/wp-content/uploads/2026/03/OEC-Ohio-Survey-Results-2026.pdf",
+                "results": {"Jon Husted": 47.0, "Sherrod Brown": 51.0},
+            },
+            {
+                "pollster": "OnMessage Public Strategies",
+                "sponsor": "Insurance Watchdog Coalition",
+                "field_start_date": "2026-03-03",
+                "field_end_date": "2026-03-08",
+                "release_date": "2026-03-10",
+                "sample_size": 600,
+                "population": "LV",
+                "margin_of_error": 4.0,
+                "undecided_pct": 8.0,
+                "source_url": "https://www.politico.com/f/?id=0000019c-dc55-d6f4-a9ff-dd5519a30000&nname=playbook&nid=0000014f-1646-d88f-a1cf-5f46b7bd0000&nrid=4f4d3aeb-621a-47b9-a66d-d9944fed5257",
+                "results": {"Jon Husted": 45.0, "Sherrod Brown": 47.0},
+            },
+            {
+                "pollster": "Quantus Insights",
+                "sponsor": "Republican",
+                "field_start_date": "2026-03-13",
+                "field_end_date": "2026-03-14",
+                "release_date": "2026-03-16",
+                "sample_size": 784,
+                "population": "LV",
+                "margin_of_error": 3.8,
+                "undecided_pct": 10.0,
+                "source_url": "https://quantusinsights.org/f/quantus-insights-ohio-voters-signal-competitive-2026-environment",
+                "results": {"Jon Husted": 46.0, "Sherrod Brown": 44.0},
+            },
+            {
+                "pollster": "Echelon Insights",
+                "sponsor": "NetChoice",
+                "field_start_date": "2026-04-03",
+                "field_end_date": "2026-04-09",
+                "release_date": "2026-04-21",
+                "sample_size": 413,
+                "population": "LV",
+                "margin_of_error": 5.8,
+                "undecided_pct": 4.0,
+                "source_url": "https://netchoice.org/wp-content/uploads/2026/04/NetChoice-Apr-2026-National-Antitrust-Survey-Topline.pdf",
+                "results": {"Jon Husted": 51.0, "Sherrod Brown": 45.0},
+            },
+            {
+                "pollster": "Bowling Green State University/YouGov",
+                "sponsor": None,
+                "field_start_date": "2026-04-07",
+                "field_end_date": "2026-04-14",
+                "release_date": "2026-04-20",
+                "sample_size": 1000,
+                "population": "RV",
+                "margin_of_error": 4.5,
+                "undecided_pct": 3.0,
+                "source_url": "https://scholarworks.bgsu.edu/cgi/viewcontent.cgi?article=1021&context=depo",
+                "results": {"Jon Husted": 50.0, "Sherrod Brown": 47.0},
+            },
+            {
+                "pollster": "Beacon Research/Shaw & Co. Research",
+                "sponsor": "Fox News",
+                "field_start_date": "2026-05-28",
+                "field_end_date": "2026-06-01",
+                "release_date": "2026-06-03",
+                "sample_size": 1015,
+                "population": "RV",
+                "margin_of_error": 3.0,
+                "undecided_pct": 2.0,
+                "source_url": "https://www.foxnews.com/politics/fox-news-poll-democratic-unity-republican-crossovers-shape-ohio-senate-race",
+                "results": {"Jon Husted": 45.0, "Sherrod Brown": 53.0},
+            },
+            {
+                "pollster": "Tulchin Research",
+                "sponsor": "Democratic",
+                "field_start_date": "2026-06-02",
+                "field_end_date": "2026-06-04",
+                "release_date": "2026-06-17",
+                "sample_size": 600,
+                "population": "LV",
+                "margin_of_error": 4.0,
+                "undecided_pct": 12.0,
+                "source_url": "https://www.nbc4i.com/news/your-local-election-hq/new-poll-shows-democratic-candidates-ahead-in-ohio/",
+                "results": {"Jon Husted": 42.0, "Sherrod Brown": 46.0},
+            },
+            {
+                "pollster": "Fabrizio Ward/Impact Research",
+                "sponsor": "AARP",
+                "field_start_date": "2026-06-14",
+                "field_end_date": "2026-06-16",
+                "release_date": "2026-06-25",
+                "sample_size": 800,
+                "population": "LV",
+                "margin_of_error": 3.5,
+                "undecided_pct": 7.0,
+                "source_url": "https://www.aarp.org/press/releases/2026-06-25-ohio-poll-50-voters-key-tight-senate-governor-races/",
+                "results": {"Jon Husted": 45.0, "Sherrod Brown": 48.0},
+            },
+            {
+                "pollster": "New York Times/Siena University",
+                "sponsor": None,
+                "field_start_date": "2026-06-15",
+                "field_end_date": "2026-06-28",
+                "release_date": "2026-06-30",
+                "sample_size": 601,
+                "population": "LV",
+                "margin_of_error": 4.7,
+                "undecided_pct": 3.0,
+                "source_url": "https://www.nytimes.com/interactive/2026/07/01/polls/times-siena-battleground-poll-toplines.html",
+                "results": {"Jon Husted": 50.0, "Sherrod Brown": 47.0},
+            },
+        ],
+    },
+}
+

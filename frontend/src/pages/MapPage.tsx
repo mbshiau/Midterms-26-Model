@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import type { ForecastHistory, ForecastSnapshot, Race } from "../api/types";
 import { GooeyText, type GooeyTextEntry } from "../components/GooeyText";
 import { UsMap } from "../components/UsMap";
 import { partyAbbrev, partyColorVar, type ProbabilityTier } from "../lib/partyColor";
-
-const TITLE = "2026 Gubernatorial Election Forecast";
 
 const TIER_LABELS: { tier: ProbabilityTier; label: string }[] = [
   { tier: 95, label: "95%+" },
@@ -44,7 +42,7 @@ interface CandidateMetric {
 }
 
 interface RaceMetricRow {
-  stateCode: string;
+  slug: string;
   stateName: string;
   candidates: CandidateMetric[];
   /** Row ordering key for the active view -- callers sort by this before
@@ -76,7 +74,7 @@ function computeRaceMove(
   if (candidates.length === 0) return null;
 
   return {
-    stateCode: entry.race.state_code,
+    slug: entry.race.slug,
     stateName: entry.race.state_name,
     candidates,
     sortValue: Math.max(...candidates.map((c) => Math.abs(c.value))),
@@ -120,7 +118,7 @@ function computeClosestRow(entry: RaceLean): RaceMetricRow | null {
   const margin = sorted[0].mean_vote_share - sorted[1].mean_vote_share;
 
   return {
-    stateCode: entry.race.state_code,
+    slug: entry.race.slug,
     stateName: entry.race.state_name,
     candidates: sorted.map((r) => ({
       name: r.candidate.name,
@@ -143,29 +141,34 @@ const EMPTY_MESSAGES: Record<ViewMode, string> = {
   closest: "No forecasts available yet.",
 };
 
-export function MapPage() {
+export function MapPage({ office }: { office: "Governor" | "Senate" }) {
   const navigate = useNavigate();
   const [racesByState, setRacesByState] = useState<Record<string, RaceLean>>({});
   const [moverSearch, setMoverSearch] = useState("");
   const [viewMode, setViewMode] = useState<ViewMode>("since-refresh");
 
+  const title = office === "Senate" ? "2026 Senate Election Forecast" : "2026 Gubernatorial Election Forecast";
+  const seatNoun = office === "Senate" ? "Senate seat" : "governorship";
+
   useEffect(() => {
     let cancelled = false;
+    setRacesByState({});
 
     (async () => {
-      const races = await api.getRaces();
+      const allRaces = await api.getRaces();
       if (cancelled) return;
+      const races = allRaces.filter((r) => r.office === office);
 
       const entries = await Promise.all(
         races.map(async (race) => {
           try {
-            const forecast = await api.getForecast(race.state_code);
+            const forecast = await api.getForecast(race.slug);
             const leader = [...forecast.results].sort(
               (a, b) => b.mean_vote_share - a.mean_vote_share
             )[0];
             let history: ForecastHistory | null = null;
             try {
-              history = await api.getForecastHistory(race.state_code);
+              history = await api.getForecastHistory(race.slug);
             } catch {
               history = null;
             }
@@ -188,7 +191,7 @@ export function MapPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [office]);
 
   const availableStateNames = Object.values(racesByState)
     .map((r) => r.race.state_name)
@@ -203,10 +206,10 @@ export function MapPage() {
     .map((ts) => new Date(ts).getTime())
     .reduce((max, ts) => Math.max(max, ts), 0);
 
-  // Net governorships projected to change party hands vs. who holds the
-  // seat today -- a flip toward each party cancels a flip toward the
-  // other, same "isFlip" definition UsMap's tooltip already uses.
-  const netDemGovernorships = entries.reduce((net, r) => {
+  // Net seats projected to change party hands vs. who holds the seat today
+  // -- a flip toward each party cancels a flip toward the other, same
+  // "isFlip" definition UsMap's tooltip already uses.
+  const netDemSeats = entries.reduce((net, r) => {
     if (!r.leadingParty) return net;
     if (r.leadingParty === "Democratic" && r.race.current_holder_party === "Republican") return net + 1;
     if (r.leadingParty === "Republican" && r.race.current_holder_party === "Democratic") return net - 1;
@@ -219,17 +222,17 @@ export function MapPage() {
     { text: `GOP favored in ${repCount}`, color: "var(--party-republican)" },
   ];
   const netSeatLine: GooeyTextEntry =
-    netDemGovernorships > 0
+    netDemSeats > 0
       ? [{
-          text: `Projected: Dems net +${netDemGovernorships} governorship${netDemGovernorships === 1 ? "" : "s"}`,
+          text: `Projected: Dems net +${netDemSeats} ${seatNoun}${netDemSeats === 1 ? "" : "s"}`,
           color: "var(--party-democratic)",
         }]
-      : netDemGovernorships < 0
+      : netDemSeats < 0
         ? [{
-            text: `Projected: GOP net +${-netDemGovernorships} governorship${netDemGovernorships === -1 ? "" : "s"}`,
+            text: `Projected: GOP net +${-netDemSeats} ${seatNoun}${netDemSeats === -1 ? "" : "s"}`,
             color: "var(--party-republican)",
           }]
-        : "No net governorship flips";
+        : `No net ${seatNoun} flips`;
 
   const sinceRefreshRows = entries
     .map(computeSinceRefreshRow)
@@ -259,10 +262,17 @@ export function MapPage() {
   return (
     <div className="dashboard-background">
     <div className="mx-auto max-w-4xl px-4 pt-16 pb-8" style={{ color: "var(--text-secondary)"}}>
+      <Link
+        to="/"
+        className="fixed top-4 left-4 z-20 inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-sm underline"
+        style={{ color: "var(--text-muted)" }}
+      >
+        ← Back to home
+      </Link>
       <header className="mb-8 text-center">
         {entries.length > 0 ? (
           <GooeyText
-            texts={[TITLE, partyFavoredLine, netSeatLine]}
+            texts={[title, partyFavoredLine, netSeatLine]}
             morphTime={1}
             cooldownTime={2.5}
             className="h-10 sm:h-12 md:h-14"
@@ -270,7 +280,7 @@ export function MapPage() {
           />
         ) : (
           <h1 className="font-title text-2xl font-semibold" style={{ color: "var(--text-primary)" }}>
-            {TITLE}
+            {title}
           </h1>
         )}
         
@@ -341,7 +351,8 @@ export function MapPage() {
           }}
           isClickable={(id) => id in racesByState}
           onStateClick={(id) => {
-            if (id in racesByState) navigate(`/states/${id}`);
+            const entry = racesByState[id];
+            if (entry) navigate(`/states/${entry.race.slug}`);
           }}
           getTooltip={(id) => {
             const entry = racesByState[id];
@@ -438,8 +449,8 @@ export function MapPage() {
                   <tbody>
                     {filteredRows.map((row) => (
                       <tr
-                        key={row.stateCode}
-                        onClick={() => navigate(`/states/${row.stateCode}`)}
+                        key={row.slug}
+                        onClick={() => navigate(`/states/${row.slug}`)}
                         className="cursor-pointer border-b transition-opacity hover:opacity-70"
                         style={{ borderColor: "var(--border)" }}
                       >

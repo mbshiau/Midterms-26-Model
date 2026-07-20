@@ -79,7 +79,7 @@ def refresh_race_intelligence(db, race: Race, candidates: list[Candidate]) -> No
     scraped_news = filter_relevant_articles(scraped_news, race.state_name, other_state_names)
     new_count = update_news(db, race.id, scraped_news)
     if new_count:
-        logger.info("scheduled refresh: %s — %d new headline(s)", race.state_code, new_count)
+        logger.info("scheduled refresh: %s — %d new headline(s)", race.slug, new_count)
 
     # Also re-validate whatever's already stored -- filtering the fresh
     # scrape above only stops *new* contamination; rows saved before this
@@ -87,7 +87,7 @@ def refresh_race_intelligence(db, race: Race, candidates: list[Candidate]) -> No
     # actively re-checks them (see purge_irrelevant_articles).
     purged = purge_irrelevant_articles(db, race.id, race.state_name, other_state_names)
     if purged:
-        logger.info("scheduled refresh: %s — purged %d irrelevant headline(s)", race.state_code, purged)
+        logger.info("scheduled refresh: %s — purged %d irrelevant headline(s)", race.slug, purged)
 
     articles = get_recent_news(db, race.id)
 
@@ -142,14 +142,14 @@ def _run_refresh_job() -> None:
             # exactly what an exception here used to do, since this used to
             # be one try/except around the whole loop instead of per-race).
             try:
-                race_seed = get_race_seed(race.state_code)
+                race_seed = get_race_seed(race.slug)
                 live_fetcher = partial(
                     fetch_live_polls, wikipedia_page_title=race_seed["wikipedia_page_title"]
                 )
                 new_poll_count = ingest_polls(db, race, race_seed, fetcher=live_fetcher)
                 logger.info(
                     "scheduled refresh: %s — %d new poll(s) from Wikipedia",
-                    race.state_code, new_poll_count,
+                    race.slug, new_poll_count,
                 )
 
                 candidates = db.query(Candidate).filter(Candidate.race_id == race.id).all()
@@ -159,31 +159,31 @@ def _run_refresh_job() -> None:
                     if scraped is None:
                         logger.warning(
                             "scheduled refresh: %s — Kalshi fetch failed for %s (%s)",
-                            race.state_code, candidate.name, candidate.kalshi_ticker,
+                            race.slug, candidate.name, candidate.kalshi_ticker,
                         )
                         continue
                     update_market_odds(db, candidate.id, scraped)
                     logger.info(
                         "scheduled refresh: %s — Kalshi odds for %s now %.1f%%",
-                        race.state_code, candidate.name, scraped.yes_price_pct,
+                        race.slug, candidate.name, scraped.yes_price_pct,
                     )
 
                 try:
                     refresh_race_intelligence(db, race, candidates)
-                    logger.info("scheduled refresh: %s race intelligence updated", race.state_code)
+                    logger.info("scheduled refresh: %s race intelligence updated", race.slug)
                 except Exception:
                     # A news-scrape or AI-provider hiccup here must never block the
                     # forecast regeneration below -- Race Intelligence is
                     # display-only context, the forecast is the load-bearing
                     # output (see refresh_race_intelligence's docstring).
                     logger.exception(
-                        "scheduled refresh: %s race intelligence update failed, continuing", race.state_code
+                        "scheduled refresh: %s race intelligence update failed, continuing", race.slug
                     )
 
                 generate_forecast(db, race)
-                logger.info("scheduled refresh: %s forecast regenerated", race.state_code)
+                logger.info("scheduled refresh: %s forecast regenerated", race.slug)
             except Exception:
-                logger.exception("scheduled refresh: %s failed, continuing with remaining races", race.state_code)
+                logger.exception("scheduled refresh: %s failed, continuing with remaining races", race.slug)
                 db.rollback()
     except Exception:
         logger.exception("scheduled refresh job failed")

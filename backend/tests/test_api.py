@@ -15,6 +15,30 @@ def test_races_lists_all_seeded_states(client):
     }
 
 
+def test_a_state_can_have_a_governor_and_a_senate_race_with_distinct_slugs(client, db_session):
+    # Regression guard for the (state_code, office) composite uniqueness --
+    # a bare state_code unique constraint would reject this second row.
+    from datetime import date
+
+    from app.models import Race
+
+    db_session.add(
+        Race(
+            state_code="pa",
+            state_name="Pennsylvania",
+            office="Senate",
+            election_date=date(2026, 11, 3),
+            wikipedia_page_title="2026_United_States_Senate_election_in_Pennsylvania",
+        )
+    )
+    db_session.commit()
+
+    races = {r["slug"]: r for r in client.get("/races").json()}
+    assert races["pa-gov"]["office"] == "Governor"
+    assert races["pa-sen"]["office"] == "Senate"
+    assert races["pa-gov"]["state_code"] == races["pa-sen"]["state_code"] == "pa"
+
+
 def test_races_expose_current_holder_party(client):
     races = {r["state_code"]: r for r in client.get("/races").json()}
     # PA and NY: incumbent (Shapiro, Hochul) is on the ballot -- their party.
@@ -57,7 +81,7 @@ def test_races_expose_current_holder_party(client):
 
 
 def test_candidates_expose_a_photo_url_when_a_real_wikipedia_photo_exists(client):
-    forecast = client.get("/races/pa/forecast").json()
+    forecast = client.get("/races/pa-gov/forecast").json()
     shapiro = next(r for r in forecast["results"] if r["candidate"]["name"] == "Josh Shapiro")
     assert shapiro["candidate"]["photo_url"] == (
         "https://upload.wikimedia.org/wikipedia/commons/2/26/Josh_Shapiro_December_2025.jpg"
@@ -66,18 +90,18 @@ def test_candidates_expose_a_photo_url_when_a_real_wikipedia_photo_exists(client
 
 def test_candidates_with_no_wikipedia_photo_expose_a_null_photo_url(client):
     # KS's generic TBD placeholders have no real person to photograph.
-    forecast = client.get("/races/ks/forecast").json()
+    forecast = client.get("/races/ks-gov/forecast").json()
     for r in forecast["results"]:
         assert r["candidate"]["photo_url"] is None
 
     # Cinde Warmington has a real Wikipedia article but no photo on it.
-    forecast = client.get("/races/nh/forecast").json()
+    forecast = client.get("/races/nh-gov/forecast").json()
     warmington = next(r for r in forecast["results"] if r["candidate"]["name"] == "Cinde Warmington")
     assert warmington["candidate"]["photo_url"] is None
 
 
 def test_unknown_state_returns_404(client):
-    resp = client.get("/races/zz/polls")
+    resp = client.get("/races/zz-gov/polls")
     assert resp.status_code == 404
 
 
@@ -92,18 +116,18 @@ def test_restarting_the_app_does_not_duplicate_existing_snapshots(test_engine):
     from app.main import app
 
     with TestClient(app) as client:
-        first_start_body = client.get("/races/pa/forecast").json()
+        first_start_body = client.get("/races/pa-gov/forecast").json()
 
     with TestClient(app) as client:
-        second_start_body = client.get("/races/pa/forecast").json()
-        history = client.get("/races/pa/forecast/history").json()
+        second_start_body = client.get("/races/pa-gov/forecast").json()
+        history = client.get("/races/pa-gov/forecast/history").json()
 
     assert first_start_body["id"] == second_start_body["id"]
     assert len(history["snapshots"]) == 1
 
 
 def test_polls_are_seeded_on_startup(client):
-    resp = client.get("/races/pa/polls")
+    resp = client.get("/races/pa-gov/polls")
     assert resp.status_code == 200
     polls = resp.json()
     assert len(polls) == 9
@@ -116,7 +140,7 @@ def test_polls_are_seeded_on_startup(client):
 
 
 def test_polls_expose_normalized_weight(client):
-    polls = client.get("/races/pa/polls").json()
+    polls = client.get("/races/pa-gov/polls").json()
     assert all(0 <= p["weight"] <= 1 for p in polls)
     assert abs(sum(p["weight"] for p in polls) - 1.0) < 1e-6
 
@@ -126,7 +150,7 @@ def test_polls_expose_normalized_weight(client):
 
 
 def test_forecast_is_generated_automatically_on_startup(client):
-    resp = client.get("/races/pa/forecast")
+    resp = client.get("/races/pa-gov/forecast")
     assert resp.status_code == 200
     body = resp.json()
     assert body["n_polls_used"] == 9
@@ -140,7 +164,7 @@ def test_forecast_is_generated_automatically_on_startup(client):
 
 
 def test_forecast_reports_polling_and_fundamentals_composition(client):
-    body = client.get("/races/pa/forecast").json()
+    body = client.get("/races/pa-gov/forecast").json()
 
     assert 0 < body["poll_weight_alpha"] <= 1
     breakdown = body["fundamentals_breakdown"]
@@ -170,8 +194,8 @@ def test_forecast_reports_polling_and_fundamentals_composition(client):
 
 
 def test_ohio_and_nevada_gubernatorial_window_excludes_the_discarded_2014_outlier(client):
-    oh = client.get("/races/oh/forecast").json()["fundamentals_breakdown"]
-    nv = client.get("/races/nv/forecast").json()["fundamentals_breakdown"]
+    oh = client.get("/races/oh-gov/forecast").json()["fundamentals_breakdown"]
+    nv = client.get("/races/nv-gov/forecast").json()["fundamentals_breakdown"]
 
     assert oh["gubernatorial_elections_count"] == 2
     assert nv["gubernatorial_elections_count"] == 2
@@ -181,10 +205,10 @@ def test_ohio_and_nevada_gubernatorial_window_excludes_the_discarded_2014_outlie
 
 
 def test_forecast_history_includes_every_snapshot(client):
-    client.post("/races/pa/simulate", json={"n_simulations": 500})
-    client.post("/races/pa/simulate", json={"n_simulations": 500})
+    client.post("/races/pa-gov/simulate", json={"n_simulations": 500})
+    client.post("/races/pa-gov/simulate", json={"n_simulations": 500})
 
-    resp = client.get("/races/pa/forecast/history")
+    resp = client.get("/races/pa-gov/forecast/history")
     assert resp.status_code == 200
     body = resp.json()
 
@@ -197,21 +221,21 @@ def test_forecast_history_includes_every_snapshot(client):
 
 
 def test_simulate_creates_a_new_snapshot(client):
-    initial = client.get("/races/pa/forecast").json()
+    initial = client.get("/races/pa-gov/forecast").json()
 
-    resp = client.post("/races/pa/simulate", json={"n_simulations": 2000})
+    resp = client.post("/races/pa-gov/simulate", json={"n_simulations": 2000})
     assert resp.status_code == 200
     body = resp.json()
     assert body["n_simulations"] == 2000
     assert body["id"] != initial["id"]
 
-    forecast_resp = client.get("/races/pa/forecast")
+    forecast_resp = client.get("/races/pa-gov/forecast")
     assert forecast_resp.status_code == 200
     assert forecast_resp.json()["id"] == body["id"]
 
 
 def test_simulations_endpoint_returns_histograms(client):
-    resp = client.get("/races/pa/simulations")
+    resp = client.get("/races/pa-gov/simulations")
     assert resp.status_code == 200
     body = resp.json()
     assert len(body["histograms"]) == 2
@@ -222,36 +246,36 @@ def test_simulations_endpoint_returns_histograms(client):
 
 
 def test_ohio_race_is_independently_seeded_and_forecast(client):
-    polls = client.get("/races/oh/polls").json()
+    polls = client.get("/races/oh-gov/polls").json()
     assert len(polls) == 16
     pollster_names = {p["pollster"] for p in polls}
     assert "New York Times/Siena University" in pollster_names
 
-    forecast = client.get("/races/oh/forecast").json()
+    forecast = client.get("/races/oh-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Vivek Ramaswamy", "Amy Acton"}
     assert forecast["n_polls_used"] == 16
 
 
 def test_georgia_race_is_independently_seeded_and_forecast(client):
-    polls = client.get("/races/ga/polls").json()
+    polls = client.get("/races/ga-gov/polls").json()
     assert len(polls) == 4
     pollster_names = {p["pollster"] for p in polls}
     assert "Wick" in pollster_names
 
-    forecast = client.get("/races/ga/forecast").json()
+    forecast = client.get("/races/ga-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Rick Jackson", "Keisha Lance Bottoms"}
     assert forecast["n_polls_used"] == 4
 
 
 def test_maine_race_is_independently_seeded_and_forecast(client):
-    polls = client.get("/races/me/polls").json()
+    polls = client.get("/races/me-gov/polls").json()
     assert len(polls) == 2
     pollster_names = {p["pollster"] for p in polls}
     assert "Fox News/Beacon Research/Shaw & Co. Research" in pollster_names
 
-    forecast = client.get("/races/me/forecast").json()
+    forecast = client.get("/races/me-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Bobby Charles", "Hannah Pingree"}
     assert forecast["n_polls_used"] == 2
@@ -261,12 +285,12 @@ def test_maine_race_is_independently_seeded_and_forecast(client):
 
 
 def test_iowa_race_is_independently_seeded_and_forecast(client):
-    polls = client.get("/races/ia/polls").json()
+    polls = client.get("/races/ia-gov/polls").json()
     assert len(polls) == 2
     pollster_names = {p["pollster"] for p in polls}
     assert "Siena College/New York Times" in pollster_names
 
-    forecast = client.get("/races/ia/forecast").json()
+    forecast = client.get("/races/ia-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Zach Lahn", "Rob Sand"}
     assert forecast["n_polls_used"] == 2
@@ -286,13 +310,13 @@ def test_iowa_race_is_independently_seeded_and_forecast(client):
 
 
 def test_new_york_race_is_independently_seeded_and_forecast(client):
-    polls = client.get("/races/ny/polls").json()
+    polls = client.get("/races/ny-gov/polls").json()
     assert len(polls) == 9
     pollster_names = {p["pollster"] for p in polls}
     assert "Siena College" in pollster_names
     assert "Marist University" in pollster_names
 
-    forecast = client.get("/races/ny/forecast").json()
+    forecast = client.get("/races/ny-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Bruce Blakeman", "Kathy Hochul"}
     assert forecast["n_polls_used"] == 9
@@ -302,10 +326,10 @@ def test_new_york_race_is_independently_seeded_and_forecast(client):
 
 
 def test_south_carolina_race_is_fundamentals_only_with_zero_polls(client):
-    polls = client.get("/races/sc/polls").json()
+    polls = client.get("/races/sc-gov/polls").json()
     assert polls == []
 
-    forecast = client.get("/races/sc/forecast").json()
+    forecast = client.get("/races/sc-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Alan Wilson", "Jermaine Johnson"}
     assert forecast["n_polls_used"] == 0
@@ -321,13 +345,13 @@ def test_south_carolina_race_is_fundamentals_only_with_zero_polls(client):
 
 
 def test_texas_race_is_independently_seeded_and_forecast(client):
-    polls = client.get("/races/tx/polls").json()
+    polls = client.get("/races/tx-gov/polls").json()
     assert len(polls) == 15
     pollster_names = {p["pollster"] for p in polls}
     assert "Siena College/New York Times" in pollster_names
     assert "Emerson College" in pollster_names
 
-    forecast = client.get("/races/tx/forecast").json()
+    forecast = client.get("/races/tx-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Greg Abbott", "Gina Hinojosa"}
     assert forecast["n_polls_used"] == 15
@@ -337,37 +361,37 @@ def test_texas_race_is_independently_seeded_and_forecast(client):
 
 
 def test_florida_race_is_independently_seeded_and_forecast(client):
-    polls = client.get("/races/fl/polls").json()
+    polls = client.get("/races/fl-gov/polls").json()
     assert len(polls) == 4
     pollster_names = {p["pollster"] for p in polls}
     assert "Emerson College" in pollster_names
     assert "Change Research" in pollster_names
 
-    forecast = client.get("/races/fl/forecast").json()
+    forecast = client.get("/races/fl-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Byron Donalds", "David Jolly"}
     assert forecast["n_polls_used"] == 4
 
 
 def test_nevada_race_is_independently_seeded_and_forecast(client):
-    polls = client.get("/races/nv/polls").json()
+    polls = client.get("/races/nv-gov/polls").json()
     assert len(polls) == 5
     pollster_names = {p["pollster"] for p in polls}
     assert "Emerson College" in pollster_names
     assert "Noble Predictive Insights" in pollster_names
 
-    forecast = client.get("/races/nv/forecast").json()
+    forecast = client.get("/races/nv-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Joe Lombardo", "Aaron Ford"}
     assert forecast["n_polls_used"] == 5
 
 
 def test_illinois_race_is_independently_seeded_and_forecast(client):
-    polls = client.get("/races/il/polls").json()
+    polls = client.get("/races/il-gov/polls").json()
     assert len(polls) == 1
     assert polls[0]["pollster"] == "Victory Research"
 
-    forecast = client.get("/races/il/forecast").json()
+    forecast = client.get("/races/il-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"JB Pritzker", "Darren Bailey"}
     assert forecast["n_polls_used"] == 1
@@ -377,39 +401,39 @@ def test_illinois_race_is_independently_seeded_and_forecast(client):
 
 
 def test_oregon_race_is_independently_seeded_and_forecast(client):
-    polls = client.get("/races/or/polls").json()
+    polls = client.get("/races/or-gov/polls").json()
     assert len(polls) == 2
     pollster_names = {p["pollster"] for p in polls}
     assert "FM3 Research" in pollster_names
     assert "Public Opinion Strategies" in pollster_names
 
-    forecast = client.get("/races/or/forecast").json()
+    forecast = client.get("/races/or-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Christine Drazan", "Tina Kotek"}
     assert forecast["n_polls_used"] == 2
 
 
 def test_michigan_race_is_independently_seeded_and_forecast(client):
-    polls = client.get("/races/mi/polls").json()
+    polls = client.get("/races/mi-gov/polls").json()
     assert len(polls) == 6
     pollster_names = {p["pollster"] for p in polls}
     assert "TIPP Insights" in pollster_names
     assert "Impact Research" in pollster_names
 
-    forecast = client.get("/races/mi/forecast").json()
+    forecast = client.get("/races/mi-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"John James", "Jocelyn Benson"}
     assert forecast["n_polls_used"] == 6
 
 
 def test_nebraska_race_is_independently_seeded_and_forecast(client):
-    polls = client.get("/races/ne/polls").json()
+    polls = client.get("/races/ne-gov/polls").json()
     assert len(polls) == 2
     pollster_names = {p["pollster"] for p in polls}
     assert "Public Policy Polling" in pollster_names
     assert "Lake Research Partners" in pollster_names
 
-    forecast = client.get("/races/ne/forecast").json()
+    forecast = client.get("/races/ne-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Jim Pillen", "Lynne Walz"}
     assert forecast["n_polls_used"] == 2
@@ -424,10 +448,10 @@ def test_nebraska_race_is_independently_seeded_and_forecast(client):
 
 
 def test_kansas_race_is_fundamentals_only_with_generic_nominees(client):
-    polls = client.get("/races/ks/polls").json()
+    polls = client.get("/races/ks-gov/polls").json()
     assert polls == []
 
-    forecast = client.get("/races/ks/forecast").json()
+    forecast = client.get("/races/ks-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Republican Nominee", "Democratic Nominee"}
     assert forecast["n_polls_used"] == 0
@@ -440,12 +464,12 @@ def test_kansas_race_is_fundamentals_only_with_generic_nominees(client):
 
 
 def test_arizona_race_aggregates_polls_across_named_republican_contenders(client):
-    polls = client.get("/races/az/polls").json()
+    polls = client.get("/races/az-gov/polls").json()
     assert len(polls) == 3
     pollster_names = {p["pollster"] for p in polls}
     assert pollster_names == {"Emerson College Polling", "Noble Predictive Insights"}
 
-    forecast = client.get("/races/az/forecast").json()
+    forecast = client.get("/races/az-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Katie Hobbs", "Republican Nominee (TBD)"}
     assert forecast["n_polls_used"] == 3
@@ -456,13 +480,13 @@ def test_arizona_race_aggregates_polls_across_named_republican_contenders(client
 
 
 def test_new_hampshire_race_is_independently_seeded_and_forecast(client):
-    polls = client.get("/races/nh/polls").json()
+    polls = client.get("/races/nh-gov/polls").json()
     assert len(polls) == 3
     pollster_names = {p["pollster"] for p in polls}
     assert "Saint Anselm College Survey Center" in pollster_names
     assert "UNH Survey Center" in pollster_names
 
-    forecast = client.get("/races/nh/forecast").json()
+    forecast = client.get("/races/nh-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Kelly Ayotte", "Cinde Warmington"}
     assert forecast["n_polls_used"] == 3
@@ -474,10 +498,10 @@ def test_new_hampshire_race_is_independently_seeded_and_forecast(client):
 
 
 def test_colorado_race_is_fundamentals_only_with_zero_polls(client):
-    polls = client.get("/races/co/polls").json()
+    polls = client.get("/races/co-gov/polls").json()
     assert polls == []
 
-    forecast = client.get("/races/co/forecast").json()
+    forecast = client.get("/races/co-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Phil Weiser", "Victor Marx"}
     assert forecast["n_polls_used"] == 0
@@ -490,11 +514,11 @@ def test_colorado_race_is_fundamentals_only_with_zero_polls(client):
 
 
 def test_vermont_race_aggregates_polls_across_named_democratic_contenders(client):
-    polls = client.get("/races/vt/polls").json()
+    polls = client.get("/races/vt-gov/polls").json()
     assert len(polls) == 1
     assert polls[0]["pollster"] == "UNH Survey Center"
 
-    forecast = client.get("/races/vt/forecast").json()
+    forecast = client.get("/races/vt-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Phil Scott", "Democratic Nominee (TBD)"}
     assert forecast["n_polls_used"] == 1
@@ -506,13 +530,13 @@ def test_vermont_race_aggregates_polls_across_named_democratic_contenders(client
 
 
 def test_massachusetts_race_is_independently_seeded_and_forecast(client):
-    polls = client.get("/races/ma/polls").json()
+    polls = client.get("/races/ma-gov/polls").json()
     assert len(polls) == 3
     pollster_names = {p["pollster"] for p in polls}
     assert "UMass Amherst/WCVB" in pollster_names
     assert "Suffolk University/Boston Globe" in pollster_names
 
-    forecast = client.get("/races/ma/forecast").json()
+    forecast = client.get("/races/ma-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Maura Healey", "Mike Minogue"}
     assert forecast["n_polls_used"] == 3
@@ -524,10 +548,10 @@ def test_massachusetts_race_is_independently_seeded_and_forecast(client):
 
 
 def test_maryland_race_is_fundamentals_only_with_zero_polls(client):
-    polls = client.get("/races/md/polls").json()
+    polls = client.get("/races/md-gov/polls").json()
     assert polls == []
 
-    forecast = client.get("/races/md/forecast").json()
+    forecast = client.get("/races/md-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Wes Moore", "Dan Cox"}
     assert forecast["n_polls_used"] == 0
@@ -540,13 +564,13 @@ def test_maryland_race_is_fundamentals_only_with_zero_polls(client):
 
 
 def test_california_race_is_independently_seeded_and_forecast(client):
-    polls = client.get("/races/ca/polls").json()
+    polls = client.get("/races/ca-gov/polls").json()
     assert len(polls) == 3
     pollster_names = {p["pollster"] for p in polls}
     assert "Kreate Strategies" in pollster_names
     assert "California Elections and Policy Poll (CEPP)" in pollster_names
 
-    forecast = client.get("/races/ca/forecast").json()
+    forecast = client.get("/races/ca-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Xavier Becerra", "Steve Hilton"}
     assert forecast["n_polls_used"] == 3
@@ -558,10 +582,10 @@ def test_california_race_is_independently_seeded_and_forecast(client):
 
 
 def test_new_mexico_race_is_fundamentals_only_with_zero_polls(client):
-    polls = client.get("/races/nm/polls").json()
+    polls = client.get("/races/nm-gov/polls").json()
     assert polls == []
 
-    forecast = client.get("/races/nm/forecast").json()
+    forecast = client.get("/races/nm-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Deb Haaland", "Gregg Hull"}
     assert forecast["n_polls_used"] == 0
@@ -574,11 +598,11 @@ def test_new_mexico_race_is_fundamentals_only_with_zero_polls(client):
 
 
 def test_alabama_race_is_independently_seeded_and_forecast(client):
-    polls = client.get("/races/al/polls").json()
+    polls = client.get("/races/al-gov/polls").json()
     assert len(polls) == 1
     assert polls[0]["pollster"] == "Cygnal"
 
-    forecast = client.get("/races/al/forecast").json()
+    forecast = client.get("/races/al-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Tommy Tuberville", "Doug Jones"}
     assert forecast["n_polls_used"] == 1
@@ -590,10 +614,10 @@ def test_alabama_race_is_independently_seeded_and_forecast(client):
 
 
 def test_arkansas_race_is_fundamentals_only_with_zero_polls(client):
-    polls = client.get("/races/ar/polls").json()
+    polls = client.get("/races/ar-gov/polls").json()
     assert polls == []
 
-    forecast = client.get("/races/ar/forecast").json()
+    forecast = client.get("/races/ar-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Sarah Huckabee", "Frederick Love"}
     assert forecast["n_polls_used"] == 0
@@ -606,12 +630,12 @@ def test_arkansas_race_is_fundamentals_only_with_zero_polls(client):
 
 
 def test_wisconsin_race_aggregates_polls_across_named_democratic_contenders(client):
-    polls = client.get("/races/wi/polls").json()
+    polls = client.get("/races/wi-gov/polls").json()
     assert len(polls) == 4
     pollster_names = {p["pollster"] for p in polls}
     assert pollster_names == {"Wedgewood Polls", "Impact Research", "Patriot Polling"}
 
-    forecast = client.get("/races/wi/forecast").json()
+    forecast = client.get("/races/wi-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Tom Tiffany", "Democratic Nominee (TBD)"}
     assert forecast["n_polls_used"] == 4
@@ -624,10 +648,10 @@ def test_wisconsin_race_aggregates_polls_across_named_democratic_contenders(clie
 
 
 def test_idaho_race_is_fundamentals_only_with_zero_polls(client):
-    polls = client.get("/races/id/polls").json()
+    polls = client.get("/races/id-gov/polls").json()
     assert polls == []
 
-    forecast = client.get("/races/id/forecast").json()
+    forecast = client.get("/races/id-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Brad Little", "Terri Pickens"}
     assert forecast["n_polls_used"] == 0
@@ -643,10 +667,10 @@ def test_idaho_race_is_fundamentals_only_with_zero_polls(client):
 
 
 def test_south_dakota_race_is_fundamentals_only_with_zero_polls(client):
-    polls = client.get("/races/sd/polls").json()
+    polls = client.get("/races/sd-gov/polls").json()
     assert polls == []
 
-    forecast = client.get("/races/sd/forecast").json()
+    forecast = client.get("/races/sd-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Republican Nominee (TBD)", "Dan Ahlers"}
     assert forecast["n_polls_used"] == 0
@@ -659,10 +683,10 @@ def test_south_dakota_race_is_fundamentals_only_with_zero_polls(client):
 
 
 def test_oklahoma_race_is_fundamentals_only_with_zero_polls(client):
-    polls = client.get("/races/ok/polls").json()
+    polls = client.get("/races/ok-gov/polls").json()
     assert polls == []
 
-    forecast = client.get("/races/ok/forecast").json()
+    forecast = client.get("/races/ok-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
     assert names == {"Republican Nominee (TBD)", "Cyndi Munson"}
     assert forecast["n_polls_used"] == 0
@@ -675,38 +699,38 @@ def test_oklahoma_race_is_fundamentals_only_with_zero_polls(client):
 
 
 def test_all_twentynine_forecasts_are_independent(client):
-    pa = client.get("/races/pa/forecast").json()
-    oh = client.get("/races/oh/forecast").json()
-    ga = client.get("/races/ga/forecast").json()
-    me = client.get("/races/me/forecast").json()
-    ia = client.get("/races/ia/forecast").json()
-    ny = client.get("/races/ny/forecast").json()
-    sc = client.get("/races/sc/forecast").json()
-    tx = client.get("/races/tx/forecast").json()
-    fl = client.get("/races/fl/forecast").json()
-    nv = client.get("/races/nv/forecast").json()
-    il = client.get("/races/il/forecast").json()
-    orr = client.get("/races/or/forecast").json()
-    mi = client.get("/races/mi/forecast").json()
-    ne = client.get("/races/ne/forecast").json()
-    ks = client.get("/races/ks/forecast").json()
-    az = client.get("/races/az/forecast").json()
-    nh = client.get("/races/nh/forecast").json()
-    co = client.get("/races/co/forecast").json()
-    vt = client.get("/races/vt/forecast").json()
-    ma = client.get("/races/ma/forecast").json()
-    md = client.get("/races/md/forecast").json()
-    ca = client.get("/races/ca/forecast").json()
-    nm = client.get("/races/nm/forecast").json()
-    al = client.get("/races/al/forecast").json()
-    ar = client.get("/races/ar/forecast").json()
-    wi = client.get("/races/wi/forecast").json()
-    idaho = client.get("/races/id/forecast").json()
-    sd = client.get("/races/sd/forecast").json()
-    ok = client.get("/races/ok/forecast").json()
-    mn = client.get("/races/mn/forecast").json()
-    ct = client.get("/races/ct/forecast").json()
-    wy = client.get("/races/wy/forecast").json()
+    pa = client.get("/races/pa-gov/forecast").json()
+    oh = client.get("/races/oh-gov/forecast").json()
+    ga = client.get("/races/ga-gov/forecast").json()
+    me = client.get("/races/me-gov/forecast").json()
+    ia = client.get("/races/ia-gov/forecast").json()
+    ny = client.get("/races/ny-gov/forecast").json()
+    sc = client.get("/races/sc-gov/forecast").json()
+    tx = client.get("/races/tx-gov/forecast").json()
+    fl = client.get("/races/fl-gov/forecast").json()
+    nv = client.get("/races/nv-gov/forecast").json()
+    il = client.get("/races/il-gov/forecast").json()
+    orr = client.get("/races/or-gov/forecast").json()
+    mi = client.get("/races/mi-gov/forecast").json()
+    ne = client.get("/races/ne-gov/forecast").json()
+    ks = client.get("/races/ks-gov/forecast").json()
+    az = client.get("/races/az-gov/forecast").json()
+    nh = client.get("/races/nh-gov/forecast").json()
+    co = client.get("/races/co-gov/forecast").json()
+    vt = client.get("/races/vt-gov/forecast").json()
+    ma = client.get("/races/ma-gov/forecast").json()
+    md = client.get("/races/md-gov/forecast").json()
+    ca = client.get("/races/ca-gov/forecast").json()
+    nm = client.get("/races/nm-gov/forecast").json()
+    al = client.get("/races/al-gov/forecast").json()
+    ar = client.get("/races/ar-gov/forecast").json()
+    wi = client.get("/races/wi-gov/forecast").json()
+    idaho = client.get("/races/id-gov/forecast").json()
+    sd = client.get("/races/sd-gov/forecast").json()
+    ok = client.get("/races/ok-gov/forecast").json()
+    mn = client.get("/races/mn-gov/forecast").json()
+    ct = client.get("/races/ct-gov/forecast").json()
+    wy = client.get("/races/wy-gov/forecast").json()
     ids = {
         pa["id"], oh["id"], ga["id"], me["id"], ia["id"],
         ny["id"], sc["id"], tx["id"], fl["id"], nv["id"],

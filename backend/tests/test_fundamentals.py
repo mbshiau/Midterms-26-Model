@@ -777,6 +777,58 @@ def test_historical_lean_weights_override_still_sums_to_one():
     assert abs((w_gov + w_sen + w_pres) - 1.0) < 1e-9
 
 
+def test_historical_lean_weights_swap_dominance_for_a_senate_race():
+    # The global defaults favor the same-office race: for a Governor race
+    # gov weight dominates (the default), for a Senate race the two
+    # defaults should swap so the state's own Senate history dominates
+    # instead.
+    gov_w_gov, gov_w_sen, _ = fundamentals._historical_lean_weights(office="Governor")
+    sen_w_gov, sen_w_sen, _ = fundamentals._historical_lean_weights(office="Senate")
+    assert gov_w_gov == sen_w_sen
+    assert gov_w_sen == sen_w_gov
+    assert sen_w_sen > sen_w_gov
+
+
+def test_historical_lean_weights_office_swap_still_sums_to_one():
+    w_gov, w_sen, w_pres = fundamentals._historical_lean_weights(office="Senate")
+    assert abs((w_gov + w_sen + w_pres) - 1.0) < 1e-9
+
+
+def test_office_scoped_override_only_affects_that_office():
+    # Ohio's real override: {"Senate": {"gubernatorial_lean_weight": 0.0}}
+    # zeroes gov weight for the Senate race only -- the Governor race must
+    # keep the normal (unswapped, gov-dominant) default.
+    overrides = {"Senate": {"gubernatorial_lean_weight": 0.0}}
+    gov_w_gov, _, _ = fundamentals._historical_lean_weights(
+        fundamentals._resolve_overrides(overrides, "Governor"), "Governor"
+    )
+    sen_w_gov, sen_w_sen, sen_w_pres = fundamentals._historical_lean_weights(
+        fundamentals._resolve_overrides(overrides, "Senate"), "Senate"
+    )
+    assert gov_w_gov == fundamentals.settings.gubernatorial_lean_weight
+    assert sen_w_gov == 0.0
+    assert sen_w_sen == fundamentals.settings.gubernatorial_lean_weight  # swapped default for Senate
+    assert abs((sen_w_gov + sen_w_sen + sen_w_pres) - 1.0) < 1e-9
+
+
+def test_ohio_senate_fundamentals_breakdown_excludes_gubernatorial_lean():
+    breakdown = fundamentals.fundamentals_breakdown(
+        OH, incumbent_party="R", approval_pct=45.0, president_party="Republican",
+        as_of=date(2026, 7, 10), office="Senate",
+    )
+    gub = fundamentals.gubernatorial_lean(OH["gubernatorial_elections"], date(2026, 7, 10))
+    sen = fundamentals.senate_lean(OH["senate_elections"], date(2026, 7, 10))
+    pres = fundamentals.presidential_lean(OH["presidential_elections"], date(2026, 7, 10))
+    # gub is still reported for transparency, but must contribute 0 to the
+    # combined lean -- verified by reconstructing combined from sen/pres
+    # alone using the swapped Senate defaults (gov weight forced to 0).
+    _, w_sen, w_pres = fundamentals._historical_lean_weights(
+        {"gubernatorial_lean_weight": 0.0}, "Senate"
+    )
+    assert breakdown.gubernatorial_lean_pts == gub
+    assert abs(breakdown.combined_historical_lean_pts - (w_sen * sen + w_pres * pres)) < 1e-9
+
+
 def test_vermont_override_makes_gubernatorial_lean_dominate():
     # Phil Scott (R) is a constant overperformer of VT's federal-race
     # blueness -- the 70/15/15 override must pull the combined historical

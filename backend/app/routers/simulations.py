@@ -14,7 +14,7 @@ from app.schemas import (
 from app.services.forecasting import generate_forecast, latest_forecast
 from app.services.simulation import histogram
 
-router = APIRouter(prefix="/races/{state_code}", tags=["simulations"])
+router = APIRouter(prefix="/races/{slug}", tags=["simulations"])
 
 
 @router.post("/simulate", response_model=ForecastSnapshotOut)

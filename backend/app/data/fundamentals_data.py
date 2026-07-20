@@ -94,6 +94,15 @@ RACE_FUNDAMENTALS = {
         # the fundamentals model treats an empty list as a neutral 0 rather
         # than fabricating a number.
         "registration_snapshots": [],
+        # The Senate race is a special election to fill the seat JD Vance
+        # vacated -- gubernatorial history isn't a meaningful read on it, so
+        # it's zeroed out for that office only (the Governor race's own
+        # weighting is untouched). The freed weight falls to president
+        # (the remainder) rather than being manually redistributed to
+        # senate -- see app.services.fundamentals._resolve_overrides.
+        "model_overrides": {
+            "Senate": {"gubernatorial_lean_weight": 0.0},
+        },
     },
     "ga": {
         "gubernatorial_elections": [

@@ -7,7 +7,7 @@ from app.routers.deps import get_race_or_404
 from app.schemas import RaceIntelligenceOut
 from app.services.race_intelligence import get_race_intelligence_view
 
-router = APIRouter(prefix="/races/{state_code}/intelligence", tags=["intelligence"])
+router = APIRouter(prefix="/races/{slug}/intelligence", tags=["intelligence"])
 
 
 @router.get("", response_model=RaceIntelligenceOut)

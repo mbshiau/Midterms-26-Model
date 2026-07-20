@@ -96,16 +96,46 @@ def presidential_lean(presidential_elections: list[dict], as_of: date | None = N
     )
 
 
-def _historical_lean_weights(model_overrides: dict | None = None) -> tuple[float, float, float]:
+def _resolve_overrides(model_overrides: dict, office: str) -> dict:
+    """Resolves a RACE_FUNDAMENTALS entry's "model_overrides" for the given
+    office. A state with only one race (the common case, e.g. Vermont) just
+    uses flat top-level keys, applied regardless of office. A state with
+    *two* races that need genuinely different overrides (e.g. Ohio's
+    Senate race excluding gubernatorial history entirely, while its
+    Governor race's own weighting stays untouched) nests an office-keyed
+    dict instead -- `{"Senate": {"gubernatorial_lean_weight": 0.0}}` --
+    which is merged over the flat keys (and wins on conflict) only when
+    resolving for that specific office."""
+    office_specific = model_overrides.get(office)
+    if isinstance(office_specific, dict):
+        return {**model_overrides, **office_specific}
+    return model_overrides
+
+
+def _historical_lean_weights(
+    model_overrides: dict | None = None, office: str = "Governor"
+) -> tuple[float, float, float]:
     """(governor, senate, president) weights; president is the remainder so
     the three always sum to 1 regardless of how the first two are tuned.
-    `model_overrides` (see fundamentals_breakdown) can replace either of the
-    two global defaults for one specific state -- e.g. Phil Scott's
-    Vermont, where the governor's own race is a far stronger signal than
-    the state's Senate/presidential results, uses gov=0.70/sen=0.15."""
+
+    The two global defaults (`settings.gubernatorial_lean_weight` /
+    `settings.senate_lean_weight`) assume the *same-office* race is the
+    stronger signal -- correct as written for a Governor race. For a
+    Senate race, the state's own Senate history should be the stronger
+    signal instead, so `office == "Senate"` swaps which default lands in
+    which slot before overrides are applied. `model_overrides` (already
+    resolved for `office` by `_resolve_overrides` -- see
+    fundamentals_breakdown) can still replace either of the two global
+    defaults for one specific state -- e.g. Phil Scott's Vermont, where the
+    governor's own race is a far stronger signal than the state's
+    Senate/presidential results, uses gov=0.70/sen=0.15."""
     model_overrides = model_overrides or {}
-    w_gov = model_overrides.get("gubernatorial_lean_weight", settings.gubernatorial_lean_weight)
-    w_sen = model_overrides.get("senate_lean_weight", settings.senate_lean_weight)
+    default_gov = settings.gubernatorial_lean_weight
+    default_sen = settings.senate_lean_weight
+    if office == "Senate":
+        default_gov, default_sen = default_sen, default_gov
+    w_gov = model_overrides.get("gubernatorial_lean_weight", default_gov)
+    w_sen = model_overrides.get("senate_lean_weight", default_sen)
     return w_gov, w_sen, 1 - w_gov - w_sen
 
 
@@ -115,9 +145,11 @@ def combined_historical_lean(
     presidential_elections: list[dict],
     as_of: date | None = None,
     model_overrides: dict | None = None,
+    office: str = "Governor",
 ) -> float:
     """Blends the governor/Senate/presidential leans by the weights above."""
-    w_gov, w_sen, w_pres = _historical_lean_weights(model_overrides)
+    resolved_overrides = _resolve_overrides(model_overrides or {}, office)
+    w_gov, w_sen, w_pres = _historical_lean_weights(resolved_overrides, office)
     return (
         w_gov * gubernatorial_lean(gubernatorial_elections, as_of)
         + w_sen * senate_lean(senate_elections, as_of)
@@ -189,9 +221,13 @@ def fundamentals_breakdown(
     president_party: str,
     as_of: date | None = None,
     generic_ballot_margin: float | None = None,
+    office: str = "Governor",
 ) -> FundamentalsBreakdown:
-    """`race_fundamentals` may carry an optional "model_overrides" dict for
-    states whose normal historical-lean assumptions don't fit well:
+    """`office` ("Governor" or "Senate") determines which of the two
+    historical-lean weights below is treated as the same-office (dominant)
+    one -- see _historical_lean_weights. `race_fundamentals` may carry an
+    optional "model_overrides" dict for states whose normal historical-lean
+    assumptions don't fit well:
 
     - `gubernatorial_lean_weight` / `senate_lean_weight`: replace the two
       global defaults for this state's gov/Senate/president split (see
@@ -205,9 +241,13 @@ def fundamentals_breakdown(
       reliably overrides what the state's past elections would suggest
       (e.g. Iowa's Democratic nominee), so historical lean shouldn't simply
       dominate the total the way unweighted addition lets it.
+
+    Either key can also be nested under an office name (e.g.
+    `{"Senate": {"gubernatorial_lean_weight": 0.0}}`) for a state whose two
+    races need different overrides -- see _resolve_overrides.
     """
     as_of = as_of or date.today()
-    model_overrides = race_fundamentals.get("model_overrides", {})
+    model_overrides = _resolve_overrides(race_fundamentals.get("model_overrides", {}), office)
     gub_elections = race_fundamentals["gubernatorial_elections"]
     sen_elections = race_fundamentals["senate_elections"]
     pres_elections = race_fundamentals["presidential_elections"]
@@ -216,7 +256,7 @@ def fundamentals_breakdown(
     gub = gubernatorial_lean(gub_elections, as_of)
     sen = senate_lean(sen_elections, as_of)
     pres = presidential_lean(pres_elections, as_of)
-    w_gov, w_sen, w_pres = _historical_lean_weights(model_overrides)
+    w_gov, w_sen, w_pres = _historical_lean_weights(model_overrides, office)
     combined = w_gov * gub + w_sen * sen + w_pres * pres
     inc = incumbency_adjustment(incumbent_party)
     reg = registration_trend_adjustment(reg_snapshots)
@@ -248,10 +288,11 @@ def fundamentals_vote_share(
     president_party: str,
     as_of: date | None = None,
     generic_ballot_margin: float | None = None,
+    office: str = "Governor",
 ) -> float:
     """Projected two-party vote share for a candidate of the given party."""
     margin = fundamentals_breakdown(
-        race_fundamentals, incumbent_party, approval_pct, president_party, as_of, generic_ballot_margin
+        race_fundamentals, incumbent_party, approval_pct, president_party, as_of, generic_ballot_margin, office
     ).total_dem_margin_pts
     if party == "Democratic":
         return 50 + margin / 2

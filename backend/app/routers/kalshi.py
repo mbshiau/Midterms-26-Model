@@ -7,7 +7,7 @@ from app.routers.deps import get_race_or_404
 from app.schemas import KalshiOddsOut
 from app.services.market_odds import get_market_odds
 
-router = APIRouter(prefix="/races/{state_code}/kalshi", tags=["kalshi"])
+router = APIRouter(prefix="/races/{slug}/kalshi", tags=["kalshi"])
 
 
 @router.get("", response_model=list[KalshiOddsOut])

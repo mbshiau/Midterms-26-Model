@@ -36,7 +36,7 @@ html {
 
 body {
   margin: 0;
-  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  font-family: "IBM Plex Sans", system-ui, "Segoe UI", Roboto, sans-serif;
   background: var(--page);
   color: var(--text-secondary);
 }
@@ -78,7 +78,7 @@ body {
    otherwise inherit from the select's own .font-title styling. */
 .title-select option {
   text-transform: none;
-  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  font-family: "IBM Plex Sans", system-ui, "Segoe UI", Roboto, sans-serif;
   font-size: 1rem;
   font-weight: 500;
   letter-spacing: normal;

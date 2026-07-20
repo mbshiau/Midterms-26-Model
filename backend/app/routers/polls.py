@@ -12,7 +12,7 @@ from app.schemas import PollOut
 from app.services.pollster_ratings import get_pollster_ratings_by_name
 from app.services.weighting import poll_weights
 
-router = APIRouter(prefix="/races/{state_code}/polls", tags=["polls"])
+router = APIRouter(prefix="/races/{slug}/polls", tags=["polls"])
 
 
 @router.get("", response_model=list[PollOut])

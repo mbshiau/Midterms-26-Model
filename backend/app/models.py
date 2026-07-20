@@ -14,15 +14,22 @@ class Population(str, enum.Enum):
     A = "A"  # all adults
 
 
+_OFFICE_SLUGS = {"Governor": "gov", "Senate": "sen"}
+
+
 class Race(Base):
-    """A single state's governor race — the unit everything else is scoped
-    to. Adding a new state means adding a Race row plus its seed/fundamentals
-    data, not a schema change."""
+    """A single state race for one office (Governor or Senate) — the unit
+    everything else is scoped to. Adding a new state/office means adding a
+    Race row plus its seed/fundamentals data, not a schema change. A state
+    can have both a Governor and a Senate race at once (unique on
+    (state_code, office), not on state_code alone), distinguished by
+    `slug`."""
 
     __tablename__ = "races"
+    __table_args__ = (UniqueConstraint("state_code", "office", name="uq_races_state_office"),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    state_code: Mapped[str] = mapped_column(String(2), unique=True, nullable=False)
+    state_code: Mapped[str] = mapped_column(String(2), nullable=False)
     state_name: Mapped[str] = mapped_column(String(100), nullable=False)
     office: Mapped[str] = mapped_column(String(100), default="Governor")
     election_date: Mapped[date] = mapped_column(Date, nullable=False)
@@ -31,6 +38,16 @@ class Race(Base):
     candidates: Mapped[list["Candidate"]] = relationship(back_populates="race")
     polls: Mapped[list["Poll"]] = relationship(back_populates="race")
     forecast_snapshots: Mapped[list["ForecastSnapshot"]] = relationship(back_populates="race")
+
+    @property
+    def slug(self) -> str:
+        """The per-race API identifier, e.g. "pa-gov" / "mi-sen" -- computed,
+        not stored, so no migration/backfill was needed to introduce it. Not
+        a DB column: state_code is always exactly 2 chars, so
+        `f"{state_code}-{office_abbrev}"` round-trips unambiguously in
+        app.services.races.get_race."""
+        office_abbrev = _OFFICE_SLUGS.get(self.office, self.office.lower()[:3])
+        return f"{self.state_code}-{office_abbrev}"
 
 
 class Candidate(Base):

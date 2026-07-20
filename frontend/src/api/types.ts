@@ -1,4 +1,5 @@
 export interface Race {
+  slug: string;
   state_code: string;
   state_name: string;
   office: string;

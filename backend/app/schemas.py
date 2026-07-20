@@ -21,6 +21,7 @@ def _as_utc_isoformat(value: datetime) -> str:
 class RaceOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
+    slug: str
     state_code: str
     state_name: str
     office: str

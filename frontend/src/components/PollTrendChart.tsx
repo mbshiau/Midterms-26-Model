@@ -10,6 +10,7 @@ import {
   YAxis,
 } from "recharts";
 import type { Poll } from "../api/types";
+import { ChartLegend } from "./ChartLegend";
 import { partyColorVar } from "../lib/partyColor";
 
 interface TrendPoint {
@@ -38,7 +39,20 @@ function buildTrendData(polls: Poll[]): { data: TrendPoint[]; candidates: { name
     return point;
   });
 
-  return { data, candidates: Array.from(byName.values()) };
+  // Winner-first: each candidate's most recent pct (walking newest to
+  // oldest, in case they're missing from the very latest poll), so the
+  // legend and line-draw order match who's currently ahead in the polls.
+  const latestPct = new Map<string, number>();
+  for (let i = sorted.length - 1; i >= 0; i--) {
+    for (const r of sorted[i].results) {
+      if (!latestPct.has(r.candidate.name)) latestPct.set(r.candidate.name, r.pct);
+    }
+  }
+  const candidates = Array.from(byName.values()).sort(
+    (a, b) => (latestPct.get(b.name) ?? -1) - (latestPct.get(a.name) ?? -1)
+  );
+
+  return { data, candidates };
 }
 
 function TrendTooltip({ active, payload }: any) {
@@ -103,9 +117,7 @@ export function PollTrendChart({ polls, electionDate }: { polls: Poll[]; electio
         />
         <Tooltip content={<TrendTooltip />} />
         <Legend
-          wrapperStyle={{ fontSize: 13, color: "var(--text-secondary)" }}
-          iconType="line"
-          iconSize={16}
+          content={<ChartLegend items={candidates.map((c) => ({ name: c.name, color: partyColorVar(c.party) }))} />}
         />
         <ReferenceLine
           x={electionTs}

@@ -52,7 +52,7 @@ function Card({
 }
 
 export function StateForecastPage() {
-  const { stateCode = "" } = useParams<{ stateCode: string }>();
+  const { slug = "" } = useParams<{ slug: string }>();
   const [race, setRace] = useState<Race | null>(null);
   const [polls, setPolls] = useState<Poll[] | null>(null);
   const [forecast, setForecast] = useState<ForecastSnapshot | null>(null);
@@ -68,33 +68,33 @@ export function StateForecastPage() {
     setNotFound(false);
     try {
       const races = await api.getRaces();
-      const matchedRace = races.find((r) => r.state_code === stateCode) ?? null;
+      const matchedRace = races.find((r) => r.slug === slug) ?? null;
       if (!matchedRace) {
         setNotFound(true);
         return;
       }
       setRace(matchedRace);
 
-      const pollsData = await api.getPolls(stateCode);
+      const pollsData = await api.getPolls(slug);
       setPolls(pollsData);
 
       try {
-        setKalshiOdds(await api.getKalshiOdds(stateCode));
+        setKalshiOdds(await api.getKalshiOdds(slug));
       } catch {
         setKalshiOdds([]);
       }
 
       try {
-        setRaceIntelligence(await api.getRaceIntelligence(stateCode));
+        setRaceIntelligence(await api.getRaceIntelligence(slug));
       } catch {
         setRaceIntelligence(null);
       }
 
       try {
         const [forecastData, simulationsData, historyData] = await Promise.all([
-          api.getForecast(stateCode),
-          api.getSimulations(stateCode),
-          api.getForecastHistory(stateCode),
+          api.getForecast(slug),
+          api.getSimulations(slug),
+          api.getForecastHistory(slug),
         ]);
         setForecast(forecastData);
         setSimulations(simulationsData);
@@ -110,7 +110,7 @@ export function StateForecastPage() {
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     }
-  }, [stateCode]);
+  }, [slug]);
 
   useEffect(() => {
     loadAll();
@@ -127,7 +127,7 @@ export function StateForecastPage() {
           className="text-sm underline"
           style={{ color: "var(--text-muted)" }}
         >
-          ← Back to map
+          ← Back to election types
         </Link>
         <p className="mt-4" style={{ color: "var(--text-muted)" }}>
           No forecast model exists for this state yet.
@@ -167,7 +167,7 @@ export function StateForecastPage() {
       >
         <div className="relative flex items-center px-4 py-2" style={{ minHeight: NAV_HEIGHT_PX }}>
           <Link
-            to="/"
+            to={race?.office === "Senate" ? "/senate" : "/governors"}
             className="absolute left-4 inline-flex flex-shrink-0 items-center gap-1 rounded-md px-2.5 py-1.5 underline"
             style={{ color: "var(--text-muted)" }}
           >

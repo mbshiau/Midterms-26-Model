@@ -64,6 +64,7 @@ def blend_with_fundamentals(
     approval_pct: float,
     president_party: str,
     generic_ballot_margin: float | None = None,
+    office: str = "Governor",
 ) -> tuple[dict[int, CandidateAverage], dict[int, float]]:
     """Returns (blended averages fed into the simulator, fundamentals share per candidate).
 
@@ -80,7 +81,7 @@ def blend_with_fundamentals(
     for candidate in candidates:
         fundamentals_share = fundamentals.fundamentals_vote_share(
             race_fundamentals, candidate.party, incumbent_party, approval_pct, president_party, as_of,
-            generic_ballot_margin,
+            generic_ballot_margin, office,
         )
         fundamentals_shares[candidate.id] = fundamentals_share
 
@@ -159,7 +160,7 @@ def generate_forecast(
     )
     blended_averages, fundamentals_shares = blend_with_fundamentals(
         fundamentals_data, polling_averages, candidates, alpha, as_of, approval.approval_pct, approval.party,
-        generic_ballot_margin,
+        generic_ballot_margin, race.office,
     )
 
     # Shared across every race generated with this same as_of date -- see
@@ -181,7 +182,7 @@ def generate_forecast(
     breakdown = asdict(
         fundamentals.fundamentals_breakdown(
             fundamentals_data, incumbent_party, approval.approval_pct, approval.party, as_of,
-            generic_ballot_margin,
+            generic_ballot_margin, race.office,
         )
     )
     breakdown["president_name"] = approval.name

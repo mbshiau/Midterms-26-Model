@@ -7,7 +7,7 @@ from app.routers.deps import get_race_or_404
 from app.schemas import ForecastHistoryOut, ForecastSnapshotOut
 from app.services.forecasting import forecast_history, latest_forecast
 
-router = APIRouter(prefix="/races/{state_code}/forecast", tags=["forecast"])
+router = APIRouter(prefix="/races/{slug}/forecast", tags=["forecast"])
 
 
 @router.get("", response_model=ForecastSnapshotOut)

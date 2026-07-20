@@ -43,7 +43,7 @@ async def lifespan(app: FastAPI):
         # on every restart or on the scheduled job.
         races = seed_all_races(db)
         for race in races.values():
-            race_seed = get_race_seed(race.state_code)
+            race_seed = get_race_seed(race.slug)
             ingest_polls(db, race, race_seed)
             # Only bootstrap a forecast the first time a race is seeded (no
             # snapshot yet). Every subsequent app restart must NOT re-run
