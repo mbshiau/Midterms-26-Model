@@ -9,9 +9,9 @@ def test_races_lists_all_seeded_states(client):
     assert resp.status_code == 200
     codes = {r["state_code"] for r in resp.json()}
     assert codes == {
-        "pa", "oh", "ga", "me", "ia", "ny", "sc", "tx", "fl", "nv", "il", "or", 
-        "mi", "ne", "ks", "az", "nh", "co", "vt", "ma", "md", "ca", "nm", "al", 
-        "ar", "wi", "id", "sd", "ok", "mn", "ct", "wy", "ri", "tn", "hi", "ak"
+        "pa", "oh", "ga", "me", "ia", "ny", "sc", "tx", "fl", "nv", "il", "or",
+        "mi", "ne", "ks", "az", "nh", "co", "vt", "ma", "md", "ca", "nm", "al",
+        "ar", "wi", "id", "sd", "ok", "mn", "ct", "wy", "ri", "tn", "hi", "ak", "wv"
     }
 
 
@@ -40,7 +40,12 @@ def test_a_state_can_have_a_governor_and_a_senate_race_with_distinct_slugs(clien
 
 
 def test_races_expose_current_holder_party(client):
-    races = {r["state_code"]: r for r in client.get("/races").json()}
+    # Keyed by state_code, but scoped to Governor races only -- a state can
+    # also have a Senate race sharing the same state_code (e.g. Ohio, New
+    # Hampshire), and these assertions are all about the governor's seat.
+    races = {
+        r["state_code"]: r for r in client.get("/races").json() if r["office"] == "Governor"
+    }
     # PA and NY: incumbent (Shapiro, Hochul) is on the ballot -- their party.
     assert races["pa"]["current_holder_party"] == "Democratic"
     assert races["ny"]["current_holder_party"] == "Democratic"

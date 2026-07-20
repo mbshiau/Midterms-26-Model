@@ -153,7 +153,6 @@ export function StateForecastPage() {
     { id: "latest-polls", label: "Latest Polls", visible: !!polls },
     { id: "latest-news", label: "Latest News", visible: !!raceIntelligence },
     { id: "kalshi-odds", label: "Prediction Markets", visible: kalshiOdds.length > 0 },
-    { id: "ai-market-analysis", label: "AI Market Analysis", visible: !!raceIntelligence },
   ].filter((s) => s.visible);
 
   return (
@@ -291,14 +290,7 @@ export function StateForecastPage() {
                 </Card>
               )}
 
-              {raceIntelligence && (
-                <Card id="ai-market-analysis" title="AI market analysis">
-                  <AIMarketAnalysisCard
-                    analysis={raceIntelligence.market_analysis}
-                    generatedAt={raceIntelligence.market_analysis_generated_at}
-                  />
-                </Card>
-              )}
+              
             </div>
           )}
 

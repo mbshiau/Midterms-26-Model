@@ -603,6 +603,13 @@ RACE_FUNDAMENTALS = {
             {"date": "2025-08-25", "dem_lead": -49_334},
             {"date": "2026-05-04", "dem_lead": -48_822},
         ],
+        # Same rationale as Ohio's Senate override: gubernatorial history
+        # excluded from the Senate race's fundamentals blend, Governor
+        # race's own weighting untouched -- see
+        # app.services.fundamentals._resolve_overrides.
+        "model_overrides": {
+            "Senate": {"gubernatorial_lean_weight": 0.0},
+        },
     },
     "co": {
         "gubernatorial_elections": [
@@ -1077,8 +1084,29 @@ RACE_FUNDAMENTALS = {
         ],
        
         "registration_snapshots": []
+    },
+
+    "wv": {
+         "gubernatorial_elections": [
+            {"year": 2020, "dem_share": 32.33, "incumbent_party": "R"},  
+            {"year": 2024, "dem_share": 33.75, "incumbent_party": None},  
+      ],
+   
+
+        "senate_elections": [
+            {"year": 2020, "dem_share": 27.62},  
+            {"year": 2024, "dem_share": 28.77},         
+        ],
+        "presidential_elections":  [
+            {"year": 2016, "dem_share": 27.84},  
+            {"year": 2020, "dem_share": 30.23},  
+            {"year": 2024, "dem_share": 28.65},  
+        ],
+       
+        "registration_snapshots": [
+            {"date": "2026-06-01", "dem_lead": -211_385}
+        ]
     }
-    
 }
 
 PRESIDENT = {
