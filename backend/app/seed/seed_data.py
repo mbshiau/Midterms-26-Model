@@ -3137,6 +3137,30 @@ SENATE_RACES: dict = {
         ],
         "raw_polls": []
     },
-  
+    "ar": {
+        "state_name": "Arkansas",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Arkansas",
+        "candidates": [
+            {"name": "Tom Cotton", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/6/66/Tom_Cotton_official_Senate_photo_%28cropped%29.jpg", "kalshi_ticker": "SENATEAR-26-R"},
+            {"name": "Hallie Shoffner", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Hallie_Shoffner_%28cropped%29.jpg", "kalshi_ticker": "SENATEAR-26-D"},
+        ],
+        "raw_polls": [
+            {
+                "pollster": "GrayHouse",
+                "sponsor": "America One Policies",
+                "field_start_date": "2026-02-07",
+                "field_end_date": "2026-02-09",
+                "release_date": "2026-02-11",
+                "sample_size": 550,
+                "population": "LV",
+                "margin_of_error": 4.2,
+                "undecided_pct": 6.0,
+                "source_url": "https://www.grayhouse.com/post/ar-senate",
+                "results": {"Tom Cotton": 58.0, "Hallie Shoffner": 36.0},
+            },
+        ]
+    },
 }
 
