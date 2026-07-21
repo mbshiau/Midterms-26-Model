@@ -3103,7 +3103,18 @@ SENATE_RACES: dict = {
                 "results": {"Jim Risch": 55.0, "David Roth": 15.0},
             },
         ]
-    }
+    },
+    "wy": {
+        "state_name": "Wyoming",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Wyoming",
+        "candidates": [
+            {"name": "Harriet Hageman", "party": "Republican", "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwLlMaRInem00Uwc9XuMjl-YXvs00n2AsovAJ8VDda1A&s=10", "kalshi_ticker": "SENATEWY-26-R"},
+            {"name": "James Byrd", "party": "Democratic", "incumbent": False, "photo_url": "https://assets.civicengine.com/uploads/candidate/headshot/178596/178596.jpg", "kalshi_ticker": "SENATEWY-26-D"},
+        ],
+        "raw_polls": []
+    },
 
 }
 
