@@ -3023,5 +3023,16 @@ SENATE_RACES: dict = {
             },
         ]
     },
+    "or": {
+        "state_name": "Oregon",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Oregon",
+        "candidates": [
+            {"name": "David Brock Smith", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/8/81/David_Brock_Smith.jpg", "kalshi_ticker": "SENATEOR-26-R"},
+            {"name": "Jeff Merkley", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Jeff_Merkley%2C_115th_official_photo_%28cropped2%29.jpg", "kalshi_ticker": "SENATEOR-26-D"},
+        ],
+        "raw_polls": []
+    }
 }
 
