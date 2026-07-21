@@ -3055,6 +3055,54 @@ SENATE_RACES: dict = {
             {"name": "John Hickenlooper", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/d/db/John_Hickenlooper%2C_official_portrait%2C_117th_Congress_%28cropped%29.jpeg", "kalshi_ticker": "SENATECO-26-D"},
         ],
         "raw_polls": []
+    },
+    "id": {
+        "state_name": "Idaho",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Idaho",
+        "candidates": [
+            {"name": "Jim Risch", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Jim_Risch_2021_%28cropped%29.jpg", "kalshi_ticker": "SENATEID-26-R"},
+            {"name": "David Roth", "party": "Democratic", "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBTZ62vFXd7Gsw-tISxsvkFjcyTox6Qq1vPnSZqYhB31TkDE5nLxuaVT7i&s=10", "kalshi_ticker": "SENATEID-26-D"},
+        ],
+        # Independent Todd Achilles is a genuine well-organized 3rd candidate
+        # in this race (per Idaho Capital Sun/idahoednews.org reporting), but
+        # he isn't one of the 2 modeled candidates -- same convention as
+        # Duggan (MI) / Betsy Johnson (OR 2022): his share folds into
+        # undecided_pct. A March 2026 PPP poll (Achilles campaign-sponsored)
+        # tested only Risch-vs-Achilles with no Roth number at all -- not the
+        # modeled matchup, so excluded outright rather than reused.
+        "raw_polls": [
+            {
+                "pollster": "The Bullfinch Group",
+                "sponsor": "Achilles campaign",
+                "field_start_date": "2026-05-29",
+                "field_end_date": "2026-06-01",
+                "release_date": "2026-06-02",
+                "sample_size": 774,
+                "population": "RV",
+                "margin_of_error": 3.5,
+                # This poll tested 3 separate scenarios (3-way, Risch-v-Roth,
+                # Risch-v-Achilles); using the Risch-v-Roth-only scenario
+                # (50/33) since that's the modeled 2-candidate pairing.
+                "undecided_pct": 17.0,
+                "source_url": "https://www.thebullfinchgroup.com/post/for-immediate-release-independent-todd-achilles-surges-on-informed-ballot",
+                "results": {"Jim Risch": 50.0, "David Roth": 33.0},
+            },
+            {
+                "pollster": "Peak Insights",
+                "sponsor": "Risch campaign",
+                "field_start_date": "2026-06-06",
+                "field_end_date": "2026-06-07",
+                "release_date": "2026-06-09",
+                "sample_size": 500,
+                "population": "LV",
+                "margin_of_error": 4.0,
+                "undecided_pct": 30.0,
+                "source_url": "https://senatorrisch.com/polling/",
+                "results": {"Jim Risch": 55.0, "David Roth": 15.0},
+            },
+        ]
     }
 
 }
