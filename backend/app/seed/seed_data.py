@@ -3033,6 +3033,29 @@ SENATE_RACES: dict = {
             {"name": "Jeff Merkley", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Jeff_Merkley%2C_115th_official_photo_%28cropped2%29.jpg", "kalshi_ticker": "SENATEOR-26-D"},
         ],
         "raw_polls": []
+    },
+    "nm": {
+        "state_name": "New Mexico",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_New_Mexico",
+        "candidates": [
+            {"name": "Larry Marker", "party": "Republican", "incumbent": False, "photo_url": "https://janrvuropqrnptyieksp.supabase.co/storage/v1/object/public/politician-images/larry-e-marker-1778322041749.jpg", "kalshi_ticker": "SENATENM-26-R"},
+            {"name": "Ben Ray Luján", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/c/c2/Ben_Ray_Luj%C3%A1n%2C_official_portrait_%28119th_Congress%29_%28cropped%291.jpg", "kalshi_ticker": "SENATENM-26-D"},
+        ],
+        "raw_polls": []
+    },
+    "co": {
+        "state_name": "Colorado",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Colorado",
+        "candidates": [
+            {"name": "Mark Baisley", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Mark_Baisley_in_2024_%28cropped%29.jpg", "kalshi_ticker": "SENATECO-26-R"},
+            {"name": "John Hickenlooper", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/d/db/John_Hickenlooper%2C_official_portrait%2C_117th_Congress_%28cropped%29.jpeg", "kalshi_ticker": "SENATECO-26-D"},
+        ],
+        "raw_polls": []
     }
+
 }
 
