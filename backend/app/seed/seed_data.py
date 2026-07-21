@@ -3115,6 +3115,28 @@ SENATE_RACES: dict = {
         ],
         "raw_polls": []
     },
-
+    "al": {
+        "state_name": "Alabama",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Alabama",
+        "candidates": [
+            {"name": "Barry Moore", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Rep._Barry_Moore_official_photo.jpg_%28cropped%29.jpg", "kalshi_ticker": "SENATEAL-26-R"},
+            {"name": "Everett Wess", "party": "Democratic", "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc2wbUmjQfgcQlsYoB5FK8KEZ_pXMzC6g2eUAvVF0eiA&s=10", "kalshi_ticker": "SENATEAL-26-D"},
+        ],
+        "raw_polls": []
+    },
+    "ks": {
+        "state_name": "Kansas",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Kansas",
+        "candidates": [
+            {"name": "Roger Marshall", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/b/b6/Roger_Marshall_117th_Congress_portrait.jpg", "kalshi_ticker": "SENATEKS-26-R"},
+            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "SENATEKS-26-D"},
+        ],
+        "raw_polls": []
+    },
+  
 }
 
