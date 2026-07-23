@@ -1,0 +1,36 @@
+name: Render free-tier refresh trigger
+
+# Render's free web-service tier spins the backend process down after ~15
+# minutes of no incoming HTTP traffic, which kills the in-process APScheduler
+# background thread (backend/app/ingestion/scheduler.py) along with it. This
+# workflow hits the backend's admin-refresh endpoints on the same schedule
+# the in-process scheduler uses -- the incoming request itself wakes the
+# service, so there's no window for the job to be silently skipped.
+#
+# Note: GitHub's scheduled-workflow cron can run several minutes late under
+# load, and is auto-disabled after 60 days with no pushes to the repo -- push
+# something occasionally to keep it alive.
+
+on:
+  schedule:
+    - cron: "5 * * * *" # every hour at :05 UTC (also :05 in America/New_York, since the US Eastern offset is always a whole number of hours)
+  workflow_dispatch: {}
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Market/intel refresh (hourly)
+        run: |
+          curl -sf -X POST "https://midterms-backend.onrender.com/admin/refresh/market-intel" \
+            -H "X-Admin-Token: ${{ secrets.ADMIN_REFRESH_TOKEN }}"
+
+      - name: Forecast refresh (noon + 7pm ET only)
+        run: |
+          ET_HOUR=$(TZ=America/New_York date +%H)
+          if [ "$ET_HOUR" = "12" ] || [ "$ET_HOUR" = "19" ]; then
+            curl -sf -X POST "https://midterms-backend.onrender.com/admin/refresh/forecast" \
+              -H "X-Admin-Token: ${{ secrets.ADMIN_REFRESH_TOKEN }}"
+          else
+            echo "Not a forecast-refresh hour (ET hour=$ET_HOUR); skipping."
+          fi

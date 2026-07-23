@@ -8,7 +8,7 @@ from app import database
 from app.config import settings
 from app.ingestion.pipeline import ingest_polls
 from app.ingestion.scheduler import start_scheduler, stop_scheduler
-from app.routers import forecast, kalshi, polls, race_intelligence, races, simulations
+from app.routers import admin, forecast, kalshi, polls, race_intelligence, races, simulations
 from app.schema_sync import sync_schema
 from app.services.approval import seed_default_approval
 from app.services.forecasting import generate_forecast, latest_forecast
@@ -87,6 +87,7 @@ app.include_router(forecast.router)
 app.include_router(simulations.router)
 app.include_router(kalshi.router)
 app.include_router(race_intelligence.router)
+app.include_router(admin.router)
 
 
 @app.get("/health")

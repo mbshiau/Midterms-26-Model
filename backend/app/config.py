@@ -113,5 +113,17 @@ class Settings(BaseSettings):
     # and should be raised if 429s show up.
     ai_min_seconds_between_calls: float = 2.0
 
+    # Shared secret for POST /admin/refresh/* (see app.routers.admin):
+    # manual triggers for the same jobs app.ingestion.scheduler runs
+    # in-process. Needed because Render's free web-service tier spins the
+    # process down between requests, silently killing the in-process
+    # APScheduler thread along with it -- an external cron hits these
+    # endpoints instead, and the incoming request itself wakes the service.
+    # Left blank by default so a local dev environment (never internet-
+    # exposed) doesn't need to set anything; the endpoints stay open in that
+    # case rather than permanently locking themselves out. Must be set on
+    # any environment reachable from the public internet.
+    admin_refresh_token: str = ""
+
 
 settings = Settings()
