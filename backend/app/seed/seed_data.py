@@ -3663,49 +3663,25 @@ SENATE_RACES: dict = {
             },
         ]
     },
-    "ms": {
-        "state_name": "Mississippi",
+    "ok": {
+        "state_name": "Oklahoma",
         "office": "Senate",
         "election_date": "2026-11-03",
-        "wikipedia_page_title": "2026_United_States_Senate_election_in_Mississippi",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Oklahoma",
+        # Open seat: Markwayne Mullin resigned (March 2026) to become
+        # Secretary of Homeland Security. Alan Armstrong was appointed to
+        # fill the seat but agreed not to seek a full term, so he isn't a
+        # candidate here -- Kevin Hern (sitting US Rep., OK-1, Trump-
+        # endorsed) is NOT an incumbent, just the settled GOP nominee
+        # (won the June 16, 2026 primary outright). The Democratic primary
+        # went to an Aug. 25, 2026 runoff (N'Kiyla Thomas advanced but
+        # hasn't won yet) -- not settled, hence the "TBD" placeholder.
         "candidates": [
-            {"name": "Cindy Hyde-Smith", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Official_headshot_of_US_Senator_Cindy_Hyde-Smith_%28cropped%29.jpg", "kalshi_ticker": "SENATEMS-26-R"},
-            {"name": "Scott Colom", "party": "Democratic", "incumbent": False, "photo_url": "https://i0.wp.com/www.mississippifreepress.org/wp-content/uploads/2021/02/cropped-District-Attorney-Scott-Colom_cred-MSDA_web.jpg?fit=671%2C670&ssl=1", "kalshi_ticker": "SENATEMS-26-D"},
+            {"name": "Kevin Hern", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Rep._Kevin_Hern_official_photo%2C_116th_congress.jpg", "kalshi_ticker": "SENATEOK-26-R"},
+            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "SENATEOK-26-D"},
         ],
-        # Independent Ty Pinkins is tested in one 3-way scenario of the Apr
-        # 2026 Impact Research poll, but isn't one of the 2 modeled
-        # candidates -- same convention as Achilles (ID)/Duggan (MI): using
-        # that poll's clean Hyde-Smith-vs-Colom-only scenario (47/44)
-        # instead, not the 3-way or "informed ballot" (post-bio-info)
-        # scenarios from the same release.
-        "raw_polls": [
-            {
-                "pollster": "Impact Research",
-                "sponsor": "SPLC Action Fund",
-                "field_start_date": "2025-06-18",
-                "field_end_date": "2025-06-22",
-                "release_date": "2025-07-10",
-                "sample_size": 500,
-                "population": "RV",
-                "margin_of_error": 4.4,
-                "undecided_pct": 11.0,
-                "source_url": "https://www.splcactionfund.org/news/poll-2026-senate-mississippi/",
-                "results": {"Cindy Hyde-Smith": 51.0, "Scott Colom": 38.0},
-            },
-            {
-                "pollster": "Impact Research",
-                "sponsor": "SPLC Action Fund",
-                "field_start_date": "2026-04-08",
-                "field_end_date": "2026-04-12",
-                "release_date": "2026-04-20",
-                "sample_size": 500,
-                "population": "LV",
-                "margin_of_error": 4.4,
-                "undecided_pct": 9.0,
-                "source_url": "https://www.splcactionfund.org/news/new-poll-of-likely-voters-shows-mississippi-senate-race-tightening-as-voters-continue-to-sour-on-sen-cindy-hyde-smith/",
-                "results": {"Cindy Hyde-Smith": 47.0, "Scott Colom": 44.0},
-            },
-        ]
+
+        "raw_polls": []
     },
     
 
