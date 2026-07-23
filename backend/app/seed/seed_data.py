@@ -3668,14 +3668,7 @@ SENATE_RACES: dict = {
         "office": "Senate",
         "election_date": "2026-11-03",
         "wikipedia_page_title": "2026_United_States_Senate_election_in_Oklahoma",
-        # Open seat: Markwayne Mullin resigned (March 2026) to become
-        # Secretary of Homeland Security. Alan Armstrong was appointed to
-        # fill the seat but agreed not to seek a full term, so he isn't a
-        # candidate here -- Kevin Hern (sitting US Rep., OK-1, Trump-
-        # endorsed) is NOT an incumbent, just the settled GOP nominee
-        # (won the June 16, 2026 primary outright). The Democratic primary
-        # went to an Aug. 25, 2026 runoff (N'Kiyla Thomas advanced but
-        # hasn't won yet) -- not settled, hence the "TBD" placeholder.
+  
         "candidates": [
             {"name": "Kevin Hern", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Rep._Kevin_Hern_official_photo%2C_116th_congress.jpg", "kalshi_ticker": "SENATEOK-26-R"},
             {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "SENATEOK-26-D"},
@@ -3683,7 +3676,62 @@ SENATE_RACES: dict = {
 
         "raw_polls": []
     },
-    
+    "la": {
+        "state_name": "Louisiana",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Louisiana",
+        # Open seat: incumbent Bill Cassidy lost the May 16, 2026 GOP primary
+        # outright (24.8%, didn't make the runoff) -- Trump/Landry-endorsed
+        # Rep. Julia Letlow beat John Fleming in the June 27 runoff instead.
+        "candidates": [
+            {"name": "Julia Letlow", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Julia_Letlow_117th_%28cropped%29.jpg/1280px-Julia_Letlow_117th_%28cropped%29.jpg", "kalshi_ticker": "SENATELA-26-R"},
+            {"name": "Jamie Davis", "party": "Democratic", "incumbent": False, "photo_url": "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Jamie_Davis_26.png", "kalshi_ticker": "SENATELA-26-D"},
+        ],
+
+        "raw_polls": []
+    },
+    "fl": {
+        "state_name": "Florida",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Florida",
+       
+        "candidates": [
+            {"name": "Ashley Moody", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/6/6b/Senator_Ashley_Moody_Official_Portrait.jpg", "kalshi_ticker": "SENATEFL-26-R"},
+            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "SENATEFL-26-D"},
+        ],
+
+        "raw_polls": []
+    },
+    "ky": {
+        "state_name": "Kentucky",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Kentucky",
+       
+        "candidates": [
+            {"name": "Andy Barr", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Andy_Barr_116th_Congress.jpg/250px-Andy_Barr_116th_Congress.jpg", "kalshi_ticker": "SENATEKY-26-R"},
+            {"name": "Charles Booker", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Charles_solar_panels_%28cropped%29.jpg/250px-Charles_solar_panels_%28cropped%29.jpg", "kalshi_ticker": "SENATEKY-26-D"},
+        ],
+
+        "raw_polls": [
+            {
+                "pollster": "Public Policy Polling",
+                "sponsor": "Booker campaign",
+                "field_start_date": "2025-12-18",
+                "field_end_date": "2025-12-19",
+                "release_date": "2025-12-31",
+                "sample_size": 650,
+                "population": "RV",
+                "margin_of_error": None,
+                "undecided_pct": 13.0,
+                "source_url": "https://www.kentucky.com/news/politics-government/article314061118.html",
+                "results": {"Andy Barr": 49.0, "Charles Booker": 38.0},
+            },
+        ]
+    },
+ 
 
 }
 
