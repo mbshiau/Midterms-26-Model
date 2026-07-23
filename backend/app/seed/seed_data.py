@@ -3963,6 +3963,18 @@ SENATE_RACES: dict = {
             },
         ]
     },
+    "tn": {
+        "state_name": "Tennessee",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Tennessee",
+       
+        "candidates": [
+            {"name": "Bill Hagerty", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Sen._Bill_Hagerty_official_Senate_portrait%2C_117th_Congress_%28cropped%29.jpg/250px-Sen._Bill_Hagerty_official_Senate_portrait%2C_117th_Congress_%28cropped%29.jpg", "kalshi_ticker": "SENATETN-26-R"},
+            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "SENATETN-26-D"},
+        ],
 
+        "raw_polls": []
+    },
 }
 
