@@ -290,7 +290,14 @@ export function StateForecastPage() {
                 </Card>
               )}
 
-              
+              {raceIntelligence && kalshiOdds.length > 0 && (
+                <Card id="market-analysis" title="Model vs. market">
+                  <AIMarketAnalysisCard
+                    analysis={raceIntelligence.market_analysis}
+                    generatedAt={raceIntelligence.market_analysis_generated_at}
+                  />
+                </Card>
+              )}
             </div>
           )}
 

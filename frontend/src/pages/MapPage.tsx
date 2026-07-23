@@ -193,10 +193,6 @@ export function MapPage({ office }: { office: "Governor" | "Senate" }) {
     };
   }, [office]);
 
-  const availableStateNames = Object.values(racesByState)
-    .map((r) => r.race.state_name)
-    .sort();
-
   const entries = Object.values(racesByState);
   const demCount = entries.filter((r) => r.leadingParty === "Democratic").length;
   const repCount = entries.filter((r) => r.leadingParty === "Republican").length;
