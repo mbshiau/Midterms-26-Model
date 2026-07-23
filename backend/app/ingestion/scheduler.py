@@ -50,17 +50,17 @@ logger = logging.getLogger(__name__)
 
 _scheduler: BackgroundScheduler | None = None
 
-# Refresh at noon and 7pm, US Eastern time (handles EST/EDT automatically).
-REFRESH_HOURS = "12,19"
+# Refresh at the top of every hour, US Eastern time (handles EST/EDT
+# automatically -- see module docstring on cron vs. interval trigger).
 REFRESH_TIMEZONE = "America/New_York"
 
 # APScheduler's default misfire_grace_time is 1 second: if the background
 # thread's check of a due job is delayed past that (e.g. the process was busy
 # holding the GIL running CPU-bound Monte Carlo simulations for a burst of
 # forecast requests), the run is silently skipped entirely and pushed to the
-# *next* scheduled slot -- up to 7 hours later -- rather than just running
-# late. A generous grace window means a delayed check still fires instead of
-# vanishing.
+# *next* scheduled slot -- up to 1 hour later, now that refreshes are hourly
+# -- rather than just running late. A generous grace window means a delayed
+# check still fires instead of vanishing.
 MISFIRE_GRACE_SECONDS = 3600
 
 
@@ -102,10 +102,18 @@ def refresh_race_intelligence(db, race: Race, candidates: list[Candidate]) -> No
                 article.ai_relevance = relevance
     db.commit()
 
-    candidates_by_id = {c.id: c for c in candidates}
-    kalshi_rows = list(get_market_odds(db, [c.id for c in candidates]).values())
-    snapshot = latest_forecast(db, race)
-    market_analysis = generate_market_analysis(race, snapshot, kalshi_rows, candidates_by_id)
+    # The AI market-analysis blurb is only regenerated when a new headline
+    # actually came in this run -- with the refresh now hourly, calling the
+    # AI provider every single run regardless would be ~24x/day of billing
+    # for a summary that most hours has nothing new to say. Passing None
+    # leaves the previously-cached analysis in place (see
+    # update_race_intelligence's docstring) rather than blanking it.
+    market_analysis = None
+    if new_count:
+        candidates_by_id = {c.id: c for c in candidates}
+        kalshi_rows = list(get_market_odds(db, [c.id for c in candidates]).values())
+        snapshot = latest_forecast(db, race)
+        market_analysis = generate_market_analysis(race, snapshot, kalshi_rows, candidates_by_id)
 
     update_race_intelligence(db, race.id, market_analysis)
 
@@ -207,7 +215,7 @@ def start_scheduler() -> BackgroundScheduler:
     _scheduler = BackgroundScheduler()
     _scheduler.add_job(
         _run_refresh_job,
-        CronTrigger(hour=REFRESH_HOURS, minute=0, timezone=REFRESH_TIMEZONE),
+        CronTrigger(minute=0, timezone=REFRESH_TIMEZONE),
         misfire_grace_time=MISFIRE_GRACE_SECONDS,
     )
     _scheduler.start()
