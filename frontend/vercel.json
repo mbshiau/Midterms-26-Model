@@ -3,6 +3,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://midterms-backend.onrender.com/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
