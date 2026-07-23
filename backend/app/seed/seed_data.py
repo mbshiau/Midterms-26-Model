@@ -1367,20 +1367,7 @@ RACES = {
         "office": "Governor",
         "election_date": "2026-11-03",
         "wikipedia_page_title": "2026_Arizona_gubernatorial_election",
-        # Gov. Katie Hobbs (D) is running for reelection and is functionally
-        # unopposed in the Democratic primary -- treated as the settled
-        # nominee. The GOP primary (July 21, 2026) is NOW SETTLED: Rep. Andy
-        # Biggs won with ~70% (Trump-endorsed), beating Rep. David Schweikert;
-        # Karrin Taylor Robson (an earlier Trump-endorsed candidate) withdrew
-        # Feb. 12, 2026 before the primary.
-        #
-        # Every poll below is that wave's actual named Hobbs-vs-Biggs
-        # matchup (not an average across Schweikert/Robson matchups the same
-        # wave may have also tested) -- now that Biggs is the real nominee,
-        # using his specific numbers directly instead of the old
-        # cross-candidate averaging this entry used pre-primary. Two same-
-        # wave duplicate population screens (TIPP's Apr 2026 LV+RV release)
-        # collapsed to one row (LV) to avoid double-counting.
+        
         "candidates": [
             {"name": "Katie Hobbs", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/0/02/Katie_Hobbs_2026.jpg", "kalshi_ticker": "GOVPARTYAZ-26-D"},
             {"name": "Andy Biggs", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/4/46/Andy_Biggs_portrait_%28118th_Congress%29.jpg", "kalshi_ticker": "GOVPARTYAZ-26-R"},
@@ -3587,5 +3574,140 @@ SENATE_RACES: dict = {
             },
         ]
     },
+    "ne": {
+        "state_name": "Nebraska",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Nebraska",
+        
+        "candidates": [
+            {"name": "Pete Ricketts", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Sen._Pete_Ricketts_official_portrait%2C_118th_Congress_%28cropped%29.jpg",  "kalshi_ticker": "SENATENE-26-R"},
+            {"name": "Dan Osborn", "party": "Independent", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Osborn_Headshot_2_%28cropped%29_%28cropped%29.jpg",  "kalshi_ticker": "SENATENE-26-DOSB"},
+        ],
+        # Democrats also field an actual nominee (Cindy Burbank), but she's
+        # polling near 2% and isn't modeled as a 3rd candidate -- her share
+        # folds into undecided_pct, same convention as other token
+        # third-party/minor candidates elsewhere in this dataset. Osborn's
+        # "party" is Independent, not Democratic -- see
+        # fundamentals.fundamentals_vote_share, which returns a flat 50.0
+        # fundamentals baseline for any non-Democratic/non-Republican party
+        # (there's no historical "Independent Senate candidate" baseline to
+        # draw on), so this race's fundamentals component is largely
+        # uninformative for Osborn specifically and the forecast leans much
+        # more heavily on the polling blend than a typical 2-party race.
+        "raw_polls": [
+            {
+                "pollster": "Change Research",
+                "sponsor": "Osborn campaign",
+                "field_start_date": "2025-03-28",
+                "field_end_date": "2025-04-01",
+                "release_date": "2025-04-10",
+                "sample_size": 524,
+                "population": "LV",
+                "margin_of_error": 4.6,
+                "undecided_pct": 9.0,
+                "source_url": "https://journalstar.com/news/state-regional/government-politics/article_7be6b517-341e-42fd-80a9-56c0d0996353.html",
+                "results": {"Pete Ricketts": 46.0, "Dan Osborn": 45.0},
+            },
+            {
+                "pollster": "Lake Research Partners",
+                "sponsor": "Democratic",
+                "field_start_date": "2025-07-23",
+                "field_end_date": "2025-07-29",
+                "release_date": "2025-09-15",
+                "sample_size": 900,
+                "population": "LV",
+                "margin_of_error": 3.3,
+                "undecided_pct": 7.0,
+                "source_url": "https://x.com/daveweigel/status/1967766304582144247",
+                "results": {"Pete Ricketts": 46.0, "Dan Osborn": 47.0},
+            },
+            {
+                "pollster": "Lake Research Partners",
+                "sponsor": "Democratic",
+                "field_start_date": "2025-12-11",
+                "field_end_date": "2025-12-17",
+                "release_date": "2026-01-22",
+                "sample_size": 900,
+                "population": "LV",
+                "margin_of_error": None,
+                "undecided_pct": 5.0,
+                "source_url": "https://drive.google.com/file/d/1Izlk1L3prsXm04d-1ZRi8cLSliHvySnC/view",
+                "results": {"Pete Ricketts": 48.0, "Dan Osborn": 47.0},
+            },
+            {
+                "pollster": "Impact Research",
+                "sponsor": "Osborn campaign",
+                "field_start_date": "2026-02-02",
+                "field_end_date": "2026-02-05",
+                "release_date": "2026-02-18",
+                "sample_size": 600,
+                "population": "LV",
+                "margin_of_error": 4.0,
+                "undecided_pct": 5.0,
+                "source_url": "https://www.osbornforsenate.com/impactpoll",
+                "results": {"Pete Ricketts": 48.0, "Dan Osborn": 47.0},
+            },
+            {
+                "pollster": "Tavern Research",
+                "sponsor": "Democratic",
+                "field_start_date": "2026-05-08",
+                "field_end_date": "2026-05-11",
+                "release_date": "2026-05-11",
+                "sample_size": 1165,
+                "population": "LV",
+                "margin_of_error": 3.5,
+                "undecided_pct": 11.0,
+                "source_url": "https://www.tavernresearch.com/research-and-writings/nebraska-senate-poll",
+                "results": {"Pete Ricketts": 42.0, "Dan Osborn": 47.0},
+            },
+        ]
+    },
+    "ms": {
+        "state_name": "Mississippi",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Mississippi",
+        "candidates": [
+            {"name": "Cindy Hyde-Smith", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Official_headshot_of_US_Senator_Cindy_Hyde-Smith_%28cropped%29.jpg", "kalshi_ticker": "SENATEMS-26-R"},
+            {"name": "Scott Colom", "party": "Democratic", "incumbent": False, "photo_url": "https://i0.wp.com/www.mississippifreepress.org/wp-content/uploads/2021/02/cropped-District-Attorney-Scott-Colom_cred-MSDA_web.jpg?fit=671%2C670&ssl=1", "kalshi_ticker": "SENATEMS-26-D"},
+        ],
+        # Independent Ty Pinkins is tested in one 3-way scenario of the Apr
+        # 2026 Impact Research poll, but isn't one of the 2 modeled
+        # candidates -- same convention as Achilles (ID)/Duggan (MI): using
+        # that poll's clean Hyde-Smith-vs-Colom-only scenario (47/44)
+        # instead, not the 3-way or "informed ballot" (post-bio-info)
+        # scenarios from the same release.
+        "raw_polls": [
+            {
+                "pollster": "Impact Research",
+                "sponsor": "SPLC Action Fund",
+                "field_start_date": "2025-06-18",
+                "field_end_date": "2025-06-22",
+                "release_date": "2025-07-10",
+                "sample_size": 500,
+                "population": "RV",
+                "margin_of_error": 4.4,
+                "undecided_pct": 11.0,
+                "source_url": "https://www.splcactionfund.org/news/poll-2026-senate-mississippi/",
+                "results": {"Cindy Hyde-Smith": 51.0, "Scott Colom": 38.0},
+            },
+            {
+                "pollster": "Impact Research",
+                "sponsor": "SPLC Action Fund",
+                "field_start_date": "2026-04-08",
+                "field_end_date": "2026-04-12",
+                "release_date": "2026-04-20",
+                "sample_size": 500,
+                "population": "LV",
+                "margin_of_error": 4.4,
+                "undecided_pct": 9.0,
+                "source_url": "https://www.splcactionfund.org/news/new-poll-of-likely-voters-shows-mississippi-senate-race-tightening-as-voters-continue-to-sour-on-sen-cindy-hyde-smith/",
+                "results": {"Cindy Hyde-Smith": 47.0, "Scott Colom": 44.0},
+            },
+        ]
+    },
+    
+
 }
 

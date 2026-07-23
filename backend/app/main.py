@@ -66,8 +66,8 @@ async def lifespan(app: FastAPI):
         db.close()
 
     sched = start_scheduler()
-    next_run = sched.get_jobs()[0].next_run_time
-    logger.info("scheduled refresh job registered, next run at %s", next_run)
+    for job in sched.get_jobs():
+        logger.info("scheduled job registered: %s, next run at %s", job.func.__name__, job.next_run_time)
     yield
     stop_scheduler()
 

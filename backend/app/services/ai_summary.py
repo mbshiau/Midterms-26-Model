@@ -11,7 +11,8 @@ place that imports the openai SDK. Like every scraper in app.ingestion,
 every call here returns None on any failure (missing API key, network
 error, empty/malformed response) rather than raising -- an LLM outage must
 never block a race's forecast from regenerating (see
-app.ingestion.scheduler._run_refresh_job).
+app.ingestion.scheduler._run_forecast_refresh_job /
+_run_market_intel_refresh_job).
 
 Output is generated once per scheduled refresh and cached on
 RaceIntelligence/NewsArticle (see update_race_intelligence,
