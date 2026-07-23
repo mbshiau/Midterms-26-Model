@@ -45,8 +45,6 @@ from app.services.pollster_ratings import get_pollster_ratings_by_name
 from app.services.simulation import generate_national_shock, run_monte_carlo
 from app.services.weighting import CandidateAverage, two_party_normalize, weighted_polling_averages
 
-DRAWS_SAMPLE_SIZE = 2000
-
 
 def _incumbent_party(candidates: list[Candidate]) -> str | None:
     for c in candidates:
@@ -212,9 +210,6 @@ def generate_forecast(
     db.flush()
 
     for candidate_id, result in sim_results.items():
-        sample = np.random.default_rng(seed).choice(
-            result.draws, size=min(DRAWS_SAMPLE_SIZE, len(result.draws)), replace=False
-        )
         db.add(
             ForecastResult(
                 snapshot_id=snapshot.id,
@@ -225,7 +220,7 @@ def generate_forecast(
                 win_probability=result.win_probability,
                 ci_low=result.ci_low,
                 ci_high=result.ci_high,
-                draws_sample=sample.tolist(),
+                draws_sample=result.draws.tolist(),
                 # No polling-only figure exists when the race has zero real
                 # polls yet -- fall back to the fundamentals share so the
                 # (non-nullable) column still holds a real, non-fabricated
