@@ -1369,32 +1369,90 @@ RACES = {
         "wikipedia_page_title": "2026_Arizona_gubernatorial_election",
         # Gov. Katie Hobbs (D) is running for reelection and is functionally
         # unopposed in the Democratic primary -- treated as the settled
-        # nominee. The GOP primary (July 21, 2026) is NOT settled: Rep. Andy
-        # Biggs is the clear frontrunner, Rep. David Schweikert is also
-        # running, and Karrin Taylor Robson (an earlier Trump-endorsed
-        # candidate) withdrew Feb. 12, 2026. Per explicit direction, the
-        # Republican side is a generic "TBD" placeholder rather than naming
-        # a presumptive nominee.
+        # nominee. The GOP primary (July 21, 2026) is NOW SETTLED: Rep. Andy
+        # Biggs won with ~70% (Trump-endorsed), beating Rep. David Schweikert;
+        # Karrin Taylor Robson (an earlier Trump-endorsed candidate) withdrew
+        # Feb. 12, 2026 before the primary.
         #
-        # Every general-election trial-heat poll found tests Hobbs against a
-        # SPECIFIC named Republican (Biggs, Schweikert, and, before her
-        # withdrawal, Robson) rather than a true generic-ballot question. Per
-        # explicit direction to aggregate across contenders, each poll below
-        # represents one real polling wave (one pollster + field-date window)
-        # averaged across every named-Republican matchup that wave tested --
-        # e.g. Emerson's Nov 2025 release tested Biggs, Robson, AND
-        # Schweikert as three separate matchups; the entry below is the
-        # unweighted average of Hobbs's share, the Republican's share, and
-        # undecided across those three. This keeps one poll record per real
-        # release (matching how the pipeline dedupes on pollster + field
-        # dates) while still reflecting every contender actually polled.
+        # Every poll below is that wave's actual named Hobbs-vs-Biggs
+        # matchup (not an average across Schweikert/Robson matchups the same
+        # wave may have also tested) -- now that Biggs is the real nominee,
+        # using his specific numbers directly instead of the old
+        # cross-candidate averaging this entry used pre-primary. Two same-
+        # wave duplicate population screens (TIPP's Apr 2026 LV+RV release)
+        # collapsed to one row (LV) to avoid double-counting.
         "candidates": [
             {"name": "Katie Hobbs", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/0/02/Katie_Hobbs_2026.jpg", "kalshi_ticker": "GOVPARTYAZ-26-D"},
-            {"name": "Republican Nominee (TBD)", "party": "Republican", "incumbent": False, "photo_url": None, "kalshi_ticker": "GOVPARTYAZ-26-R"},
+            {"name": "Andy Biggs", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/4/46/Andy_Biggs_portrait_%28118th_Congress%29.jpg", "kalshi_ticker": "GOVPARTYAZ-26-R"},
         ],
         "raw_polls": [
             {
-                "pollster": "Emerson College Polling",
+                "pollster": "Kreate Strategies",
+                "sponsor": None,
+                "field_start_date": "2025-02-05",
+                "field_end_date": "2025-02-07",
+                "release_date": "2025-02-08",
+                "sample_size": 924,
+                "population": "LV",
+                "margin_of_error": 3.0,
+                "undecided_pct": 13.0,
+                "source_url": "https://web.archive.org/web/20250214065131/https://projects.fivethirtyeight.com/polls/250212_AZ_KStrategiesdeck.pdf",
+                "results": {"Katie Hobbs": 43.0, "Andy Biggs": 44.0},
+            },
+            {
+                "pollster": "Noble Predictive Insights",
+                "sponsor": None,
+                "field_start_date": "2025-02-11",
+                "field_end_date": "2025-02-13",
+                "release_date": "2025-02-26",
+                "sample_size": 1006,
+                "population": "RV",
+                "margin_of_error": 3.1,
+                "undecided_pct": 22.0,
+                "source_url": "https://www.noblepredictiveinsights.com/post/arizona-gop-voters-still-searching-for-a-gubernatorial-primary-frontrunner",
+                "results": {"Katie Hobbs": 40.0, "Andy Biggs": 38.0},
+            },
+            {
+                "pollster": "Pulse Decision Science",
+                "sponsor": None,
+                "field_start_date": "2025-04-06",
+                "field_end_date": "2025-04-09",
+                "release_date": "2025-04-21",
+                "sample_size": 501,
+                "population": "LV",
+                "margin_of_error": 4.4,
+                "undecided_pct": 12.0,
+                "source_url": "https://www.politico.com/news/2025/04/21/club-for-growth-arizona-governor-race-00302151",
+                "results": {"Katie Hobbs": 46.0, "Andy Biggs": 42.0},
+            },
+            {
+                "pollster": "Noble Predictive Insights",
+                "sponsor": None,
+                "field_start_date": "2025-05-12",
+                "field_end_date": "2025-05-16",
+                "release_date": "2025-05-29",
+                "sample_size": 1026,
+                "population": "RV",
+                "margin_of_error": 3.1,
+                "undecided_pct": 22.0,
+                "source_url": "https://www.noblepredictiveinsights.com/post/az-governor-s-race-biggs-gains-momentum-as-gop-field-shifts",
+                "results": {"Katie Hobbs": 40.0, "Andy Biggs": 38.0},
+            },
+            {
+                "pollster": "Noble Predictive Insights",
+                "sponsor": None,
+                "field_start_date": "2025-08-11",
+                "field_end_date": "2025-08-18",
+                "release_date": "2025-08-28",
+                "sample_size": 948,
+                "population": "RV",
+                "margin_of_error": 3.2,
+                "undecided_pct": 24.0,
+                "source_url": "https://www.noblepredictiveinsights.com/post/robson-rewrites-the-2022-playbook-as-she-opens-with-an-early-lead-in-arizona-gop-primary",
+                "results": {"Katie Hobbs": 39.0, "Andy Biggs": 37.0},
+            },
+            {
+                "pollster": "Emerson College",
                 "sponsor": None,
                 "field_start_date": "2025-11-08",
                 "field_end_date": "2025-11-10",
@@ -1402,45 +1460,77 @@ RACES = {
                 "sample_size": 850,
                 "population": "RV",
                 "margin_of_error": 3.3,
-                "undecided_pct": 15.0,
+                "undecided_pct": 13.0,
                 "source_url": "https://emersoncollegepolling.com/arizona-2026-governor/",
-                # Average of 3 named matchups: Hobbs 44/Biggs 43 (13% undec.),
-                # Hobbs 43/Robson 42 (15% undec.), Hobbs 44/Schweikert 39
-                # (16% undec.).
-                "results": {"Katie Hobbs": 43.7, "Republican Nominee (TBD)": 41.3},
+                "results": {"Katie Hobbs": 44.0, "Andy Biggs": 43.0},
+            },
+            {
+                "pollster": "NextGen Polling",
+                "sponsor": None,
+                "field_start_date": "2025-12-15",
+                "field_end_date": "2025-12-17",
+                "release_date": "2025-12-18",
+                "sample_size": 2725,
+                "population": "LV",
+                "margin_of_error": 1.9,
+                "undecided_pct": 17.0,
+                "source_url": "https://nxtgenp.com/post/Hobbs-leads",
+                "results": {"Katie Hobbs": 51.0, "Andy Biggs": 32.0},
+            },
+            {
+                "pollster": "Center for Excellence in Polling",
+                "sponsor": None,
+                "field_start_date": "2026-01-22",
+                "field_end_date": "2026-01-24",
+                "release_date": "2026-02-19",
+                "sample_size": 519,
+                "population": "LV",
+                "margin_of_error": 4.3,
+                "undecided_pct": 9.0,
+                "source_url": "https://www.newsweek.com/andy-biggs-chances-beating-katie-hobbs-arizona-governor-poll-11551094",
+                "results": {"Katie Hobbs": 50.0, "Andy Biggs": 41.0},
             },
             {
                 "pollster": "Noble Predictive Insights",
                 "sponsor": None,
                 "field_start_date": "2026-02-23",
                 "field_end_date": "2026-02-26",
-                "release_date": "2026-03-04",
+                "release_date": "2026-05-15",
                 "sample_size": 1023,
                 "population": "RV",
                 "margin_of_error": 3.06,
-                "undecided_pct": 21.0,
-                "source_url": "https://www.noblepredictiveinsights.com/post/azgov-biggs-benefits-from-field-consolidation-hobbs-holds-early-edge",
-                # Average of 2 named matchups: Hobbs 42/Biggs 37 and Hobbs
-                # 44/Schweikert 35 (~21% undecided each, per Newsweek's
-                # independent write-up of the same release).
-                "results": {"Katie Hobbs": 43.0, "Republican Nominee (TBD)": 36.0},
+                "undecided_pct": 23.0,
+                "source_url": "https://www.noblepredictiveinsights.com/post/azgov-biggs-nears-majority-as-hobbs-holds-early-edge",
+                "results": {"Katie Hobbs": 42.0, "Andy Biggs": 35.0},
+            },
+            {
+                "pollster": "TIPP Insights",
+                "sponsor": "League of American Workers",
+                "field_start_date": "2026-04-20",
+                "field_end_date": "2026-04-24",
+                "release_date": "2026-04-29",
+                "sample_size": 1159,
+                "population": "LV",
+                "margin_of_error": 3.2,
+                "undecided_pct": 14.0,
+                "source_url": "https://x.com/PollTracker2024/status/2049599745618800960",
+                "results": {"Katie Hobbs": 48.0, "Andy Biggs": 38.0},
             },
             {
                 "pollster": "Noble Predictive Insights",
                 "sponsor": None,
                 "field_start_date": "2026-05-05",
                 "field_end_date": "2026-05-07",
-                "release_date": "2026-05-18",
+                "release_date": "2026-05-15",
                 "sample_size": 996,
                 "population": "RV",
                 "margin_of_error": 3.1,
-                "undecided_pct": 22.5,
+                # Includes a separately-polled No Labels independent, Hugh
+                # Lytle, at 5% -- folded into undecided_pct per this
+                # dataset's minor-candidate convention.
+                "undecided_pct": 22.0,
                 "source_url": "https://www.noblepredictiveinsights.com/post/azgov-biggs-nears-majority-as-hobbs-holds-early-edge",
-                # Average of 2 named matchups: Hobbs 41/Biggs 37 (includes a
-                # separately-polled No Labels independent, Hugh Lytle, at 5%,
-                # folded into undecided per this dataset's minor-candidate
-                # convention) and Hobbs 42/Schweikert 35.
-                "results": {"Katie Hobbs": 41.5, "Republican Nominee (TBD)": 36.0},
+                "results": {"Katie Hobbs": 41.0, "Andy Biggs": 37.0},
             },
         ],
     },
