@@ -4035,5 +4035,116 @@ SENATE_RACES: dict = {
             },
         ]
     },
+    "ma": {
+        "state_name": "Massachusetts",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Massachusetts",
+       
+        "candidates": [
+            {"name": "John Deaton", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/John_Deaton%2C_2024_%28cropped%29.jpg/250px-John_Deaton%2C_2024_%28cropped%29.jpg", "kalshi_ticker": "SENATEMA-26-R"},
+            {"name": "Ed Markey", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Edward_Markey%2C_official_portrait%2C_114th_Congress.jpg/500px-Edward_Markey%2C_official_portrait%2C_114th_Congress.jpg", "kalshi_ticker": "SENATEMA-26-D"},
+        ],
+
+        # Markey faces a real Sept 1, 2026 DFL primary challenge from Seth
+        # Moulton, but the seed already models Markey by name (not TBD), so
+        # only the Markey-vs-Deaton matchup polls are used here -- not
+        # averaged with the separate Moulton-vs-Deaton polling Wikipedia
+        # also reports. The hypothetical Markey-vs-Charlie-Baker polls are
+        # excluded (Baker isn't running).
+        "raw_polls": [
+            {
+                "pollster": "SurveyUSA",
+                "sponsor": "Massachusetts Responsible Alliance",
+                "field_start_date": "2025-02-28",
+                "field_end_date": "2025-03-04",
+                "release_date": "2025-03-06",
+                "sample_size": 775,
+                "population": "RV",
+                "margin_of_error": None,
+                "undecided_pct": 29.0,
+                "source_url": "https://www.surveyusa.com/client/PollReport.aspx?g=adc70fa6-00da-4a97-9b1a-7eb4844e0302",
+                "results": {"Ed Markey": 45.0, "John Deaton": 26.0},
+            },
+            {
+                "pollster": "Suffolk University",
+                "sponsor": "The Boston Globe",
+                "field_start_date": "2025-11-19",
+                "field_end_date": "2025-11-23",
+                "release_date": "2025-11-25",
+                "sample_size": 500,
+                "population": "RV",
+                "margin_of_error": 4.4,
+                "undecided_pct": 15.0,
+                "source_url": "https://www.suffolk.edu/academics/research-at-suffolk/political-research-center/polls/massachusetts",
+                "results": {"Ed Markey": 54.0, "John Deaton": 31.0},
+            },
+            {
+                "pollster": "Cygnal",
+                "sponsor": "Deaton campaign",
+                "field_start_date": "2026-01-22",
+                "field_end_date": "2026-01-25",
+                "release_date": "2026-02-17",
+                "sample_size": 800,
+                "population": "LV",
+                "margin_of_error": 3.5,
+                "undecided_pct": 16.0,
+                "source_url": "https://www.politico.com/f/?id=0000019c-75d4-d0f8-adde-ffde8f8e0000",
+                "results": {"Ed Markey": 54.0, "John Deaton": 30.0},
+            },
+            {
+                "pollster": "University of New Hampshire",
+                "sponsor": None,
+                "field_start_date": "2026-02-12",
+                "field_end_date": "2026-02-16",
+                "release_date": "2026-02-19",
+                "sample_size": 620,
+                "population": "LV",
+                "margin_of_error": 3.9,
+                "undecided_pct": 17.0,
+                "source_url": "https://scholars.unh.edu/cgi/viewcontent.cgi?article=1930&context=survey_center_polls",
+                "results": {"Ed Markey": 56.0, "John Deaton": 27.0},
+            },
+            {
+                "pollster": "University of New Hampshire",
+                "sponsor": None,
+                "field_start_date": "2026-04-16",
+                "field_end_date": "2026-04-20",
+                "release_date": "2026-04-23",
+                "sample_size": 603,
+                "population": "LV",
+                "margin_of_error": 4.0,
+                "undecided_pct": 13.0,
+                "source_url": "https://scholars.unh.edu/cgi/viewcontent.cgi?article=1944&context=survey_center_polls",
+                "results": {"Ed Markey": 55.0, "John Deaton": 32.0},
+            },
+            {
+                "pollster": "Suffolk University",
+                "sponsor": "The Boston Globe",
+                "field_start_date": "2026-06-08",
+                "field_end_date": "2026-06-12",
+                "release_date": "2026-06-16",
+                "sample_size": 500,
+                "population": "LV",
+                "margin_of_error": 4.4,
+                "undecided_pct": 15.0,
+                "source_url": "https://www.bostonglobe.com/2026/06/16/metro/full-results-poll-of-massachusetts-voters/",
+                "results": {"Ed Markey": 55.0, "John Deaton": 30.0},
+            },
+            {
+                "pollster": "University of New Hampshire",
+                "sponsor": None,
+                "field_start_date": "2026-06-18",
+                "field_end_date": "2026-06-23",
+                "release_date": "2026-06-30",
+                "sample_size": 623,
+                "population": "LV",
+                "margin_of_error": 3.8,
+                "undecided_pct": 16.0,
+                "source_url": "https://scholars.unh.edu/survey_center_polls/973/",
+                "results": {"Ed Markey": 50.0, "John Deaton": 34.0},
+            },
+        ]
+    },
 }
 
