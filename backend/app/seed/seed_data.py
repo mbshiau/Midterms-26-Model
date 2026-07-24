@@ -3976,5 +3976,64 @@ SENATE_RACES: dict = {
 
         "raw_polls": []
     },
+    "mn": {
+        "state_name": "Minnesota",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Minnesota",
+       
+        "candidates": [
+            {"name": "Michele Tafoya", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/MicheleTafoya2023.jpg/500px-MicheleTafoya2023.jpg", "kalshi_ticker": "SENATEMN-26-R"},
+            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "SENATEMN-26-D"},
+        ],
+
+        # DFL primary (Angie Craig vs. Peggy Flanagan) is unsettled. Same
+        # convention as mi-sen: every wave that tested both DFL contenders
+        # against Tafoya has their two vote shares averaged into a single
+        # "Democratic Nominee (TBD)" figure. The Sept 2025 Craig/Flanagan-
+        # vs-"Generic Republican" wave is excluded -- Tafoya is the real
+        # nominee, not a generic placeholder, so it's not the same matchup.
+        "raw_polls": [
+            {
+                "pollster": "Impact Research",
+                "sponsor": "Craig campaign",
+                "field_start_date": "2025-07-08",
+                "field_end_date": "2025-07-11",
+                "release_date": "2025-12-13",
+                "sample_size": 604,
+                "population": "LV",
+                "margin_of_error": 4.0,
+                "undecided_pct": 6.5,
+                "source_url": "https://www.scribd.com/document/967381321/MEMO-Poll-Memo-MN-Senate-Dec-2025",
+                "results": {"Michele Tafoya": 45.0, "Democratic Nominee (TBD)": 48.5},
+            },
+            {
+                "pollster": "Emerson College",
+                "sponsor": None,
+                "field_start_date": "2026-02-06",
+                "field_end_date": "2026-02-08",
+                "release_date": "2026-02-11",
+                "sample_size": 1000,
+                "population": "LV",
+                "margin_of_error": 3.0,
+                "undecided_pct": 12.5,
+                "source_url": "https://emersoncollegepolling.com/minnesota-2026-poll-democrats-lead-gop-as-voters-cite-threats-to-democracy/",
+                "results": {"Michele Tafoya": 40.5, "Democratic Nominee (TBD)": 47.0},
+            },
+            {
+                "pollster": "Impact Research",
+                "sponsor": "Craig campaign",
+                "field_start_date": "2026-05-26",
+                "field_end_date": "2026-05-28",
+                "release_date": "2026-06-04",
+                "sample_size": 808,
+                "population": "LV",
+                "margin_of_error": 3.5,
+                "undecided_pct": 5.0,
+                "source_url": "https://x.com/PollTracker2024/status/2062578118523551799",
+                "results": {"Michele Tafoya": 44.0, "Democratic Nominee (TBD)": 51.0},
+            },
+        ]
+    },
 }
 
