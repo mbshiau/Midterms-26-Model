@@ -30,7 +30,7 @@ estimate or win probability.
 
 import math
 from dataclasses import asdict
-from datetime import date
+from datetime import date, timedelta
 
 import numpy as np
 from sqlalchemy.orm import Session, selectinload
@@ -257,3 +257,97 @@ def forecast_history(db: Session, race: Race) -> list[ForecastSnapshot]:
         .order_by(ForecastSnapshot.created_at.asc())
         .all()
     )
+
+
+def _snapshot_deltas(
+    latest_rows: list[dict], baseline_rows: list[dict] | None
+) -> list[dict] | None:
+    if not baseline_rows:
+        return None
+    prior_by_candidate = {r["candidate_id"]: r["mean_vote_share"] for r in baseline_rows}
+    deltas = []
+    for r in latest_rows:
+        prior = prior_by_candidate.get(r["candidate_id"])
+        if prior is None:
+            continue
+        deltas.append({"name": r["name"], "party": r["party"], "delta": r["mean_vote_share"] - prior})
+    deltas.sort(key=lambda d: d["delta"], reverse=True)
+    return deltas or None
+
+
+def race_movement_summary(db: Session, race: Race):
+    """Powers the map page's "movers"/"closest races" list without shipping
+    each race's full forecast history to the browser (see
+    app.routers.races's /races/summary) -- that endpoint used to require the
+    frontend to fetch every race's complete /forecast/history individually
+    (N races x full snapshot history, including a fundamentals_breakdown
+    blob per snapshot) just to derive a handful of vote-share deltas.
+
+    Selects only the specific columns needed (never ForecastResult.
+    draws_sample or ForecastSnapshot.fundamentals_breakdown, both of which
+    forecast_history()/latest_forecast() pull in full for every snapshot),
+    and only for the 2-3 snapshots actually used: latest, the one right
+    before it (since-refresh), and the most recent one at least 7 days old
+    (this-week) -- not the entire history.
+
+    Returns (latest_created_at, latest_candidate_rows, since_refresh_deltas,
+    this_week_deltas); latest_candidate_rows already sorted by mean vote
+    share, descending. All four are None/[] when the race has no forecast
+    yet.
+    """
+    snap_rows = (
+        db.query(ForecastSnapshot.id, ForecastSnapshot.created_at)
+        .filter(ForecastSnapshot.race_id == race.id)
+        .order_by(ForecastSnapshot.created_at.asc())
+        .all()
+    )
+    if not snap_rows:
+        return None, [], None, None
+
+    latest_id, latest_created_at = snap_rows[-1]
+    baseline_id = snap_rows[-2][0] if len(snap_rows) >= 2 else None
+    cutoff = latest_created_at - timedelta(days=7)
+    eligible_week_ids = [sid for sid, ts in snap_rows if ts <= cutoff]
+    week_baseline_id = eligible_week_ids[-1] if eligible_week_ids else None
+
+    needed_ids = {latest_id}
+    if baseline_id is not None:
+        needed_ids.add(baseline_id)
+    if week_baseline_id is not None:
+        needed_ids.add(week_baseline_id)
+
+    result_rows = (
+        db.query(
+            ForecastResult.snapshot_id,
+            ForecastResult.candidate_id,
+            ForecastResult.mean_vote_share,
+            ForecastResult.win_probability,
+            Candidate.name,
+            Candidate.party,
+        )
+        .join(Candidate, ForecastResult.candidate_id == Candidate.id)
+        .filter(ForecastResult.snapshot_id.in_(needed_ids))
+        .all()
+    )
+
+    by_snapshot: dict[int, list[dict]] = {}
+    for snapshot_id, candidate_id, mean_vote_share, win_probability, name, party in result_rows:
+        by_snapshot.setdefault(snapshot_id, []).append(
+            {
+                "candidate_id": candidate_id,
+                "name": name,
+                "party": party,
+                "mean_vote_share": mean_vote_share,
+                "win_probability": win_probability,
+            }
+        )
+
+    latest_rows = sorted(
+        by_snapshot.get(latest_id, []), key=lambda r: r["mean_vote_share"], reverse=True
+    )
+    since_refresh = _snapshot_deltas(latest_rows, by_snapshot.get(baseline_id) if baseline_id else None)
+    this_week = _snapshot_deltas(
+        latest_rows, by_snapshot.get(week_baseline_id) if week_baseline_id else None
+    )
+
+    return latest_created_at, latest_rows, since_refresh, this_week

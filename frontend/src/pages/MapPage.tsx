@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api/client";
-import type { ForecastHistory, ForecastSnapshot, Race } from "../api/types";
+import type { RaceSummary, RaceSummaryDelta } from "../api/types";
 import { GooeyText, type GooeyTextEntry } from "../components/GooeyText";
 import { UsMap } from "../components/UsMap";
 import { partyAbbrev, partyColorVar, type ProbabilityTier } from "../lib/partyColor";
@@ -22,16 +22,7 @@ function TierSwatch({ slug, tier }: { slug: "democratic" | "republican"; tier: P
   );
 }
 
-interface RaceLean {
-  race: Race;
-  leadingParty: string | null;
-  forecast: ForecastSnapshot | null;
-  history: ForecastHistory | null;
-}
-
 type ViewMode = "since-refresh" | "this-week" | "closest";
-
-const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
 interface CandidateMetric {
   name: string;
@@ -52,68 +43,33 @@ interface RaceMetricRow {
   sortValue: number;
 }
 
-// Compares two forecast snapshots for a race and reports how much each
-// candidate's vote share moved between them.
-function computeRaceMove(
-  entry: RaceLean,
-  baseline: ForecastHistory["snapshots"][number],
-  latest: ForecastHistory["snapshots"][number]
-): RaceMetricRow | null {
-  const candidates = latest.results
-    .map((r) => {
-      const priorResult = baseline.results.find((p) => p.candidate.id === r.candidate.id);
-      if (!priorResult) return null;
-      return {
-        name: r.candidate.name,
-        party: r.candidate.party,
-        value: r.mean_vote_share - priorResult.mean_vote_share,
-      };
-    })
-    .filter((c): c is CandidateMetric => c !== null)
-    .sort((a, b) => b.value - a.value);
-  if (candidates.length === 0) return null;
-
+// since_refresh/this_week are already the precomputed vote-share deltas from
+// GET /races/summary (see app.services.forecasting.race_movement_summary) --
+// the backend picks the right pair of historical snapshots and does the
+// diffing, so the map page never has to fetch full forecast history itself.
+function deltaRow(entry: RaceSummary, deltas: RaceSummaryDelta[] | null): RaceMetricRow | null {
+  if (!deltas || deltas.length === 0) return null;
   return {
     slug: entry.race.slug,
     stateName: entry.race.state_name,
-    candidates,
-    sortValue: Math.max(...candidates.map((c) => Math.abs(c.value))),
+    candidates: deltas.map((d) => ({ name: d.name, party: d.party, value: d.delta })),
+    sortValue: Math.max(...deltas.map((d) => Math.abs(d.delta))),
   };
 }
 
-// Races with fewer than two snapshots (nothing to compare against yet) are
-// skipped.
-function computeSinceRefreshRow(entry: RaceLean): RaceMetricRow | null {
-  const snapshots = entry.history?.snapshots;
-  if (!snapshots || snapshots.length < 2) return null;
-  const sorted = [...snapshots].sort(
-    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-  );
-  return computeRaceMove(entry, sorted[sorted.length - 2], sorted[sorted.length - 1]);
+function computeSinceRefreshRow(entry: RaceSummary): RaceMetricRow | null {
+  return deltaRow(entry, entry.since_refresh);
 }
 
-// Compares the latest snapshot against the most recent one that's at least a
-// week old. Races whose full history doesn't yet span a week are skipped
-// rather than falling back to whatever's oldest, since that would silently
-// understate "this week"'s movement for a race just added to the model.
-function computeThisWeekRow(entry: RaceLean): RaceMetricRow | null {
-  const snapshots = entry.history?.snapshots;
-  if (!snapshots || snapshots.length < 2) return null;
-  const sorted = [...snapshots].sort(
-    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-  );
-  const latest = sorted[sorted.length - 1];
-  const cutoff = new Date(latest.created_at).getTime() - WEEK_MS;
-  const eligibleBaselines = sorted.filter((s) => new Date(s.created_at).getTime() <= cutoff);
-  if (eligibleBaselines.length === 0) return null;
-  return computeRaceMove(entry, eligibleBaselines[eligibleBaselines.length - 1], latest);
+function computeThisWeekRow(entry: RaceSummary): RaceMetricRow | null {
+  return deltaRow(entry, entry.this_week);
 }
 
 // Current vote share for each candidate, ranked by how close the top two are
-// -- the smallest margin is the closest race.
-function computeClosestRow(entry: RaceLean): RaceMetricRow | null {
-  if (!entry.forecast) return null;
-  const sorted = [...entry.forecast.results].sort((a, b) => b.mean_vote_share - a.mean_vote_share);
+// -- the smallest margin is the closest race. entry.candidates is already
+// sorted by mean vote share, descending (see race_movement_summary).
+function computeClosestRow(entry: RaceSummary): RaceMetricRow | null {
+  const sorted = entry.candidates;
   if (sorted.length < 2) return null;
   const margin = sorted[0].mean_vote_share - sorted[1].mean_vote_share;
 
@@ -121,8 +77,8 @@ function computeClosestRow(entry: RaceLean): RaceMetricRow | null {
     slug: entry.race.slug,
     stateName: entry.race.state_name,
     candidates: sorted.map((r) => ({
-      name: r.candidate.name,
-      party: r.candidate.party,
+      name: r.name,
+      party: r.party,
       value: r.mean_vote_share,
     })),
     sortValue: margin,
@@ -141,9 +97,16 @@ const EMPTY_MESSAGES: Record<ViewMode, string> = {
   closest: "No forecasts available yet.",
 };
 
+// The map's leading party for a race is whoever has the higher mean vote
+// share -- entry.candidates is already sorted that way by the backend (see
+// race_movement_summary), so the leader is just the first entry.
+function leadingPartyOf(entry: RaceSummary): string | null {
+  return entry.candidates[0]?.party ?? null;
+}
+
 export function MapPage({ office }: { office: "Governor" | "Senate" }) {
   const navigate = useNavigate();
-  const [racesByState, setRacesByState] = useState<Record<string, RaceLean>>({});
+  const [racesByState, setRacesByState] = useState<Record<string, RaceSummary>>({});
   const [moverSearch, setMoverSearch] = useState("");
   const [viewMode, setViewMode] = useState<ViewMode>("since-refresh");
 
@@ -155,37 +118,12 @@ export function MapPage({ office }: { office: "Governor" | "Senate" }) {
     setRacesByState({});
 
     (async () => {
-      const allRaces = await api.getRaces();
+      // Single bulk request instead of an N-race x (/forecast +
+      // /forecast/history) fan-out -- see GET /races/summary.
+      const summaries = await api.getRaceSummaries(office);
       if (cancelled) return;
-      const races = allRaces.filter((r) => r.office === office);
-
-      const entries = await Promise.all(
-        races.map(async (race) => {
-          try {
-            const forecast = await api.getForecast(race.slug);
-            const leader = [...forecast.results].sort(
-              (a, b) => b.mean_vote_share - a.mean_vote_share
-            )[0];
-            let history: ForecastHistory | null = null;
-            try {
-              history = await api.getForecastHistory(race.slug);
-            } catch {
-              history = null;
-            }
-            return [
-              race.state_code,
-              { race, leadingParty: leader?.candidate.party ?? null, forecast, history },
-            ] as const;
-          } catch {
-            return [
-              race.state_code,
-              { race, leadingParty: null, forecast: null, history: null },
-            ] as const;
-          }
-        })
-      );
-
-      if (!cancelled) setRacesByState(Object.fromEntries(entries));
+      const entries = summaries.map((s) => [s.race.state_code, s] as const);
+      setRacesByState(Object.fromEntries(entries));
     })();
 
     return () => {
@@ -194,10 +132,10 @@ export function MapPage({ office }: { office: "Governor" | "Senate" }) {
   }, [office]);
 
   const entries = Object.values(racesByState);
-  const demCount = entries.filter((r) => r.leadingParty === "Democratic").length;
-  const repCount = entries.filter((r) => r.leadingParty === "Republican").length;
+  const demCount = entries.filter((r) => leadingPartyOf(r) === "Democratic").length;
+  const repCount = entries.filter((r) => leadingPartyOf(r) === "Republican").length;
   const lastUpdated = entries
-    .map((r) => r.forecast?.created_at)
+    .map((r) => r.latest_forecast_created_at)
     .filter((ts): ts is string => Boolean(ts))
     .map((ts) => new Date(ts).getTime())
     .reduce((max, ts) => Math.max(max, ts), 0);
@@ -206,9 +144,10 @@ export function MapPage({ office }: { office: "Governor" | "Senate" }) {
   // -- a flip toward each party cancels a flip toward the other, same
   // "isFlip" definition UsMap's tooltip already uses.
   const netDemSeats = entries.reduce((net, r) => {
-    if (!r.leadingParty) return net;
-    if (r.leadingParty === "Democratic" && r.race.current_holder_party === "Republican") return net + 1;
-    if (r.leadingParty === "Republican" && r.race.current_holder_party === "Democratic") return net - 1;
+    const leadingParty = leadingPartyOf(r);
+    if (!leadingParty) return net;
+    if (leadingParty === "Democratic" && r.race.current_holder_party === "Republican") return net + 1;
+    if (leadingParty === "Republican" && r.race.current_holder_party === "Democratic") return net - 1;
     return net;
   }, 0);
 
@@ -332,17 +271,15 @@ export function MapPage({ office }: { office: "Governor" | "Senate" }) {
         <UsMap
           getVisual={(id) => {
             const entry = racesByState[id];
-            if (!entry?.forecast) return null;
+            if (!entry || entry.candidates.length === 0) return null;
 
-            const winner = [...entry.forecast.results].sort(
-              (a, b) => b.win_probability - a.win_probability
-            )[0];
+            const winner = [...entry.candidates].sort((a, b) => b.win_probability - a.win_probability)[0];
             if (!winner) return null;
 
             return {
-              party: winner.candidate.party,
+              party: winner.party,
               winProbability: winner.win_probability,
-              isFlip: winner.candidate.party !== entry.race.current_holder_party,
+              isFlip: winner.party !== entry.race.current_holder_party,
             };
           }}
           isClickable={(id) => id in racesByState}
@@ -352,23 +289,22 @@ export function MapPage({ office }: { office: "Governor" | "Senate" }) {
           }}
           getTooltip={(id) => {
             const entry = racesByState[id];
-            if (!entry?.forecast) return null;
+            if (!entry || entry.candidates.length === 0) return null;
 
-            const sorted = [...entry.forecast.results].sort(
-              (a, b) => b.mean_vote_share - a.mean_vote_share
-            );
+            // entry.candidates is already sorted by mean vote share, descending.
+            const sorted = entry.candidates;
             const winner = sorted[0];
 
             return {
               candidates: sorted.map((r) => ({
-                name: r.candidate.name,
-                party: r.candidate.party,
+                name: r.name,
+                party: r.party,
                 voteShare: r.mean_vote_share,
               })),
               winner: winner
                 ? {
-                    name: winner.candidate.name,
-                    party: winner.candidate.party,
+                    name: winner.name,
+                    party: winner.party,
                     probability: winner.win_probability,
                   }
                 : null,

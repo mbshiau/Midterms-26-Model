@@ -29,6 +29,34 @@ class RaceOut(BaseModel):
     current_holder_party: str
 
 
+class RaceSummaryCandidateOut(BaseModel):
+    name: str
+    party: str
+    mean_vote_share: float
+    win_probability: float
+
+
+class RaceSummaryDeltaOut(BaseModel):
+    name: str
+    party: str
+    delta: float
+
+
+class RaceSummaryOut(BaseModel):
+    """Everything the map page's "movers"/"closest races" list and tooltip
+    need for one race, in a single lightweight row -- see
+    app.services.forecasting.race_movement_summary. Deliberately excludes
+    the full forecast history and fundamentals_breakdown that /forecast and
+    /forecast/history carry; fetch those per-race (state page) only when a
+    single race's full detail is actually needed."""
+
+    race: RaceOut
+    latest_forecast_created_at: str | None
+    candidates: list[RaceSummaryCandidateOut]
+    since_refresh: list[RaceSummaryDeltaOut] | None
+    this_week: list[RaceSummaryDeltaOut] | None
+
+
 class CandidateOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

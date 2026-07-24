@@ -5,6 +5,7 @@ import type {
   Poll,
   Race,
   RaceIntelligence,
+  RaceSummary,
   Simulations,
 } from "./types";
 
@@ -24,6 +25,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const api = {
   getRaces: () => request<Race[]>("/races"),
+  getRaceSummaries: (office: "Governor" | "Senate") =>
+    request<RaceSummary[]>(`/races/summary?office=${office}`),
   getPolls: (slug: string) => request<Poll[]>(`/races/${slug}/polls`),
   getForecast: (slug: string) => request<ForecastSnapshot>(`/races/${slug}/forecast`),
   getForecastHistory: (slug: string) =>

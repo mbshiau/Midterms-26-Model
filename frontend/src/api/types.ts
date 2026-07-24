@@ -109,6 +109,27 @@ export interface ForecastHistory {
   election_date: string;
 }
 
+export interface RaceSummaryCandidate {
+  name: string;
+  party: string;
+  mean_vote_share: number;
+  win_probability: number;
+}
+
+export interface RaceSummaryDelta {
+  name: string;
+  party: string;
+  delta: number;
+}
+
+export interface RaceSummary {
+  race: Race;
+  latest_forecast_created_at: string | null;
+  candidates: RaceSummaryCandidate[];
+  since_refresh: RaceSummaryDelta[] | null;
+  this_week: RaceSummaryDelta[] | null;
+}
+
 export interface KalshiOdds {
   candidate: Candidate;
   ticker: string;
