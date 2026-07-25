@@ -19,7 +19,6 @@ import { SimulationHistograms } from "../components/SimulationHistograms";
 import { PollTable } from "../components/PollTable";
 import { KalshiOddsCard } from "../components/KalshiOddsCard";
 import { NewsHeadlinesCard } from "../components/NewsHeadlinesCard";
-import { AIMarketAnalysisCard } from "../components/AIMarketAnalysisCard";
 
 const NAV_HEIGHT_PX = 52;
 
@@ -287,15 +286,6 @@ export function StateForecastPage() {
               {kalshiOdds.length > 0 && (
                 <Card id="kalshi-odds">
                   <KalshiOddsCard odds={kalshiOdds} />
-                </Card>
-              )}
-
-              {raceIntelligence && kalshiOdds.length > 0 && (
-                <Card id="market-analysis" title="Model vs. market">
-                  <AIMarketAnalysisCard
-                    analysis={raceIntelligence.market_analysis}
-                    generatedAt={raceIntelligence.market_analysis_generated_at}
-                  />
                 </Card>
               )}
             </div>

@@ -4146,5 +4146,31 @@ SENATE_RACES: dict = {
             },
         ]
     },
+    "sc": {
+            "state_name": "South Carolina",
+            "office": "Senate",
+            "election_date": "2026-11-03",
+            "wikipedia_page_title": "2026_United_States_Senate_election_in_South_Carolina",
+      
+            "candidates": [
+                {"name": "Darline Graham", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Darline_Graham%2C_2026_%28cropped%29.png", "kalshi_ticker": "SENATESC-26-R"},
+                {"name": "Annie Andrews", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Annie_Andrews_Greenville_%28cropped%29.jpg/250px-Annie_Andrews_Greenville_%28cropped%29.jpg", "kalshi_ticker": "SENATESC-26-D"},
+            ],
+    
+            "raw_polls": []
+    },
+    "va": {
+        "state_name": "Virginia",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Virginia",
+    
+        "candidates": [
+            {"name": "Republican Nominee (TBD)", "party": "Republican", "incumbent": False, "photo_url": None, "kalshi_ticker": "SENATEVA-26-R"},
+            {"name": "Mark Warner", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Senator_Mark_Warner_Portrait_%28cut_cropped%29.png/250px-Senator_Mark_Warner_Portrait_%28cut_cropped%29.png", "kalshi_ticker": "SENATEVA-26-D"},
+        ],
+
+        "raw_polls": []
+    },
 }
 

@@ -48,15 +48,11 @@ from app.ingestion.kalshi_scraper import fetch_market_odds
 from app.ingestion.news_scraper import build_news_query, fetch_race_news, filter_relevant_articles
 from app.ingestion.pipeline import fetch_live_polls, ingest_polls
 from app.models import Candidate, Race
-from app.services.ai_summary import (
-    generate_article_relevance,
-    generate_market_analysis,
-    update_race_intelligence,
-)
+from app.services.ai_summary import generate_article_relevance
 from app.services.approval import update_approval
-from app.services.forecasting import generate_forecast, latest_forecast
+from app.services.forecasting import generate_forecast
 from app.services.generic_ballot import update_generic_ballot
-from app.services.market_odds import get_market_odds, update_market_odds
+from app.services.market_odds import update_market_odds
 from app.services.news import get_recent_news, purge_irrelevant_articles, update_news
 from app.services.races import get_race_seed
 
@@ -84,7 +80,7 @@ FORECAST_MISFIRE_GRACE_SECONDS = 3600
 INTEL_MISFIRE_GRACE_SECONDS = 900
 
 
-def refresh_race_intelligence(db, race: Race, candidates: list[Candidate]) -> None:
+def refresh_race_intelligence(db, race: Race) -> None:
     """News + AI-summary step for one race's Race Intelligence section (see
     app.services.news / app.services.ai_summary), called from the scheduled
     refresh below.
@@ -122,21 +118,6 @@ def refresh_race_intelligence(db, race: Race, candidates: list[Candidate]) -> No
                 article.ai_relevance = relevance
     db.commit()
 
-    # The AI market-analysis blurb is only regenerated when a new headline
-    # actually came in this run -- with the refresh now hourly, calling the
-    # AI provider every single run regardless would be ~24x/day of billing
-    # for a summary that most hours has nothing new to say. Passing None
-    # leaves the previously-cached analysis in place (see
-    # update_race_intelligence's docstring) rather than blanking it.
-    market_analysis = None
-    if new_count:
-        candidates_by_id = {c.id: c for c in candidates}
-        kalshi_rows = list(get_market_odds(db, [c.id for c in candidates]).values())
-        snapshot = latest_forecast(db, race)
-        market_analysis = generate_market_analysis(race, snapshot, kalshi_rows, candidates_by_id)
-
-    update_race_intelligence(db, race.id, market_analysis)
-
 
 def _run_market_intel_refresh_job() -> None:
     """Hourly job: Kalshi odds + news/AI Race Intelligence, per race. Never
@@ -165,7 +146,7 @@ def _run_market_intel_refresh_job() -> None:
                         race.slug, candidate.name, scraped.yes_price_pct,
                     )
 
-                refresh_race_intelligence(db, race, candidates)
+                refresh_race_intelligence(db, race)
                 logger.info("scheduled market/intel refresh: %s race intelligence updated", race.slug)
             except Exception:
                 # rollback() before touching `race` again below is required,
