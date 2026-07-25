@@ -4172,5 +4172,19 @@ SENATE_RACES: dict = {
 
         "raw_polls": []
     },
+    "de": {
+        "state_name": "Delaware",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Delaware",
+    
+        "candidates": [
+            {"name": "Republican Nominee (TBD)", "party": "Republican", "incumbent": False, "photo_url": None, "kalshi_ticker": "SENATEDE-26-R"},
+            {"name": "Chris Coons", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Chris_Coons_2024.jpg/250px-Chris_Coons_2024.jpg", "kalshi_ticker": "SENATEDE-26-D"},
+        ],
+
+        "raw_polls": []
+    },
+
 }
 
