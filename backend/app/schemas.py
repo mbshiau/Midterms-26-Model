@@ -57,6 +57,67 @@ class RaceSummaryOut(BaseModel):
     this_week: list[RaceSummaryDeltaOut] | None
 
 
+class SeatScenarioRaceOut(BaseModel):
+    slug: str
+    state_code: str
+    state_name: str
+    name: str
+    party: str
+    margin: float
+
+
+class SeatDotOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    rep_seats: int
+    independent_seats: int
+    count: int
+    probability: float
+    example_race_winners: list[SeatScenarioRaceOut]
+
+
+class SeatScenarioOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    dem_seats: int
+    count: int
+    probability: float
+    dominant_outcome: str
+    dots: list[SeatDotOut]
+
+
+class ChamberControlOut(BaseModel):
+    """Powers the Senate control dot plot -- see
+    app.services.chamber_control.simulate_chamber_control. Each entry in
+    seat_distribution is one possible Democratic-seat total across the
+    modeled races' Monte Carlo draws (bucketed); each entry's `dots` is one
+    representative full-map scenario per ~100 draws in that bucket (see
+    SIMULATIONS_PER_DOT), not a single example for the whole column --
+    multiple different state-by-state combinations can land on the same
+    total, so each dot is its own example, not the only path to that count."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    as_of: date
+    n_simulations: int
+    safe_dem_seats: int
+    safe_rep_seats: int
+    dem_win_probability: float
+    rep_win_probability: float
+    seat_distribution: list[SeatScenarioOut]
+
+
+class ChamberControlHistoryPointOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    as_of: date
+    expected_dem_seats: float
+    expected_rep_seats: float
+    expected_independent_seats: float
+    dem_win_probability: float
+    rep_win_probability: float
+
+
 class CandidateOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

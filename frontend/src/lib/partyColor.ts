@@ -3,7 +3,7 @@
 // validated with scripts/validate_palette.js (dataviz skill) — CVD deltaE
 // 74.6 light / 66.4 dark, well clear of the safety floor. Actual hex values
 // live in index.css as --party-* custom properties (swapped per color-scheme).
-const KNOWN_PARTIES = new Set(["Democratic", "Republican"]);
+const KNOWN_PARTIES = new Set(["Democratic", "Republican", "Independent"]);
 
 export function partyColorVar(party: string): string {
   const slug = party.toLowerCase();

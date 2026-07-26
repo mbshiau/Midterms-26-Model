@@ -28,6 +28,15 @@
   --party-republican-60: #ef9c9b;
   --party-republican-75: #e34948;
   --party-republican-95: #7a1f1e;
+
+  /* Independent -- only shown when one of these candidates is the leader/
+     scenario winner (mt-sen/sd-sen/ne-sen), which the map otherwise renders
+     as neutral gray since Dem/Rep are the only fills it knows how to tier. */
+  --party-independent: #7c5cbf;
+  --party-independent-50: #ddd3f0;
+  --party-independent-60: #b49bdc;
+  --party-independent-75: #7c5cbf;
+  --party-independent-95: #4a2f80;
 }
 
 html {

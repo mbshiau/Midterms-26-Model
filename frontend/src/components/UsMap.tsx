@@ -36,7 +36,7 @@ interface UsMapProps {
 }
 
 const TOOLTIP_OFFSET = 14;
-const PARTY_SLUGS = ["democratic", "republican"] as const;
+const PARTY_SLUGS = ["democratic", "republican", "independent"] as const;
 const TIERS: ProbabilityTier[] = [50, 60, 75, 95];
 
 // The base map's Alaska/Hawaii insets are stock-sized/oriented -- shrink

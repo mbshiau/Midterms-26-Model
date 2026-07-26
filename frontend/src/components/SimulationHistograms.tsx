@@ -16,7 +16,7 @@ function toChartData(hist: SimulationHistogram) {
 const DEPTH_Y = 7;
 
 function partyShades(party: string): { top: string; front: string; frontDark: string; side: string } {
-  const slug = party === "Democratic" ? "democratic" : "republican";
+  const slug = party === "Democratic" ? "democratic" : party === "Independent" ? "independent" : "republican";
   return {
     top: `var(--party-${slug}-50)`,
     front: `var(--party-${slug}-60)`,

@@ -130,6 +130,50 @@ export interface RaceSummary {
   this_week: RaceSummaryDelta[] | null;
 }
 
+export interface SeatScenarioRace {
+  slug: string;
+  state_code: string;
+  state_name: string;
+  name: string;
+  party: string;
+  margin: number;
+}
+
+export interface SeatDot {
+  rep_seats: number;
+  independent_seats: number;
+  count: number;
+  probability: number;
+  example_race_winners: SeatScenarioRace[];
+}
+
+export interface SeatScenario {
+  dem_seats: number;
+  count: number;
+  probability: number;
+  dominant_outcome: "Democratic" | "Republican";
+  dots: SeatDot[];
+}
+
+export interface ChamberControlHistoryPoint {
+  as_of: string;
+  expected_dem_seats: number;
+  expected_rep_seats: number;
+  expected_independent_seats: number;
+  dem_win_probability: number;
+  rep_win_probability: number;
+}
+
+export interface ChamberControl {
+  as_of: string;
+  n_simulations: number;
+  safe_dem_seats: number;
+  safe_rep_seats: number;
+  dem_win_probability: number;
+  rep_win_probability: number;
+  seat_distribution: SeatScenario[];
+}
+
 export interface KalshiOdds {
   candidate: Candidate;
   ticker: string;

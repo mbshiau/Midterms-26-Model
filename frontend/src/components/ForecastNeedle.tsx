@@ -12,29 +12,40 @@ const CLIP_ID = "forecast-needle-clip";
 const SVG_W = 340;
 const SVG_H = 185;
 
-// Left (angle 180°) is fully Democratic, right (angle 0°) is fully
-// Republican. SVG has no native angle-based ("conic") gradient, and a plain
-// linearGradient varies by x-coordinate -- at a fixed angle, the inner and
-// outer edge of the arc sit at different x (unless the angle is exactly
-// 90°), so the same point on the dial could read as two different colors
-// depending on radius. Fixing that while keeping a smooth blend (rather
-// than stepped bands) means reaching for CSS's real conic-gradient, applied
-// via a foreignObject clipped to the arc shape -- color there is purely a
+// Left (angle 180°) is whoever occupies the "dem" slot, right (angle 0°) is
+// whoever occupies the "rep" slot -- usually Democratic/Republican, but a
+// race with no real Democratic candidate (e.g. ne-sen: Ricketts vs. Osborn,
+// no modeled Dem) falls back to putting the runner-up in the left slot
+// (see the `dem`/`rep` lookups below), so the gradient has to be built from
+// whichever party actually ended up on each side rather than hardcoded to
+// Democratic/Republican -- otherwise an Independent occupying that slot
+// would sit under a blue gradient that has nothing to do with them. SVG has
+// no native angle-based ("conic") gradient, and a plain linearGradient
+// varies by x-coordinate -- at a fixed angle, the inner and outer edge of
+// the arc sit at different x (unless the angle is exactly 90°), so the same
+// point on the dial could read as two different colors depending on
+// radius. Fixing that while keeping a smooth blend (rather than stepped
+// bands) means reaching for CSS's real conic-gradient, applied via a
+// foreignObject clipped to the arc shape -- color there is purely a
 // function of angle around the center point, so radius never affects it.
-// Stop positions/colors mirror the same 4-tier confidence breakpoints
-// (50/60/75/95) used everywhere else in the app (the map, etc), expressed
-// in degrees across the 180° arc (0deg = angle 180 = full Democratic,
-// 180deg = angle 0 = full Republican).
-const GRADIENT_STOPS: { angleDeg: number; color: string }[] = [
-  { angleDeg: 4.5, color: "var(--party-democratic-95)" },
-  { angleDeg: 27, color: "var(--party-democratic-75)" },
-  { angleDeg: 58.5, color: "var(--party-democratic-60)" },
-  { angleDeg: 81, color: "var(--party-democratic-50)" },
-  { angleDeg: 99, color: "var(--party-republican-50)" },
-  { angleDeg: 121.5, color: "var(--party-republican-60)" },
-  { angleDeg: 153, color: "var(--party-republican-75)" },
-  { angleDeg: 175.5, color: "var(--party-republican-95)" },
-];
+// Stop positions mirror the same 4-tier confidence breakpoints (50/60/75/95)
+// used everywhere else in the app (the map, etc), expressed in degrees
+// across the 180° arc (0deg = angle 180 = fully left, 180deg = angle 0 =
+// fully right).
+function gradientStops(leftParty: string, rightParty: string): { angleDeg: number; color: string }[] {
+  const left = leftParty.toLowerCase();
+  const right = rightParty.toLowerCase();
+  return [
+    { angleDeg: 4.5, color: `var(--party-${left}-95)` },
+    { angleDeg: 27, color: `var(--party-${left}-75)` },
+    { angleDeg: 58.5, color: `var(--party-${left}-60)` },
+    { angleDeg: 81, color: `var(--party-${left}-50)` },
+    { angleDeg: 99, color: `var(--party-${right}-50)` },
+    { angleDeg: 121.5, color: `var(--party-${right}-60)` },
+    { angleDeg: 153, color: `var(--party-${right}-75)` },
+    { angleDeg: 175.5, color: `var(--party-${right}-95)` },
+  ];
+}
 
 function polarPoint(radius: number, angleDeg: number): { x: number; y: number } {
   const rad = (angleDeg * Math.PI) / 180;
@@ -80,7 +91,7 @@ function CandidateLabel({
           alt={name}
           onError={() => setPhotoFailed(true)}
           className="h-9 w-9 flex-shrink-0 rounded-full object-cover"
-          style={{ border: `2px solid ${color}` }}
+          style={{ border: `2px solid ${color}`, objectPosition: "50% 20%" }}
         />
       ) : (
         <span
@@ -106,11 +117,16 @@ export function ForecastNeedle({ results }: { results: ForecastResult[] }) {
   const sorted = [...results].sort((a, b) => b.mean_vote_share - a.mean_vote_share);
   const dem = results.find((r) => r.candidate.party === "Democratic") ?? sorted[1] ?? sorted[0];
   const rep = results.find((r) => r.candidate.party === "Republican") ?? sorted[0];
+  // The dial itself is a fixed Dem-vs-Rep spectrum (there's no third point
+  // on a 180deg arc to put an independent), but any other candidate --
+  // Independent, third-party -- still needs to show up somewhere rather
+  // than silently vanishing from the page.
+  const others = sorted.filter((r) => r !== dem && r !== rep);
   const leader = sorted[0];
   const margin = sorted.length >= 2 ? sorted[0].mean_vote_share - sorted[1].mean_vote_share : null;
 
-  // pDem: how far toward the Democratic candidate the needle points (0 = fully
-  // Republican / right, 1 = fully Democratic / left, 0.5 = toss-up / straight up).
+  // pDem: how far toward the left-slot candidate the needle points (0 =
+  // fully right, 1 = fully left, 0.5 = toss-up / straight up).
   const pDem = dem.win_probability;
   const needleAngle = pDem * 180;
   const needleTip = polarPoint(NEEDLE_LENGTH, needleAngle);
@@ -120,11 +136,14 @@ export function ForecastNeedle({ results }: { results: ForecastResult[] }) {
   // CSS conic-gradient() angles start at 12 o'clock and increase clockwise,
   // whereas our polarPoint() angles start at 3 o'clock and increase
   // counter-clockwise -- "from 270deg" rotates the gradient's own 0deg mark
-  // to 9 o'clock (our angle 180, full Democratic), so walking the stops
-  // from 0deg to 180deg sweeps left -> top -> right, matching angle 180 -> 0.
-  const conicGradient = `conic-gradient(from 270deg at ${CX}px ${CY}px, ${GRADIENT_STOPS.map(
-    (s) => `${s.color} ${s.angleDeg}deg`
-  ).join(", ")})`;
+  // to 9 o'clock (our angle 180, fully left), so walking the stops from
+  // 0deg to 180deg sweeps left -> top -> right, matching angle 180 -> 0.
+  const conicGradient = `conic-gradient(from 270deg at ${CX}px ${CY}px, ${gradientStops(
+    dem.candidate.party,
+    rep.candidate.party
+  )
+    .map((s) => `${s.color} ${s.angleDeg}deg`)
+    .join(", ")})`;
 
   return (
     <div>
@@ -163,6 +182,23 @@ export function ForecastNeedle({ results }: { results: ForecastResult[] }) {
         <CandidateLabel result={dem} align="left" />
         <CandidateLabel result={rep} align="right" />
       </div>
+
+      {others.length > 0 && (
+        <div className="mt-3 flex flex-col items-center gap-1.5">
+          {others.map((r) => (
+            <div key={r.candidate.id} className="flex items-center gap-2 text-sm">
+              <span
+                className="inline-block h-2.5 w-2.5 flex-shrink-0 rounded-full"
+                style={{ backgroundColor: partyColorVar(r.candidate.party) }}
+              />
+              <span style={{ color: "var(--text-secondary)" }}>{r.candidate.name}</span>
+              <span className="font-semibold tabular-nums" style={{ color: partyColorVar(r.candidate.party) }}>
+                {r.mean_vote_share.toFixed(1)}%
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
 
       {margin !== null && (
         <p className="mt-3 text-center text-sm" style={{ color: "var(--text-muted)" }}>

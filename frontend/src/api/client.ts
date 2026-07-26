@@ -1,4 +1,6 @@
 import type {
+  ChamberControl,
+  ChamberControlHistoryPoint,
   ForecastHistory,
   ForecastSnapshot,
   KalshiOdds,
@@ -27,6 +29,9 @@ export const api = {
   getRaces: () => request<Race[]>("/races"),
   getRaceSummaries: (office: "Governor" | "Senate") =>
     request<RaceSummary[]>(`/races/summary?office=${office}`),
+  getSenateControl: () => request<ChamberControl>("/chamber-control/senate"),
+  getSenateControlHistory: () =>
+    request<ChamberControlHistoryPoint[]>("/chamber-control/senate/history"),
   getPolls: (slug: string) => request<Poll[]>(`/races/${slug}/polls`),
   getForecast: (slug: string) => request<ForecastSnapshot>(`/races/${slug}/forecast`),
   getForecastHistory: (slug: string) =>

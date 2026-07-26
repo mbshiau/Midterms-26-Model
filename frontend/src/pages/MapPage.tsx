@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import type { RaceSummary, RaceSummaryDelta } from "../api/types";
 import { GooeyText, type GooeyTextEntry } from "../components/GooeyText";
+import { SenateControlChart } from "../components/SenateControlChart";
+import { SenateControlHistoryChart } from "../components/SenateControlHistoryChart";
 import { UsMap } from "../components/UsMap";
 import { partyAbbrev, partyColorVar, type ProbabilityTier } from "../lib/partyColor";
 
@@ -262,6 +264,10 @@ export function MapPage({ office }: { office: "Governor" | "Senate" }) {
               <span style={{ color: "var(--text-secondary)" }}>Projected flip</span>
             </span>
             <span className="flex items-center gap-2">
+              <span className="inline-block h-2.5 w-2.5" style={{ backgroundColor: "var(--party-independent)" }} />
+              <span style={{ color: "var(--text-secondary)" }}>Independent leading</span>
+            </span>
+            <span className="flex items-center gap-2">
               <span className="inline-block h-2.5 w-2.5" style={{ backgroundColor: "var(--gridline)" }} />
               <span style={{ color: "var(--text-secondary)" }}>No election</span>
             </span>
@@ -312,6 +318,17 @@ export function MapPage({ office }: { office: "Governor" | "Senate" }) {
           }}
         />
       </section>
+
+      {office === "Senate" && (
+        <>
+          <SenateControlChart
+            currentHolderByState={Object.fromEntries(
+              entries.map((r) => [r.race.state_code, r.race.current_holder_party])
+            )}
+          />
+          <SenateControlHistoryChart />
+        </>
+      )}
 
       <section className="glass-panel mt-6 rounded-lg p-5">
         <div className="relative mb-4 inline-block">
