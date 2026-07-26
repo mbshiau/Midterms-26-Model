@@ -43,6 +43,19 @@ html {
   scroll-behavior: smooth;
 }
 
+/* UsMap's state paths are tabIndex={0} for keyboard accessibility (Enter/
+   Space activates them), but that makes every browser show its default
+   focus ring on a plain mouse click too, not just Tab navigation --
+   :focus-visible restricts it to real keyboard focus, and the custom ring
+   here replaces the default blue with something that matches the app. */
+.map-state-path {
+  outline: none;
+}
+.map-state-path:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 2px;
+}
+
 body {
   margin: 0;
   font-family: "IBM Plex Sans", system-ui, "Segoe UI", Roboto, sans-serif;

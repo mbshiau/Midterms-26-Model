@@ -129,6 +129,7 @@ export function UsMap({ getVisual, isClickable, onStateClick, getTooltip }: UsMa
           return (
             <path
               key={location.id}
+              className="map-state-path"
               d={location.path}
               fill={fill}
               stroke="var(--surface)"
