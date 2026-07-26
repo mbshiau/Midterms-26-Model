@@ -4185,6 +4185,295 @@ SENATE_RACES: dict = {
 
         "raw_polls": []
     },
+    "mt": {
+            "state_name": "Montana",
+            "office": "Senate",
+            "election_date": "2026-11-03",
+            "wikipedia_page_title": "2026_United_States_Senate_election_in_Montana",
+            # Incumbent Steve Daines (R) withdrew minutes before the filing
+            # deadline and endorsed Kurt Alme, who is the GOP nominee. This is
+            # a genuine 3-way race -- unlike ne-sen (where the actual D
+            # nominee polls near 2% and is folded into undecided_pct),
+            # Bankhead polls in the low-to-mid 20s here, a real contender, so
+            # all three candidates are modeled rather than collapsed to two.
+            "candidates": [
+                {"name": "Kurt Alme", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/5/5e/Kurt_G._Alme_official_photo.jpg", "kalshi_ticker": "SENATEMT-26-R"},
+                {"name": "Alani Bankhead", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "SENATEMT-26-D"},
+                {"name": "Seth Bodnar", "party": "Independent", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/3/31/Seth_Bodnar_-_President_at_University_of_Montana_%28cropped%29.jpg", "kalshi_ticker": "SENATEMT-26-IND"},
+            ],
+            # Only the genuine 3-way ballot-test polls are used (all three
+            # candidates tested together) -- the separate Alme-vs-Bankhead-only
+            # and Alme-vs-Bodnar-only hypothetical head-to-heads some of these
+            # same pollsters also released are excluded, since the real
+            # general election will have all three names on the ballot.
+            # Exact release dates weren't published alongside the field
+            # dates, so release_date is approximated as field_end + 2 days
+            # (typical turnaround), same convention as ny-sen/pa-gov's Siena
+            # entries -- cited to each poll's own memo/writeup, not just the
+            # Wikipedia table. "Other" minor-candidate share is folded into
+            # undecided_pct per this dataset's convention.
+            "raw_polls": [
+                {
+                    "pollster": "Public Opinion Strategies",
+                    "sponsor": "Republican",
+                    "field_start_date": "2026-06-08",
+                    "field_end_date": "2026-06-11",
+                    "release_date": "2026-06-13",
+                    "sample_size": 500,
+                    "population": "LV",
+                    "margin_of_error": 4.4,
+                    "undecided_pct": 11.0,
+                    "source_url": "https://cdn.sanity.io/files/ifn0l6bs/production/626280779039a0a32a936d7010103c7a8d7acb5e.pdf",
+                    "results": {"Kurt Alme": 44.0, "Alani Bankhead": 25.0, "Seth Bodnar": 20.0},
+                },
+                {
+                    "pollster": "Hart Research",
+                    "sponsor": "Democratic",
+                    "field_start_date": "2026-06-18",
+                    "field_end_date": "2026-06-24",
+                    "release_date": "2026-06-26",
+                    "sample_size": 800,
+                    "population": "LV",
+                    "margin_of_error": None,
+                    "undecided_pct": 6.0,
+                    "source_url": "https://drive.google.com/file/d/1yUukuOVAyj-X-rivpEaAfaDa6Gp9ILe3/view",
+                    "results": {"Kurt Alme": 47.0, "Alani Bankhead": 22.0, "Seth Bodnar": 25.0},
+                },
+                {
+                    "pollster": "GrayHouse",
+                    "sponsor": "Republican",
+                    "field_start_date": "2026-06-23",
+                    "field_end_date": "2026-06-24",
+                    "release_date": "2026-06-26",
+                    "sample_size": 500,
+                    "population": "RV",
+                    "margin_of_error": 4.4,
+                    "undecided_pct": 16.0,
+                    "source_url": "https://insideelections.com/montana-senate-new-poll-confirms-gop-edge/",
+                    "results": {"Kurt Alme": 41.0, "Alani Bankhead": 25.0, "Seth Bodnar": 17.0},
+                },
+            ]
+    },
+    "sd": {
+            "state_name": "South Dakota",
+            "office": "Senate",
+            "election_date": "2026-11-03",
+            "wikipedia_page_title": "2026_United_States_Senate_election_in_South_Dakota",
+            # No Kalshi market exists for Bengs specifically (only R/D
+            # party-winner markets are listed for this race) -- kalshi_ticker
+            # stays None rather than guessing one, same as Ken Block's ri-gov
+            # entry.
+            "candidates": [
+                {"name": "Mike Rounds", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Mike_Rounds_official_Senate_portrait_%28cropped%29.jpg/250px-Mike_Rounds_official_Senate_portrait_%28cropped%29.jpg", "kalshi_ticker": "SENATESD-26-R"},
+                {"name": "Julian Beaudion", "party": "Democratic", "incumbent": False, "photo_url": "https://www.wefaceittogether.org/sites/default/files/styles/large/public/2021-02/Julian.jpg.webp?itok=VKkOb3aH", "kalshi_ticker": "SENATESD-26-D"},
+                {"name": "Brian Bengs", "party": "Independent", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Brian_Bengs_Air_Force_%28cropped%29.jpg/250px-Brian_Bengs_Air_Force_%28cropped%29.jpg", "kalshi_ticker": None},
+            ],
+            # Only one genuine 3-way ballot test has been released (PPP,
+            # commissioned by the Bengs campaign) -- same mt-sen convention:
+            # the same pollster's separate Rounds-vs-Beaudion-only and
+            # Rounds-vs-Bengs-only releases (spanning Jul 2025-May 2026) are
+            # excluded since they leave the third candidate off the ballot
+            # entirely, understating/overstating the other two. No original
+            # PPP memo/PDF was locatable, so this cites the South Dakota
+            # Standard's write-up of the poll's full crosstabs (released by
+            # the Bengs campaign "Monday" after the Fri/Sat field dates,
+            # i.e. release_date approximated as the following Monday).
+            "raw_polls": [
+                {
+                    "pollster": "Public Policy Polling",
+                    "sponsor": "Bengs campaign",
+                    "field_start_date": "2026-05-29",
+                    "field_end_date": "2026-05-30",
+                    "release_date": "2026-06-01",
+                    "sample_size": 726,
+                    "population": "RV",
+                    "margin_of_error": 3.6,
+                    "undecided_pct": 16.0,
+                    "source_url": "https://www.sdstandardnow.com/home/bengs-touts-poll-showing-him-running-close-to-rounds",
+                    "results": {"Mike Rounds": 43.0, "Julian Beaudion": 18.0, "Brian Bengs": 23.0},
+                },
+            ]
+        },
+    "ak": {
+        "state_name": "Alaska",
+        "office": "Senate",
+        "election_date": "2026-11-03",
+        "wikipedia_page_title": "2026_United_States_Senate_election_in_Alaska",
+        # Straightforward 2-candidate race -- unlike ak-gov's 6-candidate
+        # nonpartisan blanket primary, no other candidate has drawn real
+        # polling here.
+        "candidates": [
+            {"name": "Dan Sullivan", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/1/10/Senator_Dan_Sullivan_official.jpg", "kalshi_ticker": "SENATEAK-26-R"},
+            {"name": "Mary Peltola", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Mary_Peltola_Congressional_Member_Portrait_%282%29.jpeg", "kalshi_ticker": "SENATEAK-26-D"},
+        ],
+        # Where Wikipedia's table only gave a single residual "Other" figure
+        # (the 4 Alaska Survey Research 2026 releases) rather than a
+        # distinct undecided_pct, that residual is used as undecided_pct
+        # directly. Where a release date wasn't separately documented,
+        # release_date is approximated as field_end + a few days, same
+        # convention used elsewhere in this dataset; several of these
+        # (Data for Progress, NYT/Siena) had an exact publish date in their
+        # own URL and that's used instead. PPP's "V" population code is
+        # mapped to LV (its standard likely-voter methodology).
+        "raw_polls": [
+            {
+                "pollster": "Alaska Survey Research",
+                "sponsor": None,
+                "field_start_date": "2023-04-21",
+                "field_end_date": "2023-04-25",
+                "release_date": "2023-04-27",
+                "sample_size": 1261,
+                "population": "LV",
+                "margin_of_error": None,
+                "undecided_pct": 15.0,
+                "source_url": "https://mustreadalaska.com/new-poll-says-rep-mary-peltola-could-take-sen-dan-sullivan-in-2026/",
+                "results": {"Dan Sullivan": 41.0, "Mary Peltola": 44.0},
+            },
+            {
+                "pollster": "Data for Progress",
+                "sponsor": None,
+                "field_start_date": "2025-07-21",
+                "field_end_date": "2025-07-27",
+                "release_date": "2025-08-08",
+                "sample_size": 678,
+                "population": "LV",
+                "margin_of_error": 4.0,
+                "undecided_pct": 9.0,
+                "source_url": "https://www.dataforprogress.org/blog/2025/8/8/mary-peltola-would-be-front-runner-for-alaska-governor",
+                "results": {"Dan Sullivan": 46.0, "Mary Peltola": 45.0},
+            },
+            {
+                "pollster": "Alaska Survey Research",
+                "sponsor": None,
+                "field_start_date": "2025-07-29",
+                "field_end_date": "2025-08-01",
+                "release_date": "2025-08-04",
+                "sample_size": 1623,
+                "population": "LV",
+                "margin_of_error": 2.5,
+                "undecided_pct": 11.0,
+                "source_url": "https://www.documentcloud.org/documents/26071481-ak-sen-alaska-survey-research-d/",
+                "results": {"Dan Sullivan": 47.0, "Mary Peltola": 42.0},
+            },
+            {
+                "pollster": "Alaska Survey Research",
+                "sponsor": None,
+                "field_start_date": "2025-10-10",
+                "field_end_date": "2025-10-15",
+                "release_date": "2025-10-18",
+                "sample_size": 1708,
+                "population": "LV",
+                "margin_of_error": None,
+                "undecided_pct": 6.0,
+                "source_url": "https://www.juneauindependent.com/post/poll-peltola-ahead-of-sullivan-in-race-that-could-decide-control-of-us-senate",
+                "results": {"Dan Sullivan": 46.0, "Mary Peltola": 48.0},
+            },
+            {
+                "pollster": "Data for Progress",
+                "sponsor": None,
+                "field_start_date": "2025-10-17",
+                "field_end_date": "2025-10-23",
+                "release_date": "2025-10-31",
+                "sample_size": 823,
+                "population": "LV",
+                "margin_of_error": 3.0,
+                "undecided_pct": 9.0,
+                "source_url": "https://alaskapublic.org/news/politics/2025-10-31/new-poll-shows-peltola-neck-and-neck-with-sullivan-if-she-were-to-run-for-u-s-senate",
+                "results": {"Dan Sullivan": 45.0, "Mary Peltola": 46.0},
+            },
+            {
+                "pollster": "Alaska Survey Research",
+                "sponsor": None,
+                "field_start_date": "2026-01-08",
+                "field_end_date": "2026-01-11",
+                "release_date": "2026-01-13",
+                "sample_size": 1988,
+                "population": "LV",
+                "margin_of_error": 2.2,
+                "undecided_pct": 6.0,
+                "source_url": "https://alaskasurveyresearch.com/wp-content/uploads/202526-Winter-Alaska-Survey-Report.pdf",
+                "results": {"Dan Sullivan": 46.0, "Mary Peltola": 48.0},
+            },
+            {
+                "pollster": "Public Policy Polling",
+                "sponsor": "DSCC",
+                "field_start_date": "2026-01-16",
+                "field_end_date": "2026-01-17",
+                "release_date": "2026-01-19",
+                "sample_size": 611,
+                "population": "LV",
+                "margin_of_error": None,
+                "undecided_pct": 4.0,
+                "source_url": "https://www.politico.com/f/?id=0000019b-dec9-d6ec-a99b-dfe9e6750000",
+                "results": {"Dan Sullivan": 47.0, "Mary Peltola": 49.0},
+            },
+            {
+                "pollster": "Alaska Survey Research",
+                "sponsor": None,
+                "field_start_date": "2026-03-19",
+                "field_end_date": "2026-03-22",
+                "release_date": "2026-03-24",
+                "sample_size": 1590,
+                "population": "LV",
+                "margin_of_error": 2.7,
+                "undecided_pct": 7.0,
+                "source_url": "https://alaskasurveyresearch.com/wp-content/uploads/FULL-REPORT-March-Senate-Political-Tracking-Survey.pdf",
+                "results": {"Dan Sullivan": 44.0, "Mary Peltola": 49.0},
+            },
+            {
+                "pollster": "Alaska Survey Research",
+                "sponsor": None,
+                "field_start_date": "2026-04-16",
+                "field_end_date": "2026-04-19",
+                "release_date": "2026-04-21",
+                "sample_size": 1946,
+                "population": "LV",
+                "margin_of_error": 2.5,
+                "undecided_pct": 8.0,
+                "source_url": "https://alaskasurveyresearch.com/peltola-vs-sullivan-april-2026/",
+                "results": {"Dan Sullivan": 43.0, "Mary Peltola": 49.0},
+            },
+            {
+                "pollster": "Alaska Survey Research",
+                "sponsor": None,
+                "field_start_date": "2026-05-14",
+                "field_end_date": "2026-05-17",
+                "release_date": "2026-05-19",
+                "sample_size": 1401,
+                "population": "LV",
+                "margin_of_error": 3.0,
+                "undecided_pct": 8.0,
+                "source_url": "https://bsky.app/profile/alaskasurvey.bsky.social/post/3mmrlwfjug22l",
+                "results": {"Dan Sullivan": 44.0, "Mary Peltola": 48.0},
+            },
+            {
+                "pollster": "Alaska Survey Research",
+                "sponsor": None,
+                "field_start_date": "2026-06-04",
+                "field_end_date": "2026-06-07",
+                "release_date": "2026-06-09",
+                "sample_size": 1393,
+                "population": "LV",
+                "margin_of_error": 3.0,
+                "undecided_pct": 7.0,
+                "source_url": "https://bsky.app/profile/alaskasurvey.bsky.social/post/3mo4ifkz3tc25",
+                "results": {"Dan Sullivan": 44.0, "Mary Peltola": 49.0},
+            },
+            {
+                "pollster": "New York Times/Siena College",
+                "sponsor": None,
+                "field_start_date": "2026-06-15",
+                "field_end_date": "2026-06-29",
+                "release_date": "2026-07-01",
+                "sample_size": 593,
+                "population": "LV",
+                "margin_of_error": 4.9,
+                "undecided_pct": 7.0,
+                "source_url": "https://www.nytimes.com/interactive/2026/07/01/polls/times-siena-battleground-poll-toplines.html",
+                "results": {"Dan Sullivan": 47.0, "Mary Peltola": 45.0},
+            },
+        ],
+    },
 
 }
 

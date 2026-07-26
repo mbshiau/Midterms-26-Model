@@ -1199,9 +1199,9 @@ RACE_FUNDAMENTALS = {
     },
     "de": {
             "gubernatorial_elections": [
-                {"year": 2017, "dem_share": 59.82, "incumbent_party": None},  
-                {"year": 2021, "dem_share": 60.62, "incumbent_party": "D"},  
-                {"year": 2025, "dem_share": 56.07, "incumbent_party": None},  
+                {"year": 2016, "dem_share": 59.82, "incumbent_party": None},  
+                {"year": 2020, "dem_share": 60.62, "incumbent_party": "D"},  
+                {"year": 2024, "dem_share": 56.07, "incumbent_party": None},  
             ],
            
             "senate_elections": [
@@ -1218,6 +1218,28 @@ RACE_FUNDAMENTALS = {
             "registration_snapshots": [
                 {"date": "2026-07-01", "dem_lead": 131_322}
             ]
+    },
+    "mt": {
+        "gubernatorial_elections": [
+            {"year": 2016, "dem_share": 52.02, "incumbent_party": "D"},  
+            {"year": 2020, "dem_share": 43.30, "incumbent_party": None},  
+            {"year": 2024, "dem_share": 39.61, "incumbent_party": "R"},  
+        ],
+        
+        "senate_elections": [
+            {"year": 2018, "dem_share": 51.83},  
+            {"year": 2020, "dem_share": 44.99},  
+            {"year": 2024, "dem_share": 46.36},   
+        ],
+        "presidential_elections": [
+            {"year": 2016, "dem_share": 38.89},  
+            {"year": 2020, "dem_share": 41.60},  
+            {"year": 2024, "dem_share": 39.71},  
+        ],
+        
+        "registration_snapshots": [
+
+        ]
     },
 }
 
