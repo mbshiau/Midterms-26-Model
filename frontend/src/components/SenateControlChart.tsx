@@ -169,6 +169,15 @@ export function SenateControlChart({ currentHolderByState }: SenateControlChartP
                           opacity: !hovered || isHoveredDot ? 1 : 0.35,
                         }}
                         onMouseEnter={() => setHovered({ columnIndex: i, dotIndex: d })}
+                        onMouseLeave={() =>
+                          // Only clear if nothing newer has already taken over --
+                          // moving straight from this dot onto another one fires
+                          // that dot's onMouseEnter first, so this must not stomp
+                          // on it (React fires mouseleave(old) before
+                          // mouseenter(new), but the functional update guards
+                          // against relying on that ordering).
+                          setHovered((h) => (h?.columnIndex === i && h?.dotIndex === d ? null : h))
+                        }
                       />
                     );
                   })}
