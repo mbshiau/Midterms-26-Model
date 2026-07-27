@@ -1,13 +1,18 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import type { RaceSummary, RaceSummaryDelta } from "../api/types";
 import { GooeyText, type GooeyTextEntry } from "../components/GooeyText";
-import { HouseDistrictMap } from "../components/HouseDistrictMap";
 import { SenateControlChart } from "../components/SenateControlChart";
 import { SenateControlHistoryChart } from "../components/SenateControlHistoryChart";
 import { UsMap } from "../components/UsMap";
 import { partyAbbrev, partyColorVar, type ProbabilityTier } from "../lib/partyColor";
+
+// Lazy-loaded: see ElectionTypePage.tsx for why -- this keeps /senate and
+// /governors from paying for the ~900KB House district shape data at all.
+const HouseDistrictMap = lazy(() =>
+  import("../components/HouseDistrictMap").then((m) => ({ default: m.HouseDistrictMap }))
+);
 
 type Office = "Governor" | "Senate" | "House";
 
@@ -298,48 +303,50 @@ export function MapPage({ office }: { office: Office }) {
         </div>
 
         {office === "House" ? (
-          <HouseDistrictMap
-            visualsBySlug={Object.fromEntries(
-              entries
-                .filter((entry) => entry.candidates.length > 0)
-                .map((entry) => {
-                  const winner = [...entry.candidates].sort((a, b) => b.win_probability - a.win_probability)[0];
-                  return [
-                    entry.race.slug,
-                    {
-                      party: winner.party,
-                      winProbability: winner.win_probability,
-                      isFlip: winner.party !== entry.race.current_holder_party,
-                    },
-                  ];
-                })
-            )}
-            onDistrictClick={(slug) => navigate(`/states/${slug}`)}
-            getTooltip={(slug) => {
-              const entry = racesByKey[slug];
-              if (!entry) return null;
+          <Suspense fallback={<div style={{ aspectRatio: "1900 / 1180" }} />}>
+            <HouseDistrictMap
+              visualsBySlug={Object.fromEntries(
+                entries
+                  .filter((entry) => entry.candidates.length > 0)
+                  .map((entry) => {
+                    const winner = [...entry.candidates].sort((a, b) => b.win_probability - a.win_probability)[0];
+                    return [
+                      entry.race.slug,
+                      {
+                        party: winner.party,
+                        winProbability: winner.win_probability,
+                        isFlip: winner.party !== entry.race.current_holder_party,
+                      },
+                    ];
+                  })
+              )}
+              onDistrictClick={(slug) => navigate(`/states/${slug}`)}
+              getTooltip={(slug) => {
+                const entry = racesByKey[slug];
+                if (!entry) return null;
 
-              const district = slug.split("-").pop();
-              const title = `${entry.race.state_name} — District ${Number(district)}`;
-              if (entry.candidates.length === 0) return { title };
+                const district = slug.split("-").pop();
+                const title = `${entry.race.state_name} — District ${Number(district)}`;
+                if (entry.candidates.length === 0) return { title };
 
-              // entry.candidates is already sorted by mean vote share, descending.
-              const sorted = entry.candidates;
-              const winner = sorted[0];
+                // entry.candidates is already sorted by mean vote share, descending.
+                const sorted = entry.candidates;
+                const winner = sorted[0];
 
-              return {
-                title,
-                candidates: sorted.map((r) => ({
-                  name: r.name,
-                  party: r.party,
-                  voteShare: r.mean_vote_share,
-                })),
-                winner: winner
-                  ? { name: winner.name, party: winner.party, probability: winner.win_probability }
-                  : null,
-              };
-            }}
-          />
+                return {
+                  title,
+                  candidates: sorted.map((r) => ({
+                    name: r.name,
+                    party: r.party,
+                    voteShare: r.mean_vote_share,
+                  })),
+                  winner: winner
+                    ? { name: winner.name, party: winner.party, probability: winner.win_probability }
+                    : null,
+                };
+              }}
+            />
+          </Suspense>
         ) : (
           <UsMap
             getVisual={(id) => {

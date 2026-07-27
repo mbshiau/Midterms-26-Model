@@ -23,6 +23,7 @@ module only ever makes one HTTP request per generator run.
 import logging
 import re
 from dataclasses import dataclass, field
+from functools import lru_cache
 
 from bs4 import BeautifulSoup, Tag
 
@@ -339,13 +340,29 @@ def parse_state_table(state_name: str, table: Tag) -> list[ScrapedDistrict]:
     return districts
 
 
+@lru_cache(maxsize=1)
+def _fetch_house_elections_page_html() -> str | None:
+    """Caches the one big "2026 House elections" page for the lifetime of
+    the calling process -- fetch_all_districts and fetch_redistricting_changes
+    both parse this same page, and every one-off script in backend/scripts
+    that backfills House data tends to call both in a single run, so without
+    this they'd download it twice for no reason. Scoped to this module (not
+    a blanket cache on fetch_wikipedia_html itself) since that function is
+    also used by the live scheduler's poll fetchers
+    (app.ingestion.generic_ballot_scraper, approval_scraper), which need a
+    genuinely fresh fetch on every scheduled run within the long-lived
+    backend process -- caching there would silently freeze those at their
+    first-ever fetch forever."""
+    return fetch_wikipedia_html(HOUSE_ELECTIONS_PAGE_TITLE)
+
+
 def fetch_all_districts() -> list[ScrapedDistrict]:
     """Fetches and parses every state's district table. Returns [] (rather
     than raising) if the page can't be fetched at all, same fail-soft
     convention as app.ingestion.wikipedia_scraper.fetch_general_election_polls
     -- a scheduled/manual re-run should never crash on a transient network
     error."""
-    html = fetch_wikipedia_html(HOUSE_ELECTIONS_PAGE_TITLE)
+    html = _fetch_house_elections_page_html()
     if html is None:
         return []
     soup = BeautifulSoup(html, "html.parser")
@@ -361,7 +378,7 @@ def fetch_redistricting_changes() -> dict[str, RedistrictingStatus]:
     litigation/proposals that left the existing map in place) -- keyed by
     state name. Used to flag those states' HOUSE_RACES entries with an
     inline comment (see backend/scripts/generate_house_seed_data.py)."""
-    html = fetch_wikipedia_html(HOUSE_ELECTIONS_PAGE_TITLE)
+    html = _fetch_house_elections_page_html()
     if html is None:
         return {}
     soup = BeautifulSoup(html, "html.parser")

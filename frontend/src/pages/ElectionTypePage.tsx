@@ -1,11 +1,20 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api/client";
 import type { ChamberControl, RaceSummary } from "../api/types";
-import { HouseDistrictMap } from "../components/HouseDistrictMap";
 import { Orb } from "../components/Orb";
 import { UsMap, type StateVisual } from "../components/UsMap";
 import { partyColorVar } from "../lib/partyColor";
+
+// Lazy-loaded: the House district shape data is ~900KB on its own and was
+// otherwise bundled into every page's initial JS (see vite build's chunk-size
+// warning) even though /senate, /governors, and state-detail pages never
+// render it -- splitting it into its own chunk, fetched only when this
+// mini-map card (or the full /house map) actually renders, shrinks every
+// other route's initial bundle substantially.
+const HouseDistrictMap = lazy(() =>
+  import("../components/HouseDistrictMap").then((m) => ({ default: m.HouseDistrictMap }))
+);
 
 interface RaceGroup {
   entries: RaceSummary[];
@@ -234,10 +243,12 @@ export function ElectionTypePage() {
                 to="/house"
                 label="HOUSE"
                 map={
-                  <HouseDistrictMap
-                    visualsBySlug={houseVisualsFor(house.entries)}
-                    onDistrictClick={() => {}}
-                  />
+                  <Suspense fallback={<div style={{ aspectRatio: "1900 / 1180" }} />}>
+                    <HouseDistrictMap
+                      visualsBySlug={houseVisualsFor(house.entries)}
+                      onDistrictClick={() => {}}
+                    />
+                  </Suspense>
                 }
                 headline={
                   <>
