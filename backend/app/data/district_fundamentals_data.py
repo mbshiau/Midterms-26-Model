@@ -501,7 +501,9 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Connecticut 3: 2025 Cook PVI D+8 (via Wikipedia)
     "ct03": {
         "pvi_dem_margin_pts": 17.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 58.29, "incumbent_party": 'Democratic'},
+        ],
     },
     # Connecticut 4: 2025 Cook PVI D+13 (via Wikipedia)
     "ct04": {
@@ -1107,6 +1109,7 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi01": {
         "pvi_dem_margin_pts": -20.47,
         "house_elections": [
+            {"year": 2022, "dem_share": 38.40, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 41.36, "incumbent_party": 'Republican'},
         ],
     },
@@ -1114,6 +1117,7 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi02": {
         "pvi_dem_margin_pts": -28.47,
         "house_elections": [
+            {"year": 2022, "dem_share": 35.00, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 32.73, "incumbent_party": 'Republican'},
         ],
     },
@@ -1121,6 +1125,7 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi03": {
         "pvi_dem_margin_pts": 9.53,
         "house_elections": [
+            {"year": 2022, "dem_share": 56.66, "incumbent_party": None},
             {"year": 2024, "dem_share": 55.07, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1128,6 +1133,7 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi04": {
         "pvi_dem_margin_pts": -4.47,
         "house_elections": [
+            {"year": 2022, "dem_share": 43.86, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 44.05, "incumbent_party": 'Republican'},
         ],
     },
@@ -1135,6 +1141,7 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi05": {
         "pvi_dem_margin_pts": -24.47,
         "house_elections": [
+            {"year": 2022, "dem_share": 35.93, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 33.28, "incumbent_party": 'Republican'},
         ],
     },
@@ -1142,6 +1149,7 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi06": {
         "pvi_dem_margin_pts": 25.53,
         "house_elections": [
+            {"year": 2022, "dem_share": 65.90, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 63.93, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1149,13 +1157,15 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi07": {
         "pvi_dem_margin_pts": 1.53,
         "house_elections": [
-            {"year": 2024, "dem_share": 48.08, "incumbent_party": 'Republican'},
+            {"year": 2022, "dem_share": 52.76, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 48.08, "incumbent_party": None},
         ],
     },
     # Michigan 8: 2025 Cook PVI R+1 (via Wikipedia)
     "mi08": {
         "pvi_dem_margin_pts": -0.47,
         "house_elections": [
+            {"year": 2022, "dem_share": 55.37, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 53.46, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1163,6 +1173,7 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi09": {
         "pvi_dem_margin_pts": -30.47,
         "house_elections": [
+            {"year": 2022, "dem_share": 34.19, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 30.65, "incumbent_party": 'Republican'},
         ],
     },
@@ -1170,6 +1181,7 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi10": {
         "pvi_dem_margin_pts": -4.47,
         "house_elections": [
+            {"year": 2022, "dem_share": 49.75, "incumbent_party": None},
             {"year": 2024, "dem_share": 46.81, "incumbent_party": 'Republican'},
         ],
     },
@@ -1177,6 +1189,7 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi11": {
         "pvi_dem_margin_pts": 19.53,
         "house_elections": [
+            {"year": 2022, "dem_share": 61.30, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 59.51, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1184,6 +1197,7 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi12": {
         "pvi_dem_margin_pts": 43.53,
         "house_elections": [
+            {"year": 2022, "dem_share": 72.91, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 73.26, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1191,6 +1205,7 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi13": {
         "pvi_dem_margin_pts": 45.53,
         "house_elections": [
+            {"year": 2022, "dem_share": 74.78, "incumbent_party": None},
             {"year": 2024, "dem_share": 73.67, "incumbent_party": 'Democratic'},
         ],
     },

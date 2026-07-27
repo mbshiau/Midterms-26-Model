@@ -43,6 +43,51 @@ class ScrapedMarketOdds:
     source_url: str
 
 
+@dataclass
+class ScrapedHouseMarket:
+    ticker: str
+    # "Republican party"/"Democratic party" for a standard 2-candidate race's
+    # party-outcome market, or a candidate's own name for a market keyed to
+    # a specific candidate (e.g. a real independent/third-party contender) --
+    # whichever Kalshi's own yes_sub_title says this market resolves on.
+    # scripts/backfill_kalshi_tickers.py matches this back to a HOUSE_RACES
+    # candidate by party or by name; never guessed from the ticker string.
+    yes_sub_title: str | None
+
+
+def fetch_house_race_markets(state_code: str, district: int) -> list[ScrapedHouseMarket] | None:
+    """Real market list for one House district's race, via Kalshi's own
+    `event_ticker=KXHOUSERACE-{STATE}{DD}-26` filter -- confirmed against
+    Kalshi's actual listings (see conversation) rather than guessed from a
+    naming pattern, since some districts (e.g. a race with a real
+    independent candidate) get a market per named candidate instead of one
+    per party. Returns None on missing credentials/network failure (same
+    fail-soft convention as fetch_market_odds); [] if Kalshi simply hasn't
+    listed this district yet."""
+    if not settings.kalshi_api_key_id or not settings.kalshi_private_key_path:
+        return None
+
+    event_ticker = f"KXHOUSERACE-{state_code.upper()}{district:02d}-26"
+    path = "/trade-api/v2/markets"
+    try:
+        headers = _auth_headers("GET", path)
+        resp = httpx.get(
+            f"{settings.kalshi_base_url}/markets",
+            headers=headers,
+            params={"event_ticker": event_ticker},
+            timeout=REQUEST_TIMEOUT_SECONDS,
+        )
+        resp.raise_for_status()
+        markets = resp.json().get("markets", [])
+        return [
+            ScrapedHouseMarket(ticker=m["ticker"], yes_sub_title=m.get("yes_sub_title"))
+            for m in markets
+        ]
+    except (httpx.HTTPError, KeyError, ValueError, OSError) as e:
+        logger.warning("Kalshi market list fetch failed for %r: %s", event_ticker, e)
+        return None
+
+
 def _load_private_key():
     with open(settings.kalshi_private_key_path, "rb") as f:
         return serialization.load_pem_private_key(f.read(), password=None)

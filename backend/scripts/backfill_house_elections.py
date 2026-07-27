@@ -57,19 +57,19 @@ def _district_key(state_code: str, district: int) -> str:
     return f"{state_code}{district:02d}"
 
 
-def main() -> None:
+def main(year: int = YEAR, states: list[str] = ELIGIBLE_STATES) -> None:
     to_fill: dict[str, list[dict]] = {}
-    for state_name in ELIGIBLE_STATES:
+    for state_name in states:
         state_code = STATE_POSTAL_CODES[state_name]
-        results = fetch_state_house_results(state_name, YEAR)
+        results = fetch_state_house_results(state_name, year)
         if not results:
-            logger.warning("no summary table found for %s %d -- skipped", state_name, YEAR)
+            logger.warning("no summary table found for %s %d -- skipped", state_name, year)
             continue
         for district, result in results.items():
             key = _district_key(state_code, district)
             to_fill[key] = [
                 {
-                    "year": YEAR,
+                    "year": year,
                     "dem_share": result.dem_share,
                     "incumbent_party": result.winner_party,
                 }

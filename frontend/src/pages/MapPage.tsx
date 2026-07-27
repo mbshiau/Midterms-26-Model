@@ -303,8 +303,9 @@ export function MapPage({ office }: { office: Office }) {
         </div>
 
         {office === "House" ? (
-          <Suspense fallback={<div style={{ aspectRatio: "1900 / 1180" }} />}>
+          <Suspense fallback={<div style={{ aspectRatio: "3 / 2" }} />}>
             <HouseDistrictMap
+              districts={entries.map((entry) => ({ slug: entry.race.slug, stateCode: entry.race.state_code }))}
               visualsBySlug={Object.fromEntries(
                 entries
                   .filter((entry) => entry.candidates.length > 0)
@@ -520,19 +521,7 @@ export function MapPage({ office }: { office: Office }) {
 
       <p className="mt-4 text-xs" style={{ color: "var(--text-muted)" }}>
         {office === "House" ? (
-          <>
-            District boundaries:{" "}
-            <a
-              href="https://commons.wikimedia.org/wiki/File:2026_United_States_House_of_Representatives_elections_retirements_or_losses_of_renomination_map.svg"
-              target="_blank"
-              rel="noreferrer"
-              className="underline"
-            >
-              2026 U.S. House elections retirements/renomination-losses map
-            </a>{" "}
-            by Coolxsearcher1414, Wikimedia Commons (CC0). Colored using this app&rsquo;s own
-            forecast, not the source map&rsquo;s own coloring.
-          </>
+          <>Each hexagon is one congressional district, grouped by state and sized to fit within a compact click target rather than the district&rsquo;s real geographic shape.</>
         ) : (
           <>
             Map data from{" "}

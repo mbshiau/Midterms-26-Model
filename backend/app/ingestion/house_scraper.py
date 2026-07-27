@@ -64,6 +64,13 @@ _CANDIDATE_RE = re.compile(r"^(.*?)\s*\(([A-Za-z][A-Za-z\s]*)\)")
 class ScrapedCandidate:
     name: str
     party: str
+    # This candidate's own Wikipedia article title (e.g. "Gary_Palmer"), read
+    # directly from the "▌ Name (Party)" cell's real <a href="/wiki/..."> --
+    # None when the page doesn't link that name to its own article (a
+    # lesser-known challenger without a Wikipedia page yet). Used by
+    # scripts/backfill_candidate_photos.py to fetch a real infobox photo via
+    # MediaWiki's pageimages API -- never guessed at from just a name.
+    wiki_page_title: str | None = None
 
 
 @dataclass
@@ -87,6 +94,10 @@ class ScrapedDistrict:
     # candidates; never guessed beyond what the page actually lists.
     candidates: list[ScrapedCandidate] = field(default_factory=list)
     wikipedia_page_title: str = HOUSE_ELECTIONS_PAGE_TITLE
+    # Same as ScrapedCandidate.wiki_page_title, but for the incumbent's own
+    # Member-column link -- kept separate since an incumbent's photo is
+    # useful even for a district whose Candidates cell isn't settled yet.
+    incumbent_wiki_page_title: str | None = None
 
 
 @dataclass
@@ -205,11 +216,23 @@ def _clean_footnotes(text: str) -> str:
     return _FOOTNOTE_RE.sub("", text).replace("\xad", "").strip()
 
 
-def _parse_candidates_cell(text: str) -> list[ScrapedCandidate]:
+def _wiki_page_title_for(name: str, cell: Tag) -> str | None:
+    """Finds `name`'s own Wikipedia article title from a real <a href="/wiki/...">
+    in `cell` whose link text matches -- never a guess built from the name
+    itself (that could easily land on a wrong/disambiguation page)."""
+    for a in cell.find_all("a"):
+        href = a.get("href") or ""
+        if href.startswith("/wiki/") and a.get_text(strip=True) == name:
+            return href.removeprefix("/wiki/")
+    return None
+
+
+def _parse_candidates_cell(cell: Tag) -> list[ScrapedCandidate]:
     """Splits a "▌ Name (Party) ...  ▌ Name (Party) ..." cell into
     candidates. Real vote-share percentages/footnotes trailing a name are
     simply outside the regex match and dropped -- only name+party are
     trusted from this cell."""
+    text = cell.get_text(" ", strip=True)
     candidates = []
     for token in _clean_footnotes(text).split(_BULLET):
         token = token.strip()
@@ -218,7 +241,10 @@ def _parse_candidates_cell(text: str) -> list[ScrapedCandidate]:
         match = _CANDIDATE_RE.match(token)
         if not match:
             continue
-        candidates.append(ScrapedCandidate(name=match.group(1).strip(), party=match.group(2).strip()))
+        name = match.group(1).strip()
+        candidates.append(
+            ScrapedCandidate(name=name, party=match.group(2).strip(), wiki_page_title=_wiki_page_title_for(name, cell))
+        )
     return candidates
 
 
@@ -320,8 +346,10 @@ def parse_state_table(state_name: str, table: Tag) -> list[ScrapedDistrict]:
         member_lower = member_name.lower()
         is_open_seat = not member_name or member_lower.startswith("none") or member_lower.startswith("vacant")
 
-        candidates_cell = cells[-1].get_text(" ", strip=True)
-        all_candidates = _parse_candidates_cell(candidates_cell)
+        all_candidates = _parse_candidates_cell(cells[-1])
+        incumbent_wiki_page_title = (
+            None if is_open_seat or member_idx is None else _wiki_page_title_for(member_name, cells[member_idx])
+        )
 
         districts.append(
             ScrapedDistrict(
@@ -334,6 +362,7 @@ def parse_state_table(state_name: str, table: Tag) -> list[ScrapedDistrict]:
                 status=status,
                 pvi=pvi,
                 candidates=_settled_general_field(all_candidates, state_name),
+                incumbent_wiki_page_title=incumbent_wiki_page_title,
             )
         )
 

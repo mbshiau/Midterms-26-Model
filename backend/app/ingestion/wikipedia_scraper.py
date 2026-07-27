@@ -93,6 +93,38 @@ def fetch_wikipedia_html(page_title: str) -> str | None:
         return None
 
 
+def fetch_page_thumbnail(page_title: str, size: int = 500) -> str | None:
+    """Real infobox/lead image for a Wikipedia article (e.g. a politician's
+    official photo), via MediaWiki's pageimages API -- the same thumbnail
+    Wikipedia itself shows, at `size`px wide. Used by
+    scripts/backfill_candidate_photos.py to fill in a candidate's photo_url
+    from their own article (see app.ingestion.house_scraper's
+    wiki_page_title capture) rather than guessing a Commons filename.
+    Returns None if the page has no image, doesn't exist, or the request
+    fails -- never fabricated."""
+    try:
+        resp = httpx.get(
+            API_URL,
+            params={
+                "action": "query",
+                "titles": page_title,
+                "prop": "pageimages",
+                "piprop": "thumbnail",
+                "pithumbsize": size,
+                "format": "json",
+            },
+            headers={"User-Agent": USER_AGENT},
+            timeout=REQUEST_TIMEOUT_SECONDS,
+        )
+        resp.raise_for_status()
+        pages = resp.json()["query"]["pages"]
+        page = next(iter(pages.values()))
+        return page.get("thumbnail", {}).get("source")
+    except (httpx.HTTPError, KeyError, StopIteration) as e:
+        logger.warning("Wikipedia thumbnail fetch failed for %r: %s", page_title, e)
+        return None
+
+
 def _header_texts(table: Tag) -> list[str]:
     header_row = table.find("tr")
     if header_row is None:

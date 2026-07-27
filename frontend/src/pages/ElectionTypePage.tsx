@@ -243,8 +243,9 @@ export function ElectionTypePage() {
                 to="/house"
                 label="HOUSE"
                 map={
-                  <Suspense fallback={<div style={{ aspectRatio: "1900 / 1180" }} />}>
+                  <Suspense fallback={<div style={{ aspectRatio: "3 / 2" }} />}>
                     <HouseDistrictMap
+                      districts={house.entries.map((e) => ({ slug: e.race.slug, stateCode: e.race.state_code }))}
                       visualsBySlug={houseVisualsFor(house.entries)}
                       onDistrictClick={() => {}}
                     />
