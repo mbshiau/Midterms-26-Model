@@ -296,46 +296,61 @@ def _snapshot_deltas(
     return deltas or None
 
 
-def race_movement_summary(db: Session, race: Race):
-    """Powers the map page's "movers"/"closest races" list without shipping
-    each race's full forecast history to the browser (see
-    app.routers.races's /races/summary) -- that endpoint used to require the
-    frontend to fetch every race's complete /forecast/history individually
-    (N races x full snapshot history, including a fundamentals_breakdown
-    blob per snapshot) just to derive a handful of vote-share deltas.
+def race_movement_summaries(db: Session, races: list[Race]):
+    """Bulk form of race_movement_summary -- powers the map page's
+    "movers"/"closest races" list without shipping each race's full forecast
+    history to the browser (see app.routers.races's /races/summary) -- that
+    endpoint used to require the frontend to fetch every race's complete
+    /forecast/history individually (N races x full snapshot history,
+    including a fundamentals_breakdown blob per snapshot) just to derive a
+    handful of vote-share deltas.
+
+    Runs in 2 queries total for however many races are passed in, rather
+    than 2 queries per race -- with House now at 435 districts, per-race
+    round trips to a networked Postgres instance were the dominant cost of
+    loading the House map view.
 
     Selects only the specific columns needed (never ForecastResult.
     draws_sample or ForecastSnapshot.fundamentals_breakdown, both of which
     forecast_history()/latest_forecast() pull in full for every snapshot),
-    and only for the 2-3 snapshots actually used: latest, the one right
-    before it (since-refresh), and the most recent one at least 7 days old
-    (this-week) -- not the entire history.
+    and only for the 2-3 snapshots actually used per race: latest, the one
+    right before it (since-refresh), and the most recent one at least 7 days
+    old (this-week) -- not the entire history.
 
-    Returns (latest_created_at, latest_candidate_rows, since_refresh_deltas,
-    this_week_deltas); latest_candidate_rows already sorted by mean vote
-    share, descending. All four are None/[] when the race has no forecast
-    yet.
+    Returns {race_id: (latest_created_at, latest_candidate_rows,
+    since_refresh_deltas, this_week_deltas)}; latest_candidate_rows already
+    sorted by mean vote share, descending. A race missing from the input
+    list's forecast history yields (None, [], None, None).
     """
+    race_ids = [race.id for race in races]
+    if not race_ids:
+        return {}
+
     snap_rows = (
-        db.query(ForecastSnapshot.id, ForecastSnapshot.created_at)
-        .filter(ForecastSnapshot.race_id == race.id)
-        .order_by(ForecastSnapshot.created_at.asc())
+        db.query(ForecastSnapshot.race_id, ForecastSnapshot.id, ForecastSnapshot.created_at)
+        .filter(ForecastSnapshot.race_id.in_(race_ids))
+        .order_by(ForecastSnapshot.race_id, ForecastSnapshot.created_at.asc())
         .all()
     )
-    if not snap_rows:
-        return None, [], None, None
+    snaps_by_race: dict[int, list[tuple[int, object]]] = {}
+    for race_id, snap_id, created_at in snap_rows:
+        snaps_by_race.setdefault(race_id, []).append((snap_id, created_at))
 
-    latest_id, latest_created_at = snap_rows[-1]
-    baseline_id = snap_rows[-2][0] if len(snap_rows) >= 2 else None
-    cutoff = latest_created_at - timedelta(days=7)
-    eligible_week_ids = [sid for sid, ts in snap_rows if ts <= cutoff]
-    week_baseline_id = eligible_week_ids[-1] if eligible_week_ids else None
+    needed_ids: set[int] = set()
+    snapshot_plan: dict[int, tuple[int, object, int | None, int | None]] = {}
+    for race_id, snaps in snaps_by_race.items():
+        latest_id, latest_created_at = snaps[-1]
+        baseline_id = snaps[-2][0] if len(snaps) >= 2 else None
+        cutoff = latest_created_at - timedelta(days=7)
+        eligible_week_ids = [sid for sid, ts in snaps if ts <= cutoff]
+        week_baseline_id = eligible_week_ids[-1] if eligible_week_ids else None
 
-    needed_ids = {latest_id}
-    if baseline_id is not None:
-        needed_ids.add(baseline_id)
-    if week_baseline_id is not None:
-        needed_ids.add(week_baseline_id)
+        snapshot_plan[race_id] = (latest_id, latest_created_at, baseline_id, week_baseline_id)
+        needed_ids.add(latest_id)
+        if baseline_id is not None:
+            needed_ids.add(baseline_id)
+        if week_baseline_id is not None:
+            needed_ids.add(week_baseline_id)
 
     result_rows = (
         db.query(
@@ -349,6 +364,8 @@ def race_movement_summary(db: Session, race: Race):
         .join(Candidate, ForecastResult.candidate_id == Candidate.id)
         .filter(ForecastResult.snapshot_id.in_(needed_ids))
         .all()
+        if needed_ids
+        else []
     )
 
     by_snapshot: dict[int, list[dict]] = {}
@@ -363,12 +380,27 @@ def race_movement_summary(db: Session, race: Race):
             }
         )
 
-    latest_rows = sorted(
-        by_snapshot.get(latest_id, []), key=lambda r: r["mean_vote_share"], reverse=True
-    )
-    since_refresh = _snapshot_deltas(latest_rows, by_snapshot.get(baseline_id) if baseline_id else None)
-    this_week = _snapshot_deltas(
-        latest_rows, by_snapshot.get(week_baseline_id) if week_baseline_id else None
-    )
+    out: dict[int, tuple] = {}
+    for race_id in race_ids:
+        if race_id not in snapshot_plan:
+            out[race_id] = (None, [], None, None)
+            continue
+        latest_id, latest_created_at, baseline_id, week_baseline_id = snapshot_plan[race_id]
+        latest_rows = sorted(
+            by_snapshot.get(latest_id, []), key=lambda r: r["mean_vote_share"], reverse=True
+        )
+        since_refresh = _snapshot_deltas(
+            latest_rows, by_snapshot.get(baseline_id) if baseline_id else None
+        )
+        this_week = _snapshot_deltas(
+            latest_rows, by_snapshot.get(week_baseline_id) if week_baseline_id else None
+        )
+        out[race_id] = (latest_created_at, latest_rows, since_refresh, this_week)
 
-    return latest_created_at, latest_rows, since_refresh, this_week
+    return out
+
+
+def race_movement_summary(db: Session, race: Race):
+    """Single-race convenience wrapper around race_movement_summaries --
+    see that function for the query plan and return shape."""
+    return race_movement_summaries(db, [race]).get(race.id, (None, [], None, None))

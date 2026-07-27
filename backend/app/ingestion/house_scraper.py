@@ -95,6 +95,107 @@ class RedistrictingStatus:
     notes: str
 
 
+@dataclass
+class StateDistrictResult:
+    district: int
+    dem_share: float  # two-party (Dem votes / (Dem + Rep votes) * 100)
+    winner_party: str | None  # first word of the page's own "Result" cell, e.g. "Republican" from "Republican hold"
+
+
+_DISTRICT_ROW_RE = re.compile(r"^District (\d+)$|^At-large$")
+
+
+def _row_cells(row: Tag) -> list[str]:
+    return [_clean_footnotes(c.get_text(" ", strip=True)) for c in row.find_all(["th", "td"])]
+
+
+def _parse_district_results_table(soup: BeautifulSoup) -> dict[int, StateDistrictResult] | None:
+    """Looks for a single per-state "District | <Party> | <Party> | Total |
+    Result" (or Ohio's flatter "District | Party #, Party %, ... | Elected")
+    summary table and parses real two-party dem_share per district from it.
+
+    Confirmed by hand to exist, in one of these two shapes, on only a
+    minority of states' "20XX United States House of Representatives
+    elections in {state}" pages (e.g. Georgia, Michigan, Minnesota, New
+    Mexico) -- most other states spread results across many per-district
+    subsections instead, which this intentionally does NOT attempt to parse
+    (too state-specific to trust without individual verification per state,
+    same real-data-only caution as everywhere else in this project). Returns
+    None when no such table is found, rather than guessing at a
+    lower-confidence shape."""
+    for table in soup.find_all("table", class_="wikitable"):
+        rows = table.find_all("tr")
+        if not rows:
+            continue
+        data_start = None
+        for i, row in enumerate(rows):
+            cells = _row_cells(row)
+            if cells and _DISTRICT_ROW_RE.match(cells[0]):
+                data_start = i
+                break
+        if data_start is None or data_start == 0:
+            continue
+
+        header_rows = [_row_cells(r) for r in rows[:data_start]]
+        top = header_rows[0]
+        if top[0] != "District":
+            continue
+        groups = top[1:-1]  # party (+ "Total") labels, excludes "District" and "Result"/"Elected"
+        if len(groups) < 2:
+            continue
+
+        sample = _row_cells(rows[data_start])
+        expected_flat = 1 + len(groups) + 1  # District + 1 votes col/group (Ohio-style) + Result
+        expected_nested = 1 + 2 * len(groups) + 1  # District + Votes/% pair/group (GA-style) + Result
+        if len(header_rows) == 1 and len(sample) == expected_flat:
+            step = 1
+        elif len(sample) == expected_nested:
+            step = 2
+        else:
+            continue  # a table shaped like this but not matching either layout -- skip rather than guess
+
+        out: dict[int, StateDistrictResult] = {}
+        for row in rows[data_start:]:
+            cells = _row_cells(row)
+            if not cells or not _DISTRICT_ROW_RE.match(cells[0]):
+                continue
+            district = 1 if cells[0] == "At-large" else int(cells[0].split()[1])
+            votes: dict[str, int | None] = {}
+            for i, group in enumerate(groups):
+                idx = 1 + step * i
+                if idx < len(cells):
+                    raw = cells[idx].replace(",", "")
+                    votes[group] = int(raw) if raw.lstrip("-").isdigit() else None
+            dem = next((v for k, v in votes.items() if "dem" in k.lower() and v is not None), None)
+            rep = next((v for k, v in votes.items() if "rep" in k.lower() and v is not None), None)
+            if dem is None or rep is None or (dem + rep) == 0:
+                continue  # not a real two-party contest here -- left out, not fabricated
+            winner_party = cells[-1].split()[0] if cells[-1] else None
+            out[district] = StateDistrictResult(
+                district=district,
+                dem_share=round(dem / (dem + rep) * 100, 2),
+                winner_party=winner_party,
+            )
+        if out:
+            return out
+    return None
+
+
+def fetch_state_house_results(state_name: str, year: int) -> dict[int, StateDistrictResult] | None:
+    """Real two-party dem_share per district for one state+year, parsed from
+    that state's own "{year} United States House of Representatives
+    elections in {state_name}" Wikipedia page. Only returns data when a
+    trustworthy per-district summary table was actually found (see
+    _parse_district_results_table) -- None otherwise, so callers never
+    silently backfill a guess."""
+    title = f"{year}_United_States_House_of_Representatives_elections_in_{state_name.replace(' ', '_')}"
+    html = fetch_wikipedia_html(title)
+    if html is None:
+        return None
+    soup = BeautifulSoup(html, "html.parser")
+    return _parse_district_results_table(soup)
+
+
 def _clean_footnotes(text: str) -> str:
     # Also strips stray soft hyphens (U+00AD) -- Wikipedia inserts these
     # inside some words (e.g. "Vac\xadant") as invisible line-break hints,

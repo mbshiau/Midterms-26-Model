@@ -10,7 +10,7 @@ from app.schemas import (
     RaceSummaryOut,
     _as_utc_isoformat,
 )
-from app.services.forecasting import race_movement_summary
+from app.services.forecasting import race_movement_summaries
 from app.services.races import current_holder_party
 
 router = APIRouter(prefix="/races", tags=["races"])
@@ -27,14 +27,21 @@ def _race_out(race: Race, candidates: list[Candidate]) -> RaceOut:
     )
 
 
+def _candidates_by_race(db: Session, races: list[Race]) -> dict[int, list[Candidate]]:
+    race_ids = [race.id for race in races]
+    if not race_ids:
+        return {}
+    by_race: dict[int, list[Candidate]] = {}
+    for candidate in db.query(Candidate).filter(Candidate.race_id.in_(race_ids)).all():
+        by_race.setdefault(candidate.race_id, []).append(candidate)
+    return by_race
+
+
 @router.get("", response_model=list[RaceOut])
 def list_races(db: Session = Depends(get_db)):
     races = db.query(Race).order_by(Race.state_name).all()
-    out = []
-    for race in races:
-        candidates = db.query(Candidate).filter(Candidate.race_id == race.id).all()
-        out.append(_race_out(race, candidates))
-    return out
+    candidates_by_race = _candidates_by_race(db, races)
+    return [_race_out(race, candidates_by_race.get(race.id, [])) for race in races]
 
 
 @router.get("/summary", response_model=list[RaceSummaryOut])
@@ -42,17 +49,23 @@ def list_race_summaries(office: str | None = None, db: Session = Depends(get_db)
     """Bulk row per race for the map page -- one request instead of the map
     page's previous N x (/forecast + /forecast/history) fan-out, which on a
     resource-limited host (e.g. Render's free tier) queued up badly once
-    forecast history got deep. See app.services.forecasting.
-    race_movement_summary for what's actually queried per race."""
+    forecast history got deep. Candidates and forecast movement are each
+    fetched in one bulk query for the whole office rather than per-race --
+    with House now at 435 districts, per-race round trips were the dominant
+    cost of loading this endpoint. See app.services.forecasting.
+    race_movement_summaries for the movement-query plan."""
     query = db.query(Race)
     if office:
         query = query.filter(Race.office == office)
     races = query.order_by(Race.state_name).all()
 
+    candidates_by_race = _candidates_by_race(db, races)
+    movement_by_race = race_movement_summaries(db, races)
+
     out = []
     for race in races:
-        candidates = db.query(Candidate).filter(Candidate.race_id == race.id).all()
-        latest_created_at, latest_rows, since_refresh, this_week = race_movement_summary(db, race)
+        candidates = candidates_by_race.get(race.id, [])
+        latest_created_at, latest_rows, since_refresh, this_week = movement_by_race[race.id]
 
         out.append(
             RaceSummaryOut(
