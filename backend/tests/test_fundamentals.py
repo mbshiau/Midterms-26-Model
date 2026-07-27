@@ -1032,7 +1032,12 @@ def test_district_lean_is_zero_for_a_scaffolded_empty_district():
 
 
 def test_district_lean_blends_pvi_and_house_results():
-    pvi = 20.0  # D+20
+    # district_lean itself takes an already-converted margin (the raw
+    # Cook "D+N"/"R+N" share-diff -> margin conversion happens upstream in
+    # scripts.generate_house_seed_data._parse_pvi_dem_margin, see
+    # test_generate_house_seed_data.py) -- 20.0 here is just an example
+    # margin, not a literal "D+20" PVI reading.
+    pvi = 20.0
     house = [{"year": 2022, "dem_share": 52.0}, {"year": 2024, "dem_share": 54.0}]
     blended = fundamentals.district_lean(pvi, house, as_of=date(2026, 1, 1), weight=0.5)
     pvi_only = fundamentals.district_lean(pvi, [], as_of=date(2026, 1, 1), weight=1.0)
@@ -1041,7 +1046,7 @@ def test_district_lean_blends_pvi_and_house_results():
 
 
 def test_district_lean_weight_override_shifts_the_blend_toward_pvi():
-    pvi = 30.0  # D+30
+    pvi = 30.0  # an already-converted margin, see note above
     house = [{"year": 2024, "dem_share": 45.0}]
     default_blend = fundamentals.district_lean(pvi, house, as_of=date(2026, 1, 1))
     pvi_heavy = fundamentals.district_lean(pvi, house, as_of=date(2026, 1, 1), weight=0.9)
@@ -1053,6 +1058,17 @@ def test_district_lean_uses_pvi_signed_margin_directly():
     # it's already a computed figure, used as-is.
     assert fundamentals.district_lean(-17.0, [], weight=1.0) == -17.0
     assert fundamentals.district_lean(7.0, [], weight=1.0) == 7.0
+
+
+def test_district_lean_uses_full_pvi_when_house_elections_is_empty():
+    # Most districts have no house_elections on file yet -- PVI must be
+    # used at full value (not diluted by the default 50/50 weight, which
+    # only makes sense once there's a real second signal to blend against).
+    # An R+33 PVI district should show a -33 lean, not -16.5.
+    assert fundamentals.district_lean(-33.0, []) == -33.0
+    # The default weight is still respected once real house_elections exist.
+    house = [{"year": 2024, "dem_share": 45.0}]
+    assert fundamentals.district_lean(-33.0, house, as_of=date(2026, 1, 1)) != -33.0
 
 
 def test_district_fundamentals_breakdown_is_incumbency_and_environment_only_when_empty():

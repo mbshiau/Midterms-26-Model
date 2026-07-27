@@ -104,24 +104,51 @@ def _district_key(state_code: str, district: int) -> str:
     return f"{state_code}{district:02d}"
 
 
+# Cook PVI's own "N" (e.g. the "33" in "R+33") is a *vote-share* difference
+# from the national average across the same two cycles -- a "R+33" district's
+# average Republican two-party vote share was 33 points higher than the
+# national average Republican two-party share, not a district margin of
+# R+33 outright. Converting that into a two-party *margin* (this project's
+# convention everywhere else, e.g. _recency_weighted_dem_margin's
+# `2 * dem_share - 100`) requires doubling the share difference, then adding
+# back the national baseline margin PVI is itself relative to (since that
+# baseline isn't a 50-50 tie).
+#
+# National two-party presidential margin (Dem minus Rep), the two elections
+# Cook's current PVI vintage averages:
+#   2024: Trump (R) 49.8%, Harris (D) 48.3% -> two-party margin D-1.53
+#   2020: Biden (D) 51.3%, Trump (R) 46.8%  -> two-party margin D+4.59
+# Average of the two -> the baseline PVI is computed relative to.
+_PVI_NATIONAL_BASELINE_DEM_MARGIN = (
+    (48.3 / (48.3 + 49.8) * 100 - 49.8 / (48.3 + 49.8) * 100)
+    + (51.3 / (51.3 + 46.8) * 100 - 46.8 / (51.3 + 46.8) * 100)
+) / 2
+
+
 def _parse_pvi_dem_margin(pvi: str | None) -> float | None:
     """Cook PVI's own "D+N" / "R+N" / "EVEN" notation, converted to a signed
-    Democratic-margin point value (positive favors the Democratic
-    candidate) -- see app.services.fundamentals.district_lean. None when no
-    PVI was scraped for this district (left out of DISTRICT_FUNDAMENTALS
-    rather than guessed at -- district_lean degrades to using only
-    house_elections, same no-fabrication convention as everywhere else)."""
+    two-party Democratic-*margin* point value (positive favors the
+    Democratic candidate) -- see app.services.fundamentals.district_lean.
+    PVI's own "N" is a vote-share difference from the national average, not
+    a margin (see the module-level comment above), so this doubles it and
+    adds back the national baseline margin PVI is computed relative to.
+    None when no PVI was scraped for this district (left out of
+    DISTRICT_FUNDAMENTALS rather than guessed at -- district_lean degrades
+    to using only house_elections, same no-fabrication convention as
+    everywhere else)."""
     if not pvi:
         return None
     pvi = pvi.strip().upper()
     if pvi == "EVEN":
-        return 0.0
-    match = re.match(r"^([DR])\+(\d+(?:\.\d+)?)$", pvi)
-    if not match:
-        logger.warning("unrecognized PVI format %r -- leaving pvi_dem_margin_pts unset", pvi)
-        return None
-    party, points = match.groups()
-    return float(points) if party == "D" else -float(points)
+        share_diff = 0.0
+    else:
+        match = re.match(r"^([DR])\+(\d+(?:\.\d+)?)$", pvi)
+        if not match:
+            logger.warning("unrecognized PVI format %r -- leaving pvi_dem_margin_pts unset", pvi)
+            return None
+        party, points = match.groups()
+        share_diff = float(points) if party == "D" else -float(points)
+    return round(_PVI_NATIONAL_BASELINE_DEM_MARGIN + 2 * share_diff, 2)
 
 
 def _is_valid_incumbent(d: ScrapedDistrict) -> bool:

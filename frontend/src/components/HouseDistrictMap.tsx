@@ -1,11 +1,22 @@
 import { useRef, useState } from "react";
 import { ALL_DISTRICT_PATHS, MAP_VIEWBOX } from "../data/allDistrictShapes";
 import type { MapTooltipCandidate } from "./UsMap";
-import { partyAbbrev, partyColorVar, probabilityTier } from "../lib/partyColor";
+import { partyAbbrev, partyColorVar, probabilityTier, type ProbabilityTier } from "../lib/partyColor";
 
 export interface HouseDistrictVisual {
   party: string;
   winProbability: number;
+  /** True if the projected winner's party differs from who holds the seat
+   * now -- rendered as a diagonal-stripe fill instead of a solid one, same
+   * convention as UsMap's projected-flip indicator. */
+  isFlip: boolean;
+}
+
+const PARTY_SLUGS = ["democratic", "republican", "independent"] as const;
+const TIERS: ProbabilityTier[] = [50, 60, 75, 95];
+
+function stripePatternId(slug: string, tier: ProbabilityTier): string {
+  return `district-stripe-${slug}-${tier}`;
 }
 
 export interface HouseTooltipContent {
@@ -66,10 +77,32 @@ export function HouseDistrictMap({ visualsBySlug, onDistrictClick, getTooltip }:
   return (
     <div ref={containerRef} className="relative">
       <svg viewBox={MAP_VIEWBOX} role="img" aria-label="Map of U.S. congressional districts" className="w-full">
+        <defs>
+          {PARTY_SLUGS.flatMap((slug) =>
+            TIERS.map((tier) => (
+              <pattern
+                key={stripePatternId(slug, tier)}
+                id={stripePatternId(slug, tier)}
+                width="8"
+                height="8"
+                patternTransform="rotate(45)"
+                patternUnits="userSpaceOnUse"
+              >
+                <rect width="8" height="8" fill={`var(--party-${slug}-${tier})`} />
+                <line x1="0" y1="0" x2="0" y2="8" stroke="var(--surface)" strokeWidth="3" />
+              </pattern>
+            ))
+          )}
+        </defs>
         {Object.entries(ALL_DISTRICT_PATHS).map(([slug, path]) => {
           const visual = visualsBySlug[slug];
           const tier = visual ? probabilityTier(visual.party, visual.winProbability) : null;
-          const fill = tier ? `var(--party-${tier.slug}-${tier.tier})` : "var(--gridline)";
+          const fill =
+            tier == null
+              ? "var(--gridline)"
+              : visual!.isFlip
+                ? `url(#${stripePatternId(tier.slug, tier.tier)})`
+                : `var(--party-${tier.slug}-${tier.tier})`;
           const clickable = Boolean(visual);
 
           return (

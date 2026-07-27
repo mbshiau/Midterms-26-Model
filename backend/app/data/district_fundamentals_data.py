@@ -7,9 +7,13 @@ Unlike app.data.fundamentals_data.RACE_FUNDAMENTALS (one entry per *state*,
 blending that state's own gubernatorial/Senate/presidential history), a
 single congressional district has no gubernatorial or Senate race of its
 own -- the two genuinely district-level inputs here are (a) the district's
-Cook Partisan Voting Index (`pvi_dem_margin_pts`, a signed point value,
-positive favors the Democratic candidate -- parsed from Cook's own
-"D+N"/"R+N"/"EVEN" notation, as cited by Wikipedia's 2026 House-elections
+Cook Partisan Voting Index (`pvi_dem_margin_pts`, a signed two-party
+*margin* point value, positive favors the Democratic candidate -- Cook's
+own "D+N"/"R+N"/"EVEN" notation is a *vote-share* difference from the
+national average, not a margin, so this is converted via
+2 * share_diff + national_baseline_margin, see
+scripts/generate_house_seed_data.py's _parse_pvi_dem_margin for the exact
+national baseline used -- as cited by Wikipedia's 2026 House-elections
 page, itself already computed on the district's *current* 2026 lines, so
 no separate recency-weighting is needed the way a raw multi-year election
 series gets), and (b) the district's own last 1-2 House election results
@@ -30,2180 +34,2225 @@ the same neutral-0 treatment rather than a fabricated value.
 DISTRICT_FUNDAMENTALS: dict = {
     # Alaska 1: 2025 Cook PVI R+6 (via Wikipedia)
     "ak01": {
-        "pvi_dem_margin_pts": -6.0,
+        "pvi_dem_margin_pts": -10.47,
         "house_elections": [
             {"year": 2022, "dem_share": 54.96, "incumbent_party": None},
             {"year": 2024, "dem_share": 48.78, "incumbent_party": "Democratic"},
         ],
     },
     # Alabama 1: 2025 Cook PVI R+17 (via Wikipedia)
+    # AL-1's 2022 winner (Jerry Carl, old pre-redraw AL-1) ran unopposed by a
+    # Democrat, so no two-party dem_share exists for that year -- only 2024
+    # is included rather than fabricating one. 2024: Barry Moore (R,
+    # incumbent of the old AL-2, redistricted into this new AL-1 seat -- see
+    # https://en.wikipedia.org/wiki/2024_United_States_House_of_Representatives_elections_in_Alabama )
+    # 258,619 votes (78.4%) vs. Tom Holmes (D) 70,929 (21.5%).
     "al01": {
-        "pvi_dem_margin_pts": -17.0,
-        "house_elections": [],
+        "pvi_dem_margin_pts": -32.47,
+        "house_elections": [
+            {"year": 2024, "dem_share": 21.52, "incumbent_party": "Republican"},
+        ],
     },
     # Alabama 2: 2025 Cook PVI R+7 (via Wikipedia)
+    # IMPORTANT: AL-2 is a genuinely different district before vs. after the
+    # 2023 Milligan/Singleton court-ordered VRA remedy (first used in the
+    # 2024 election) -- the 2022 result below is the *old* AL-2 (Barry
+    # Moore's old seat, no VRA remedy yet); the 2024 result is the *new*
+    # majority-Black opportunity district first won by Shomari Figures. The
+    # ~25-point swing between these two years reflects a redraw, not a
+    # trend -- see https://en.wikipedia.org/wiki/2022_United_States_House_of_Representatives_elections_in_Alabama
+    # and .../2024_United_States_House_of_Representatives_elections_in_Alabama .
+    # 2022: Barry Moore (R, incumbent) 137,460 (69.09%) vs. Phyllis
+    # Harvey-Hall (D) 58,014 (29.16%). 2024: Shomari Figures (D, new seat)
+    # 158,041 (54.6%) vs. Caroleene Dobson (R) 131,414 (45.4%).
     "al02": {
-        "pvi_dem_margin_pts": -7.0,
-        "house_elections": [],
+        "pvi_dem_margin_pts": -12.47,
+        "house_elections": [
+            {"year": 2022, "dem_share": 29.68, "incumbent_party": "Republican"},
+            {"year": 2024, "dem_share": 54.60, "incumbent_party": None},
+        ],
     },
     # Alabama 3: 2025 Cook PVI R+23 (via Wikipedia)
+    # No Democratic candidate ran in either 2022 or 2024 (Mike Rogers
+    # unopposed both cycles) -- left empty rather than fabricating a
+    # two-party share with no real Democratic vote to derive it from.
     "al03": {
-        "pvi_dem_margin_pts": -23.0,
+        "pvi_dem_margin_pts": -44.47,
         "house_elections": [],
     },
     # Alabama 4: 2025 Cook PVI R+33 (via Wikipedia)
+    # Same as AL-3 -- Robert Aderholt unopposed by a Democrat both cycles.
     "al04": {
-        "pvi_dem_margin_pts": -33.0,
+        "pvi_dem_margin_pts": -64.47,
         "house_elections": [],
     },
     # Alabama 5: 2025 Cook PVI R+15 (via Wikipedia)
+    # Only 2022 has a real two-party contest (open seat -- Mo Brooks ran for
+    # Senate instead); Dale Strong (R) ran unopposed by a Democrat in 2024.
+    # 2022: Dale Strong (R) 142,435 (67.09%) vs. Kathy Warner-Stanton (D)
+    # 62,740 (29.55%).
     "al05": {
-        "pvi_dem_margin_pts": -15.0,
-        "house_elections": [],
+        "pvi_dem_margin_pts": -28.47,
+        "house_elections": [
+            {"year": 2022, "dem_share": 30.58, "incumbent_party": None},
+        ],
     },
     # Alabama 6: 2025 Cook PVI R+17 (via Wikipedia)
+    # No Democratic candidate ran in 2022 (Gary Palmer unopposed); 2024:
+    # Gary Palmer (R, incumbent) 243,741 (70.3%) vs. Elizabeth Anderson (D)
+    # 102,504 (29.6%).
     "al06": {
-        "pvi_dem_margin_pts": -17.0,
-        "house_elections": [],
+        "pvi_dem_margin_pts": -32.47,
+        "house_elections": [
+            {"year": 2024, "dem_share": 29.60, "incumbent_party": "Republican"},
+        ],
     },
     # Alabama 7: 2025 Cook PVI D+10 (via Wikipedia)
+    # This seat's lines were effectively unchanged by the 2023 redraw, so
+    # both cycles are the same real district. 2022: Terri Sewell (D,
+    # incumbent) 123,233 (64.63%) vs. Beatrice Nichols (R) 67,416 (34.76%).
+    # 2024: Terri Sewell (D, incumbent) 186,723 (63.72%) vs. Robin Litaker
+    # (R) 106,312 (36.28%).
     "al07": {
-        "pvi_dem_margin_pts": 10.0,
-        "house_elections": [],
+        "pvi_dem_margin_pts": 21.53,
+        "house_elections": [
+            {"year": 2022, "dem_share": 64.64, "incumbent_party": "Democratic"},
+            {"year": 2024, "dem_share": 63.72, "incumbent_party": "Democratic"},
+        ],
     },
     # Arkansas 1: 2025 Cook PVI R+23 (via Wikipedia)
     "ar01": {
-        "pvi_dem_margin_pts": -23.0,
+        "pvi_dem_margin_pts": -44.47,
         "house_elections": [],
     },
     # Arkansas 2: 2025 Cook PVI R+8 (via Wikipedia)
     "ar02": {
-        "pvi_dem_margin_pts": -8.0,
+        "pvi_dem_margin_pts": -14.47,
         "house_elections": [],
     },
     # Arkansas 3: 2025 Cook PVI R+13 (via Wikipedia)
     "ar03": {
-        "pvi_dem_margin_pts": -13.0,
+        "pvi_dem_margin_pts": -24.47,
         "house_elections": [],
     },
     # Arkansas 4: 2025 Cook PVI R+20 (via Wikipedia)
     "ar04": {
-        "pvi_dem_margin_pts": -20.0,
+        "pvi_dem_margin_pts": -38.47,
         "house_elections": [],
     },
     # Arizona 1: 2025 Cook PVI R+1 (via Wikipedia)
     "az01": {
-        "pvi_dem_margin_pts": -1.0,
+        "pvi_dem_margin_pts": -0.47,
         "house_elections": [],
     },
     # Arizona 2: 2025 Cook PVI R+7 (via Wikipedia)
     "az02": {
-        "pvi_dem_margin_pts": -7.0,
+        "pvi_dem_margin_pts": -12.47,
         "house_elections": [],
     },
     # Arizona 3: 2025 Cook PVI D+22 (via Wikipedia)
     "az03": {
-        "pvi_dem_margin_pts": 22.0,
+        "pvi_dem_margin_pts": 45.53,
         "house_elections": [],
     },
     # Arizona 4: 2025 Cook PVI D+4 (via Wikipedia)
     "az04": {
-        "pvi_dem_margin_pts": 4.0,
+        "pvi_dem_margin_pts": 9.53,
         "house_elections": [],
     },
     # Arizona 5: 2025 Cook PVI R+10 (via Wikipedia)
     "az05": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Arizona 6: 2025 Cook PVI EVEN (via Wikipedia)
     "az06": {
-        "pvi_dem_margin_pts": 0.0,
+        "pvi_dem_margin_pts": 1.53,
         "house_elections": [],
     },
     # Arizona 7: 2025 Cook PVI D+13 (via Wikipedia)
     "az07": {
-        "pvi_dem_margin_pts": 13.0,
+        "pvi_dem_margin_pts": 27.53,
         "house_elections": [],
     },
     # Arizona 8: 2025 Cook PVI R+8 (via Wikipedia)
     "az08": {
-        "pvi_dem_margin_pts": -8.0,
+        "pvi_dem_margin_pts": -14.47,
         "house_elections": [],
     },
     # Arizona 9: 2025 Cook PVI R+15 (via Wikipedia)
     "az09": {
-        "pvi_dem_margin_pts": -15.0,
+        "pvi_dem_margin_pts": -28.47,
         "house_elections": [],
     },
     # California 1: 2025 Cook PVI D+7 (via Wikipedia)
     "ca01": {
-        "pvi_dem_margin_pts": 7.0,
+        "pvi_dem_margin_pts": 15.53,
         "house_elections": [],
     },
     # California 2: 2025 Cook PVI D+13 (via Wikipedia)
     "ca02": {
-        "pvi_dem_margin_pts": 13.0,
+        "pvi_dem_margin_pts": 27.53,
         "house_elections": [],
     },
     # California 3: 2025 Cook PVI D+6 (via Wikipedia)
     "ca03": {
-        "pvi_dem_margin_pts": 6.0,
+        "pvi_dem_margin_pts": 13.53,
         "house_elections": [],
     },
     # California 4: 2025 Cook PVI D+8 (via Wikipedia)
     "ca04": {
-        "pvi_dem_margin_pts": 8.0,
+        "pvi_dem_margin_pts": 17.53,
         "house_elections": [],
     },
     # California 5: 2025 Cook PVI R+10 (via Wikipedia)
     "ca05": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # California 6: 2025 Cook PVI D+5 (via Wikipedia)
     "ca06": {
-        "pvi_dem_margin_pts": 5.0,
+        "pvi_dem_margin_pts": 11.53,
         "house_elections": [],
     },
     # California 7: 2025 Cook PVI D+7 (via Wikipedia)
     "ca07": {
-        "pvi_dem_margin_pts": 7.0,
+        "pvi_dem_margin_pts": 15.53,
         "house_elections": [],
     },
     # California 8: 2025 Cook PVI D+19 (via Wikipedia)
     "ca08": {
-        "pvi_dem_margin_pts": 19.0,
+        "pvi_dem_margin_pts": 39.53,
         "house_elections": [],
     },
     # California 9: 2025 Cook PVI D+8 (via Wikipedia)
     "ca09": {
-        "pvi_dem_margin_pts": 8.0,
+        "pvi_dem_margin_pts": 17.53,
         "house_elections": [],
     },
     # California 10: 2025 Cook PVI D+18 (via Wikipedia)
     "ca10": {
-        "pvi_dem_margin_pts": 18.0,
+        "pvi_dem_margin_pts": 37.53,
         "house_elections": [],
     },
     # California 11: 2025 Cook PVI D+36 (via Wikipedia)
     "ca11": {
-        "pvi_dem_margin_pts": 36.0,
+        "pvi_dem_margin_pts": 73.53,
         "house_elections": [],
     },
     # California 12: 2025 Cook PVI D+39 (via Wikipedia)
     "ca12": {
-        "pvi_dem_margin_pts": 39.0,
+        "pvi_dem_margin_pts": 79.53,
         "house_elections": [],
     },
     # California 13: 2025 Cook PVI D+2 (via Wikipedia)
     "ca13": {
-        "pvi_dem_margin_pts": 2.0,
+        "pvi_dem_margin_pts": 5.53,
         "house_elections": [],
     },
     # California 14: 2025 Cook PVI D+19 (via Wikipedia)
     "ca14": {
-        "pvi_dem_margin_pts": 19.0,
+        "pvi_dem_margin_pts": 39.53,
         "house_elections": [],
     },
     # California 15: 2025 Cook PVI D+26 (via Wikipedia)
     "ca15": {
-        "pvi_dem_margin_pts": 26.0,
+        "pvi_dem_margin_pts": 53.53,
         "house_elections": [],
     },
     # California 16: 2025 Cook PVI D+25 (via Wikipedia)
     "ca16": {
-        "pvi_dem_margin_pts": 25.0,
+        "pvi_dem_margin_pts": 51.53,
         "house_elections": [],
     },
     # California 17: 2025 Cook PVI D+21 (via Wikipedia)
     "ca17": {
-        "pvi_dem_margin_pts": 21.0,
+        "pvi_dem_margin_pts": 43.53,
         "house_elections": [],
     },
     # California 18: 2025 Cook PVI D+16 (via Wikipedia)
     "ca18": {
-        "pvi_dem_margin_pts": 16.0,
+        "pvi_dem_margin_pts": 33.53,
         "house_elections": [],
     },
     # California 19: 2025 Cook PVI D+18 (via Wikipedia)
     "ca19": {
-        "pvi_dem_margin_pts": 18.0,
+        "pvi_dem_margin_pts": 37.53,
         "house_elections": [],
     },
     # California 20: 2025 Cook PVI R+16 (via Wikipedia)
     "ca20": {
-        "pvi_dem_margin_pts": -16.0,
+        "pvi_dem_margin_pts": -30.47,
         "house_elections": [],
     },
     # California 21: 2025 Cook PVI D+5 (via Wikipedia)
     "ca21": {
-        "pvi_dem_margin_pts": 5.0,
+        "pvi_dem_margin_pts": 11.53,
         "house_elections": [],
     },
     # California 22: 2025 Cook PVI D+1 (via Wikipedia)
     "ca22": {
-        "pvi_dem_margin_pts": 1.0,
+        "pvi_dem_margin_pts": 3.53,
         "house_elections": [],
     },
     # California 23: 2025 Cook PVI R+9 (via Wikipedia)
     "ca23": {
-        "pvi_dem_margin_pts": -9.0,
+        "pvi_dem_margin_pts": -16.47,
         "house_elections": [],
     },
     # California 24: 2025 Cook PVI D+13 (via Wikipedia)
     "ca24": {
-        "pvi_dem_margin_pts": 13.0,
+        "pvi_dem_margin_pts": 27.53,
         "house_elections": [],
     },
     # California 25: 2025 Cook PVI D+4 (via Wikipedia)
     "ca25": {
-        "pvi_dem_margin_pts": 4.0,
+        "pvi_dem_margin_pts": 9.53,
         "house_elections": [],
     },
     # California 26: 2025 Cook PVI D+9 (via Wikipedia)
     "ca26": {
-        "pvi_dem_margin_pts": 9.0,
+        "pvi_dem_margin_pts": 19.53,
         "house_elections": [],
     },
     # California 27: 2025 Cook PVI D+6 (via Wikipedia)
     "ca27": {
-        "pvi_dem_margin_pts": 6.0,
+        "pvi_dem_margin_pts": 13.53,
         "house_elections": [],
     },
     # California 28: 2025 Cook PVI D+14 (via Wikipedia)
     "ca28": {
-        "pvi_dem_margin_pts": 14.0,
+        "pvi_dem_margin_pts": 29.53,
         "house_elections": [],
     },
     # California 29: 2025 Cook PVI D+19 (via Wikipedia)
     "ca29": {
-        "pvi_dem_margin_pts": 19.0,
+        "pvi_dem_margin_pts": 39.53,
         "house_elections": [],
     },
     # California 30: 2025 Cook PVI D+21 (via Wikipedia)
     "ca30": {
-        "pvi_dem_margin_pts": 21.0,
+        "pvi_dem_margin_pts": 43.53,
         "house_elections": [],
     },
     # California 31: 2025 Cook PVI D+8 (via Wikipedia)
     "ca31": {
-        "pvi_dem_margin_pts": 8.0,
+        "pvi_dem_margin_pts": 17.53,
         "house_elections": [],
     },
     # California 32: 2025 Cook PVI D+14 (via Wikipedia)
     "ca32": {
-        "pvi_dem_margin_pts": 14.0,
+        "pvi_dem_margin_pts": 29.53,
         "house_elections": [],
     },
     # California 33: 2025 Cook PVI D+7 (via Wikipedia)
     "ca33": {
-        "pvi_dem_margin_pts": 7.0,
+        "pvi_dem_margin_pts": 15.53,
         "house_elections": [],
     },
     # California 34: 2025 Cook PVI D+28 (via Wikipedia)
     "ca34": {
-        "pvi_dem_margin_pts": 28.0,
+        "pvi_dem_margin_pts": 57.53,
         "house_elections": [],
     },
     # California 35: 2025 Cook PVI D+6 (via Wikipedia)
     "ca35": {
-        "pvi_dem_margin_pts": 6.0,
+        "pvi_dem_margin_pts": 13.53,
         "house_elections": [],
     },
     # California 36: 2025 Cook PVI D+21 (via Wikipedia)
     "ca36": {
-        "pvi_dem_margin_pts": 21.0,
+        "pvi_dem_margin_pts": 43.53,
         "house_elections": [],
     },
     # California 37: 2025 Cook PVI D+33 (via Wikipedia)
     "ca37": {
-        "pvi_dem_margin_pts": 33.0,
+        "pvi_dem_margin_pts": 67.53,
         "house_elections": [],
     },
     # California 38: 2025 Cook PVI D+8 (via Wikipedia)
     "ca38": {
-        "pvi_dem_margin_pts": 8.0,
+        "pvi_dem_margin_pts": 17.53,
         "house_elections": [],
     },
     # California 39: 2025 Cook PVI D+7 (via Wikipedia)
     "ca39": {
-        "pvi_dem_margin_pts": 7.0,
+        "pvi_dem_margin_pts": 15.53,
         "house_elections": [],
     },
     # California 40: 2025 Cook PVI R+6 (via Wikipedia)
     "ca40": {
-        "pvi_dem_margin_pts": -6.0,
+        "pvi_dem_margin_pts": -10.47,
         "house_elections": [],
     },
     # California 41: 2025 Cook PVI D+9 (via Wikipedia)
     "ca41": {
-        "pvi_dem_margin_pts": 9.0,
+        "pvi_dem_margin_pts": 19.53,
         "house_elections": [],
     },
     # California 42: 2025 Cook PVI D+8 (via Wikipedia)
     "ca42": {
-        "pvi_dem_margin_pts": 8.0,
+        "pvi_dem_margin_pts": 17.53,
         "house_elections": [],
     },
     # California 43: 2025 Cook PVI D+27 (via Wikipedia)
     "ca43": {
-        "pvi_dem_margin_pts": 27.0,
+        "pvi_dem_margin_pts": 55.53,
         "house_elections": [],
     },
     # California 44: 2025 Cook PVI D+20 (via Wikipedia)
     "ca44": {
-        "pvi_dem_margin_pts": 20.0,
+        "pvi_dem_margin_pts": 41.53,
         "house_elections": [],
     },
     # California 45: 2025 Cook PVI D+3 (via Wikipedia)
     "ca45": {
-        "pvi_dem_margin_pts": 3.0,
+        "pvi_dem_margin_pts": 7.53,
         "house_elections": [],
     },
     # California 46: 2025 Cook PVI D+10 (via Wikipedia)
     "ca46": {
-        "pvi_dem_margin_pts": 10.0,
+        "pvi_dem_margin_pts": 21.53,
         "house_elections": [],
     },
     # California 47: 2025 Cook PVI D+6 (via Wikipedia)
     "ca47": {
-        "pvi_dem_margin_pts": 6.0,
+        "pvi_dem_margin_pts": 13.53,
         "house_elections": [],
     },
     # California 48: 2025 Cook PVI D+2 (via Wikipedia)
     "ca48": {
-        "pvi_dem_margin_pts": 2.0,
+        "pvi_dem_margin_pts": 5.53,
         "house_elections": [],
     },
     # California 49: 2025 Cook PVI D+7 (via Wikipedia)
     "ca49": {
-        "pvi_dem_margin_pts": 7.0,
+        "pvi_dem_margin_pts": 15.53,
         "house_elections": [],
     },
     # California 50: 2025 Cook PVI D+10 (via Wikipedia)
     "ca50": {
-        "pvi_dem_margin_pts": 10.0,
+        "pvi_dem_margin_pts": 21.53,
         "house_elections": [],
     },
     # California 51: 2025 Cook PVI D+10 (via Wikipedia)
     "ca51": {
-        "pvi_dem_margin_pts": 10.0,
+        "pvi_dem_margin_pts": 21.53,
         "house_elections": [],
     },
     # California 52: 2025 Cook PVI D+11 (via Wikipedia)
     "ca52": {
-        "pvi_dem_margin_pts": 11.0,
+        "pvi_dem_margin_pts": 23.53,
         "house_elections": [],
     },
     # Colorado 1: 2025 Cook PVI D+29 (via Wikipedia)
     "co01": {
-        "pvi_dem_margin_pts": 29.0,
+        "pvi_dem_margin_pts": 59.53,
         "house_elections": [],
     },
     # Colorado 2: 2025 Cook PVI D+20 (via Wikipedia)
     "co02": {
-        "pvi_dem_margin_pts": 20.0,
+        "pvi_dem_margin_pts": 41.53,
         "house_elections": [],
     },
     # Colorado 3: 2025 Cook PVI R+5 (via Wikipedia)
     "co03": {
-        "pvi_dem_margin_pts": -5.0,
+        "pvi_dem_margin_pts": -8.47,
         "house_elections": [],
     },
     # Colorado 4: 2025 Cook PVI R+9 (via Wikipedia)
     "co04": {
-        "pvi_dem_margin_pts": -9.0,
+        "pvi_dem_margin_pts": -16.47,
         "house_elections": [],
     },
     # Colorado 5: 2025 Cook PVI R+5 (via Wikipedia)
     "co05": {
-        "pvi_dem_margin_pts": -5.0,
+        "pvi_dem_margin_pts": -8.47,
         "house_elections": [],
     },
     # Colorado 6: 2025 Cook PVI D+11 (via Wikipedia)
     "co06": {
-        "pvi_dem_margin_pts": 11.0,
+        "pvi_dem_margin_pts": 23.53,
         "house_elections": [],
     },
     # Colorado 7: 2025 Cook PVI D+8 (via Wikipedia)
     "co07": {
-        "pvi_dem_margin_pts": 8.0,
+        "pvi_dem_margin_pts": 17.53,
         "house_elections": [],
     },
     # Colorado 8: 2025 Cook PVI EVEN (via Wikipedia)
     "co08": {
-        "pvi_dem_margin_pts": 0.0,
+        "pvi_dem_margin_pts": 1.53,
         "house_elections": [],
     },
     # Connecticut 1: 2025 Cook PVI D+12 (via Wikipedia)
     "ct01": {
-        "pvi_dem_margin_pts": 12.0,
+        "pvi_dem_margin_pts": 25.53,
         "house_elections": [],
     },
     # Connecticut 2: 2025 Cook PVI D+4 (via Wikipedia)
     "ct02": {
-        "pvi_dem_margin_pts": 4.0,
+        "pvi_dem_margin_pts": 9.53,
         "house_elections": [],
     },
     # Connecticut 3: 2025 Cook PVI D+8 (via Wikipedia)
     "ct03": {
-        "pvi_dem_margin_pts": 8.0,
+        "pvi_dem_margin_pts": 17.53,
         "house_elections": [],
     },
     # Connecticut 4: 2025 Cook PVI D+13 (via Wikipedia)
     "ct04": {
-        "pvi_dem_margin_pts": 13.0,
+        "pvi_dem_margin_pts": 27.53,
         "house_elections": [],
     },
     # Connecticut 5: 2025 Cook PVI D+3 (via Wikipedia)
     "ct05": {
-        "pvi_dem_margin_pts": 3.0,
+        "pvi_dem_margin_pts": 7.53,
         "house_elections": [],
     },
     # Delaware 1: 2025 Cook PVI D+8 (via Wikipedia)
     "de01": {
-        "pvi_dem_margin_pts": 8.0,
+        "pvi_dem_margin_pts": 17.53,
         "house_elections": [],
     },
     # Florida 1: 2025 Cook PVI R+18 (via Wikipedia)
     "fl01": {
-        "pvi_dem_margin_pts": -18.0,
+        "pvi_dem_margin_pts": -34.47,
         "house_elections": [],
     },
     # Florida 2: 2025 Cook PVI R+8 (via Wikipedia)
     "fl02": {
-        "pvi_dem_margin_pts": -8.0,
+        "pvi_dem_margin_pts": -14.47,
         "house_elections": [],
     },
     # Florida 3: 2025 Cook PVI R+10 (via Wikipedia)
     "fl03": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Florida 4: 2025 Cook PVI R+5 (via Wikipedia)
     "fl04": {
-        "pvi_dem_margin_pts": -5.0,
+        "pvi_dem_margin_pts": -8.47,
         "house_elections": [],
     },
     # Florida 5: 2025 Cook PVI R+10 (via Wikipedia)
     "fl05": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Florida 6: 2025 Cook PVI R+14 (via Wikipedia)
     "fl06": {
-        "pvi_dem_margin_pts": -14.0,
+        "pvi_dem_margin_pts": -26.47,
         "house_elections": [],
     },
     # Florida 7: 2025 Cook PVI R+5 (via Wikipedia)
     "fl07": {
-        "pvi_dem_margin_pts": -5.0,
+        "pvi_dem_margin_pts": -8.47,
         "house_elections": [],
     },
     # Florida 8: 2025 Cook PVI R+8 (via Wikipedia)
     "fl08": {
-        "pvi_dem_margin_pts": -8.0,
+        "pvi_dem_margin_pts": -14.47,
         "house_elections": [],
     },
     # Florida 9: 2025 Cook PVI R+8 (via Wikipedia)
     "fl09": {
-        "pvi_dem_margin_pts": -8.0,
+        "pvi_dem_margin_pts": -14.47,
         "house_elections": [],
     },
     # Florida 10: 2025 Cook PVI D+13 (via Wikipedia)
     "fl10": {
-        "pvi_dem_margin_pts": 13.0,
+        "pvi_dem_margin_pts": 27.53,
         "house_elections": [],
     },
     # Florida 11: 2025 Cook PVI R+7 (via Wikipedia)
     "fl11": {
-        "pvi_dem_margin_pts": -7.0,
+        "pvi_dem_margin_pts": -12.47,
         "house_elections": [],
     },
     # Florida 12: 2025 Cook PVI R+7 (via Wikipedia)
     "fl12": {
-        "pvi_dem_margin_pts": -7.0,
+        "pvi_dem_margin_pts": -12.47,
         "house_elections": [],
     },
     # Florida 13: 2025 Cook PVI R+6 (via Wikipedia)
     "fl13": {
-        "pvi_dem_margin_pts": -6.0,
+        "pvi_dem_margin_pts": -10.47,
         "house_elections": [],
     },
     # Florida 14: 2025 Cook PVI R+4 (via Wikipedia)
     "fl14": {
-        "pvi_dem_margin_pts": -4.0,
+        "pvi_dem_margin_pts": -6.47,
         "house_elections": [],
     },
     # Florida 15: 2025 Cook PVI R+9 (via Wikipedia)
     "fl15": {
-        "pvi_dem_margin_pts": -9.0,
+        "pvi_dem_margin_pts": -16.47,
         "house_elections": [],
     },
     # Florida 16: 2025 Cook PVI R+6 (via Wikipedia)
     "fl16": {
-        "pvi_dem_margin_pts": -6.0,
+        "pvi_dem_margin_pts": -10.47,
         "house_elections": [],
     },
     # Florida 17: 2025 Cook PVI R+10 (via Wikipedia)
     "fl17": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Florida 18: 2025 Cook PVI R+8 (via Wikipedia)
     "fl18": {
-        "pvi_dem_margin_pts": -8.0,
+        "pvi_dem_margin_pts": -14.47,
         "house_elections": [],
     },
     # Florida 19: 2025 Cook PVI R+14 (via Wikipedia)
     "fl19": {
-        "pvi_dem_margin_pts": -14.0,
+        "pvi_dem_margin_pts": -26.47,
         "house_elections": [],
     },
     # Florida 20: 2025 Cook PVI D+20 (via Wikipedia)
     "fl20": {
-        "pvi_dem_margin_pts": 20.0,
+        "pvi_dem_margin_pts": 41.53,
         "house_elections": [],
     },
     # Florida 21: 2025 Cook PVI R+7 (via Wikipedia)
     "fl21": {
-        "pvi_dem_margin_pts": -7.0,
+        "pvi_dem_margin_pts": -12.47,
         "house_elections": [],
     },
     # Florida 22: 2025 Cook PVI R+4 (via Wikipedia)
     "fl22": {
-        "pvi_dem_margin_pts": -4.0,
+        "pvi_dem_margin_pts": -6.47,
         "house_elections": [],
     },
     # Florida 23: 2025 Cook PVI D+9 (via Wikipedia)
     "fl23": {
-        "pvi_dem_margin_pts": 9.0,
+        "pvi_dem_margin_pts": 19.53,
         "house_elections": [],
     },
     # Florida 24: 2025 Cook PVI D+22 (via Wikipedia)
     "fl24": {
-        "pvi_dem_margin_pts": 22.0,
+        "pvi_dem_margin_pts": 45.53,
         "house_elections": [],
     },
     # Florida 25: 2025 Cook PVI R+3 (via Wikipedia)
     "fl25": {
-        "pvi_dem_margin_pts": -3.0,
+        "pvi_dem_margin_pts": -4.47,
         "house_elections": [],
     },
     # Florida 26: 2025 Cook PVI R+7 (via Wikipedia)
     "fl26": {
-        "pvi_dem_margin_pts": -7.0,
+        "pvi_dem_margin_pts": -12.47,
         "house_elections": [],
     },
     # Florida 27: 2025 Cook PVI R+6 (via Wikipedia)
     "fl27": {
-        "pvi_dem_margin_pts": -6.0,
+        "pvi_dem_margin_pts": -10.47,
         "house_elections": [],
     },
     # Florida 28: 2025 Cook PVI R+10 (via Wikipedia)
     "fl28": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Georgia 1: 2025 Cook PVI R+8 (via Wikipedia)
     "ga01": {
-        "pvi_dem_margin_pts": -8.0,
+        "pvi_dem_margin_pts": -14.47,
         "house_elections": [],
     },
     # Georgia 2: 2025 Cook PVI D+4 (via Wikipedia)
     "ga02": {
-        "pvi_dem_margin_pts": 4.0,
+        "pvi_dem_margin_pts": 9.53,
         "house_elections": [],
     },
     # Georgia 3: 2025 Cook PVI R+15 (via Wikipedia)
     "ga03": {
-        "pvi_dem_margin_pts": -15.0,
+        "pvi_dem_margin_pts": -28.47,
         "house_elections": [],
     },
     # Georgia 4: 2025 Cook PVI D+27 (via Wikipedia)
     "ga04": {
-        "pvi_dem_margin_pts": 27.0,
+        "pvi_dem_margin_pts": 55.53,
         "house_elections": [],
     },
     # Georgia 5: 2025 Cook PVI D+36 (via Wikipedia)
     "ga05": {
-        "pvi_dem_margin_pts": 36.0,
+        "pvi_dem_margin_pts": 73.53,
         "house_elections": [],
     },
     # Georgia 6: 2025 Cook PVI D+25 (via Wikipedia)
     "ga06": {
-        "pvi_dem_margin_pts": 25.0,
+        "pvi_dem_margin_pts": 51.53,
         "house_elections": [],
     },
     # Georgia 7: 2025 Cook PVI R+11 (via Wikipedia)
     "ga07": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Georgia 8: 2025 Cook PVI R+15 (via Wikipedia)
     "ga08": {
-        "pvi_dem_margin_pts": -15.0,
+        "pvi_dem_margin_pts": -28.47,
         "house_elections": [],
     },
     # Georgia 9: 2025 Cook PVI R+17 (via Wikipedia)
     "ga09": {
-        "pvi_dem_margin_pts": -17.0,
+        "pvi_dem_margin_pts": -32.47,
         "house_elections": [],
     },
     # Georgia 10: 2025 Cook PVI R+11 (via Wikipedia)
     "ga10": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Georgia 11: 2025 Cook PVI R+12 (via Wikipedia)
     "ga11": {
-        "pvi_dem_margin_pts": -12.0,
+        "pvi_dem_margin_pts": -22.47,
         "house_elections": [],
     },
     # Georgia 12: 2025 Cook PVI R+7 (via Wikipedia)
     "ga12": {
-        "pvi_dem_margin_pts": -7.0,
+        "pvi_dem_margin_pts": -12.47,
         "house_elections": [],
     },
     # Georgia 13: 2025 Cook PVI D+21 (via Wikipedia)
     "ga13": {
-        "pvi_dem_margin_pts": 21.0,
+        "pvi_dem_margin_pts": 43.53,
         "house_elections": [],
     },
     # Georgia 14: 2025 Cook PVI R+19 (via Wikipedia)
     "ga14": {
-        "pvi_dem_margin_pts": -19.0,
+        "pvi_dem_margin_pts": -36.47,
         "house_elections": [],
     },
     # Hawaii 1: 2025 Cook PVI D+13 (via Wikipedia)
     "hi01": {
-        "pvi_dem_margin_pts": 13.0,
+        "pvi_dem_margin_pts": 27.53,
         "house_elections": [],
     },
     # Hawaii 2: 2025 Cook PVI D+12 (via Wikipedia)
     "hi02": {
-        "pvi_dem_margin_pts": 12.0,
+        "pvi_dem_margin_pts": 25.53,
         "house_elections": [],
     },
     # Iowa 1: 2025 Cook PVI R+4 (via Wikipedia)
     "ia01": {
-        "pvi_dem_margin_pts": -4.0,
+        "pvi_dem_margin_pts": -6.47,
         "house_elections": [],
     },
     # Iowa 2: 2025 Cook PVI R+4 (via Wikipedia)
     "ia02": {
-        "pvi_dem_margin_pts": -4.0,
+        "pvi_dem_margin_pts": -6.47,
         "house_elections": [],
     },
     # Iowa 3: 2025 Cook PVI R+2 (via Wikipedia)
     "ia03": {
-        "pvi_dem_margin_pts": -2.0,
+        "pvi_dem_margin_pts": -2.47,
         "house_elections": [],
     },
     # Iowa 4: 2025 Cook PVI R+15 (via Wikipedia)
     "ia04": {
-        "pvi_dem_margin_pts": -15.0,
+        "pvi_dem_margin_pts": -28.47,
         "house_elections": [],
     },
     # Idaho 1: 2025 Cook PVI R+22 (via Wikipedia)
     "id01": {
-        "pvi_dem_margin_pts": -22.0,
+        "pvi_dem_margin_pts": -42.47,
         "house_elections": [],
     },
     # Idaho 2: 2025 Cook PVI R+13 (via Wikipedia)
     "id02": {
-        "pvi_dem_margin_pts": -13.0,
+        "pvi_dem_margin_pts": -24.47,
         "house_elections": [],
     },
     # Illinois 1: 2025 Cook PVI D+18 (via Wikipedia)
     "il01": {
-        "pvi_dem_margin_pts": 18.0,
+        "pvi_dem_margin_pts": 37.53,
         "house_elections": [],
     },
     # Illinois 2: 2025 Cook PVI D+18 (via Wikipedia)
     "il02": {
-        "pvi_dem_margin_pts": 18.0,
+        "pvi_dem_margin_pts": 37.53,
         "house_elections": [],
     },
     # Illinois 3: 2025 Cook PVI D+17 (via Wikipedia)
     "il03": {
-        "pvi_dem_margin_pts": 17.0,
+        "pvi_dem_margin_pts": 35.53,
         "house_elections": [],
     },
     # Illinois 4: 2025 Cook PVI D+17 (via Wikipedia)
     "il04": {
-        "pvi_dem_margin_pts": 17.0,
+        "pvi_dem_margin_pts": 35.53,
         "house_elections": [],
     },
     # Illinois 5: 2025 Cook PVI D+19 (via Wikipedia)
     "il05": {
-        "pvi_dem_margin_pts": 19.0,
+        "pvi_dem_margin_pts": 39.53,
         "house_elections": [],
     },
     # Illinois 6: 2025 Cook PVI D+3 (via Wikipedia)
     "il06": {
-        "pvi_dem_margin_pts": 3.0,
+        "pvi_dem_margin_pts": 7.53,
         "house_elections": [],
     },
     # Illinois 7: 2025 Cook PVI D+34 (via Wikipedia)
     "il07": {
-        "pvi_dem_margin_pts": 34.0,
+        "pvi_dem_margin_pts": 69.53,
         "house_elections": [],
     },
     # Illinois 8: 2025 Cook PVI D+5 (via Wikipedia)
     "il08": {
-        "pvi_dem_margin_pts": 5.0,
+        "pvi_dem_margin_pts": 11.53,
         "house_elections": [],
     },
     # Illinois 9: 2025 Cook PVI D+19 (via Wikipedia)
     "il09": {
-        "pvi_dem_margin_pts": 19.0,
+        "pvi_dem_margin_pts": 39.53,
         "house_elections": [],
     },
     # Illinois 10: 2025 Cook PVI D+12 (via Wikipedia)
     "il10": {
-        "pvi_dem_margin_pts": 12.0,
+        "pvi_dem_margin_pts": 25.53,
         "house_elections": [],
     },
     # Illinois 11: 2025 Cook PVI D+6 (via Wikipedia)
     "il11": {
-        "pvi_dem_margin_pts": 6.0,
+        "pvi_dem_margin_pts": 13.53,
         "house_elections": [],
     },
     # Illinois 12: 2025 Cook PVI R+22 (via Wikipedia)
     "il12": {
-        "pvi_dem_margin_pts": -22.0,
+        "pvi_dem_margin_pts": -42.47,
         "house_elections": [],
     },
     # Illinois 13: 2025 Cook PVI D+5 (via Wikipedia)
     "il13": {
-        "pvi_dem_margin_pts": 5.0,
+        "pvi_dem_margin_pts": 11.53,
         "house_elections": [],
     },
     # Illinois 14: 2025 Cook PVI D+3 (via Wikipedia)
     "il14": {
-        "pvi_dem_margin_pts": 3.0,
+        "pvi_dem_margin_pts": 7.53,
         "house_elections": [],
     },
     # Illinois 15: 2025 Cook PVI R+20 (via Wikipedia)
     "il15": {
-        "pvi_dem_margin_pts": -20.0,
+        "pvi_dem_margin_pts": -38.47,
         "house_elections": [],
     },
     # Illinois 16: 2025 Cook PVI R+11 (via Wikipedia)
     "il16": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Illinois 17: 2025 Cook PVI D+3 (via Wikipedia)
     "il17": {
-        "pvi_dem_margin_pts": 3.0,
+        "pvi_dem_margin_pts": 7.53,
         "house_elections": [],
     },
     # Indiana 1: 2025 Cook PVI D+1 (via Wikipedia)
     "in01": {
-        "pvi_dem_margin_pts": 1.0,
+        "pvi_dem_margin_pts": 3.53,
         "house_elections": [],
     },
     # Indiana 2: 2025 Cook PVI R+13 (via Wikipedia)
     "in02": {
-        "pvi_dem_margin_pts": -13.0,
+        "pvi_dem_margin_pts": -24.47,
         "house_elections": [],
     },
     # Indiana 3: 2025 Cook PVI R+16 (via Wikipedia)
     "in03": {
-        "pvi_dem_margin_pts": -16.0,
+        "pvi_dem_margin_pts": -30.47,
         "house_elections": [],
     },
     # Indiana 4: 2025 Cook PVI R+15 (via Wikipedia)
     "in04": {
-        "pvi_dem_margin_pts": -15.0,
+        "pvi_dem_margin_pts": -28.47,
         "house_elections": [],
     },
     # Indiana 5: 2025 Cook PVI R+8 (via Wikipedia)
     "in05": {
-        "pvi_dem_margin_pts": -8.0,
+        "pvi_dem_margin_pts": -14.47,
         "house_elections": [],
     },
     # Indiana 6: 2025 Cook PVI R+16 (via Wikipedia)
     "in06": {
-        "pvi_dem_margin_pts": -16.0,
+        "pvi_dem_margin_pts": -30.47,
         "house_elections": [],
     },
     # Indiana 7: 2025 Cook PVI D+21 (via Wikipedia)
     "in07": {
-        "pvi_dem_margin_pts": 21.0,
+        "pvi_dem_margin_pts": 43.53,
         "house_elections": [],
     },
     # Indiana 8: 2025 Cook PVI R+18 (via Wikipedia)
     "in08": {
-        "pvi_dem_margin_pts": -18.0,
+        "pvi_dem_margin_pts": -34.47,
         "house_elections": [],
     },
     # Indiana 9: 2025 Cook PVI R+15 (via Wikipedia)
     "in09": {
-        "pvi_dem_margin_pts": -15.0,
+        "pvi_dem_margin_pts": -28.47,
         "house_elections": [],
     },
     # Kansas 1: 2025 Cook PVI R+16 (via Wikipedia)
     "ks01": {
-        "pvi_dem_margin_pts": -16.0,
+        "pvi_dem_margin_pts": -30.47,
         "house_elections": [],
     },
     # Kansas 2: 2025 Cook PVI R+10 (via Wikipedia)
     "ks02": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Kansas 3: 2025 Cook PVI D+2 (via Wikipedia)
     "ks03": {
-        "pvi_dem_margin_pts": 2.0,
+        "pvi_dem_margin_pts": 5.53,
         "house_elections": [],
     },
     # Kansas 4: 2025 Cook PVI R+12 (via Wikipedia)
     "ks04": {
-        "pvi_dem_margin_pts": -12.0,
+        "pvi_dem_margin_pts": -22.47,
         "house_elections": [],
     },
     # Kentucky 1: 2025 Cook PVI R+23 (via Wikipedia)
     "ky01": {
-        "pvi_dem_margin_pts": -23.0,
+        "pvi_dem_margin_pts": -44.47,
         "house_elections": [],
     },
     # Kentucky 2: 2025 Cook PVI R+20 (via Wikipedia)
     "ky02": {
-        "pvi_dem_margin_pts": -20.0,
+        "pvi_dem_margin_pts": -38.47,
         "house_elections": [],
     },
     # Kentucky 3: 2025 Cook PVI D+10 (via Wikipedia)
     "ky03": {
-        "pvi_dem_margin_pts": 10.0,
+        "pvi_dem_margin_pts": 21.53,
         "house_elections": [],
     },
     # Kentucky 4: 2025 Cook PVI R+18 (via Wikipedia)
     "ky04": {
-        "pvi_dem_margin_pts": -18.0,
+        "pvi_dem_margin_pts": -34.47,
         "house_elections": [],
     },
     # Kentucky 5: 2025 Cook PVI R+32 (via Wikipedia)
     "ky05": {
-        "pvi_dem_margin_pts": -32.0,
+        "pvi_dem_margin_pts": -62.47,
         "house_elections": [],
     },
     # Kentucky 6: 2025 Cook PVI R+7 (via Wikipedia)
     "ky06": {
-        "pvi_dem_margin_pts": -7.0,
+        "pvi_dem_margin_pts": -12.47,
         "house_elections": [],
     },
     # Louisiana 1: 2025 Cook PVI R+20 (via Wikipedia)
     "la01": {
-        "pvi_dem_margin_pts": -20.0,
+        "pvi_dem_margin_pts": -38.47,
         "house_elections": [],
     },
     # Louisiana 2: 2025 Cook PVI D+25 (via Wikipedia)
     "la02": {
-        "pvi_dem_margin_pts": 25.0,
+        "pvi_dem_margin_pts": 51.53,
         "house_elections": [],
     },
     # Louisiana 3: 2025 Cook PVI R+18 (via Wikipedia)
     "la03": {
-        "pvi_dem_margin_pts": -18.0,
+        "pvi_dem_margin_pts": -34.47,
         "house_elections": [],
     },
     # Louisiana 4: 2025 Cook PVI R+17 (via Wikipedia)
     "la04": {
-        "pvi_dem_margin_pts": -17.0,
+        "pvi_dem_margin_pts": -32.47,
         "house_elections": [],
     },
     # Louisiana 5: 2025 Cook PVI R+18 (via Wikipedia)
     "la05": {
-        "pvi_dem_margin_pts": -18.0,
+        "pvi_dem_margin_pts": -34.47,
         "house_elections": [],
     },
     # Louisiana 6: 2025 Cook PVI R+16 (via Wikipedia)
     "la06": {
-        "pvi_dem_margin_pts": -16.0,
+        "pvi_dem_margin_pts": -30.47,
         "house_elections": [],
     },
     # Massachusetts 1: 2025 Cook PVI D+8 (via Wikipedia)
     "ma01": {
-        "pvi_dem_margin_pts": 8.0,
+        "pvi_dem_margin_pts": 17.53,
         "house_elections": [],
     },
     # Massachusetts 2: 2025 Cook PVI D+13 (via Wikipedia)
     "ma02": {
-        "pvi_dem_margin_pts": 13.0,
+        "pvi_dem_margin_pts": 27.53,
         "house_elections": [],
     },
     # Massachusetts 3: 2025 Cook PVI D+11 (via Wikipedia)
     "ma03": {
-        "pvi_dem_margin_pts": 11.0,
+        "pvi_dem_margin_pts": 23.53,
         "house_elections": [],
     },
     # Massachusetts 4: 2025 Cook PVI D+11 (via Wikipedia)
     "ma04": {
-        "pvi_dem_margin_pts": 11.0,
+        "pvi_dem_margin_pts": 23.53,
         "house_elections": [],
     },
     # Massachusetts 5: 2025 Cook PVI D+24 (via Wikipedia)
     "ma05": {
-        "pvi_dem_margin_pts": 24.0,
+        "pvi_dem_margin_pts": 49.53,
         "house_elections": [],
     },
     # Massachusetts 6: 2025 Cook PVI D+11 (via Wikipedia)
     "ma06": {
-        "pvi_dem_margin_pts": 11.0,
+        "pvi_dem_margin_pts": 23.53,
         "house_elections": [],
     },
     # Massachusetts 7: 2025 Cook PVI D+34 (via Wikipedia)
     "ma07": {
-        "pvi_dem_margin_pts": 34.0,
+        "pvi_dem_margin_pts": 69.53,
         "house_elections": [],
     },
     # Massachusetts 8: 2025 Cook PVI D+15 (via Wikipedia)
     "ma08": {
-        "pvi_dem_margin_pts": 15.0,
+        "pvi_dem_margin_pts": 31.53,
         "house_elections": [],
     },
     # Massachusetts 9: 2025 Cook PVI D+6 (via Wikipedia)
     "ma09": {
-        "pvi_dem_margin_pts": 6.0,
+        "pvi_dem_margin_pts": 13.53,
         "house_elections": [],
     },
     # Maryland 1: 2025 Cook PVI R+8 (via Wikipedia)
     "md01": {
-        "pvi_dem_margin_pts": -8.0,
+        "pvi_dem_margin_pts": -14.47,
         "house_elections": [],
     },
     # Maryland 2: 2025 Cook PVI D+10 (via Wikipedia)
     "md02": {
-        "pvi_dem_margin_pts": 10.0,
+        "pvi_dem_margin_pts": 21.53,
         "house_elections": [],
     },
     # Maryland 3: 2025 Cook PVI D+12 (via Wikipedia)
     "md03": {
-        "pvi_dem_margin_pts": 12.0,
+        "pvi_dem_margin_pts": 25.53,
         "house_elections": [],
     },
     # Maryland 4: 2025 Cook PVI D+39 (via Wikipedia)
     "md04": {
-        "pvi_dem_margin_pts": 39.0,
+        "pvi_dem_margin_pts": 79.53,
         "house_elections": [],
     },
     # Maryland 5: 2025 Cook PVI D+17 (via Wikipedia)
     "md05": {
-        "pvi_dem_margin_pts": 17.0,
+        "pvi_dem_margin_pts": 35.53,
         "house_elections": [],
     },
     # Maryland 6: 2025 Cook PVI D+3 (via Wikipedia)
     "md06": {
-        "pvi_dem_margin_pts": 3.0,
+        "pvi_dem_margin_pts": 7.53,
         "house_elections": [],
     },
     # Maryland 7: 2025 Cook PVI D+31 (via Wikipedia)
     "md07": {
-        "pvi_dem_margin_pts": 31.0,
+        "pvi_dem_margin_pts": 63.53,
         "house_elections": [],
     },
     # Maryland 8: 2025 Cook PVI D+30 (via Wikipedia)
     "md08": {
-        "pvi_dem_margin_pts": 30.0,
+        "pvi_dem_margin_pts": 61.53,
         "house_elections": [],
     },
     # Maine 1: 2025 Cook PVI D+11 (via Wikipedia)
     "me01": {
-        "pvi_dem_margin_pts": 11.0,
+        "pvi_dem_margin_pts": 23.53,
         "house_elections": [],
     },
     # Maine 2: 2025 Cook PVI R+4 (via Wikipedia)
     "me02": {
-        "pvi_dem_margin_pts": -4.0,
+        "pvi_dem_margin_pts": -6.47,
         "house_elections": [],
     },
     # Michigan 1: 2025 Cook PVI R+11 (via Wikipedia)
     "mi01": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Michigan 2: 2025 Cook PVI R+15 (via Wikipedia)
     "mi02": {
-        "pvi_dem_margin_pts": -15.0,
+        "pvi_dem_margin_pts": -28.47,
         "house_elections": [],
     },
     # Michigan 3: 2025 Cook PVI D+4 (via Wikipedia)
     "mi03": {
-        "pvi_dem_margin_pts": 4.0,
+        "pvi_dem_margin_pts": 9.53,
         "house_elections": [],
     },
     # Michigan 4: 2025 Cook PVI R+3 (via Wikipedia)
     "mi04": {
-        "pvi_dem_margin_pts": -3.0,
+        "pvi_dem_margin_pts": -4.47,
         "house_elections": [],
     },
     # Michigan 5: 2025 Cook PVI R+13 (via Wikipedia)
     "mi05": {
-        "pvi_dem_margin_pts": -13.0,
+        "pvi_dem_margin_pts": -24.47,
         "house_elections": [],
     },
     # Michigan 6: 2025 Cook PVI D+12 (via Wikipedia)
     "mi06": {
-        "pvi_dem_margin_pts": 12.0,
+        "pvi_dem_margin_pts": 25.53,
         "house_elections": [],
     },
     # Michigan 7: 2025 Cook PVI EVEN (via Wikipedia)
     "mi07": {
-        "pvi_dem_margin_pts": 0.0,
+        "pvi_dem_margin_pts": 1.53,
         "house_elections": [],
     },
     # Michigan 8: 2025 Cook PVI R+1 (via Wikipedia)
     "mi08": {
-        "pvi_dem_margin_pts": -1.0,
+        "pvi_dem_margin_pts": -0.47,
         "house_elections": [],
     },
     # Michigan 9: 2025 Cook PVI R+16 (via Wikipedia)
     "mi09": {
-        "pvi_dem_margin_pts": -16.0,
+        "pvi_dem_margin_pts": -30.47,
         "house_elections": [],
     },
     # Michigan 10: 2025 Cook PVI R+3 (via Wikipedia)
     "mi10": {
-        "pvi_dem_margin_pts": -3.0,
+        "pvi_dem_margin_pts": -4.47,
         "house_elections": [],
     },
     # Michigan 11: 2025 Cook PVI D+9 (via Wikipedia)
     "mi11": {
-        "pvi_dem_margin_pts": 9.0,
+        "pvi_dem_margin_pts": 19.53,
         "house_elections": [],
     },
     # Michigan 12: 2025 Cook PVI D+21 (via Wikipedia)
     "mi12": {
-        "pvi_dem_margin_pts": 21.0,
+        "pvi_dem_margin_pts": 43.53,
         "house_elections": [],
     },
     # Michigan 13: 2025 Cook PVI D+22 (via Wikipedia)
     "mi13": {
-        "pvi_dem_margin_pts": 22.0,
+        "pvi_dem_margin_pts": 45.53,
         "house_elections": [],
     },
     # Minnesota 1: 2025 Cook PVI R+6 (via Wikipedia)
     "mn01": {
-        "pvi_dem_margin_pts": -6.0,
+        "pvi_dem_margin_pts": -10.47,
         "house_elections": [],
     },
     # Minnesota 2: 2025 Cook PVI D+3 (via Wikipedia)
     "mn02": {
-        "pvi_dem_margin_pts": 3.0,
+        "pvi_dem_margin_pts": 7.53,
         "house_elections": [],
     },
     # Minnesota 3: 2025 Cook PVI D+11 (via Wikipedia)
     "mn03": {
-        "pvi_dem_margin_pts": 11.0,
+        "pvi_dem_margin_pts": 23.53,
         "house_elections": [],
     },
     # Minnesota 4: 2025 Cook PVI D+18 (via Wikipedia)
     "mn04": {
-        "pvi_dem_margin_pts": 18.0,
+        "pvi_dem_margin_pts": 37.53,
         "house_elections": [],
     },
     # Minnesota 5: 2025 Cook PVI D+32 (via Wikipedia)
     "mn05": {
-        "pvi_dem_margin_pts": 32.0,
+        "pvi_dem_margin_pts": 65.53,
         "house_elections": [],
     },
     # Minnesota 6: 2025 Cook PVI R+10 (via Wikipedia)
     "mn06": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Minnesota 7: 2025 Cook PVI R+18 (via Wikipedia)
     "mn07": {
-        "pvi_dem_margin_pts": -18.0,
+        "pvi_dem_margin_pts": -34.47,
         "house_elections": [],
     },
     # Minnesota 8: 2025 Cook PVI R+7 (via Wikipedia)
     "mn08": {
-        "pvi_dem_margin_pts": -7.0,
+        "pvi_dem_margin_pts": -12.47,
         "house_elections": [],
     },
     # Missouri 1: 2025 Cook PVI D+29 (via Wikipedia)
     "mo01": {
-        "pvi_dem_margin_pts": 29.0,
+        "pvi_dem_margin_pts": 59.53,
         "house_elections": [],
     },
     # Missouri 2: 2025 Cook PVI R+6 (via Wikipedia)
     "mo02": {
-        "pvi_dem_margin_pts": -6.0,
+        "pvi_dem_margin_pts": -10.47,
         "house_elections": [],
     },
     # Missouri 3: 2025 Cook PVI R+10 (via Wikipedia)
     "mo03": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Missouri 4: 2025 Cook PVI R+10 (via Wikipedia)
     "mo04": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Missouri 5: 2025 Cook PVI R+9 (via Wikipedia)
     "mo05": {
-        "pvi_dem_margin_pts": -9.0,
+        "pvi_dem_margin_pts": -16.47,
         "house_elections": [],
     },
     # Missouri 6: 2025 Cook PVI R+13 (via Wikipedia)
     "mo06": {
-        "pvi_dem_margin_pts": -13.0,
+        "pvi_dem_margin_pts": -24.47,
         "house_elections": [],
     },
     # Missouri 7: 2025 Cook PVI R+21 (via Wikipedia)
     "mo07": {
-        "pvi_dem_margin_pts": -21.0,
+        "pvi_dem_margin_pts": -40.47,
         "house_elections": [],
     },
     # Missouri 8: 2025 Cook PVI R+27 (via Wikipedia)
     "mo08": {
-        "pvi_dem_margin_pts": -27.0,
+        "pvi_dem_margin_pts": -52.47,
         "house_elections": [],
     },
     # Mississippi 1: 2025 Cook PVI R+18 (via Wikipedia)
     "ms01": {
-        "pvi_dem_margin_pts": -18.0,
+        "pvi_dem_margin_pts": -34.47,
         "house_elections": [],
     },
     # Mississippi 2: 2025 Cook PVI D+11 (via Wikipedia)
     "ms02": {
-        "pvi_dem_margin_pts": 11.0,
+        "pvi_dem_margin_pts": 23.53,
         "house_elections": [],
     },
     # Mississippi 3: 2025 Cook PVI R+14 (via Wikipedia)
     "ms03": {
-        "pvi_dem_margin_pts": -14.0,
+        "pvi_dem_margin_pts": -26.47,
         "house_elections": [],
     },
     # Mississippi 4: 2025 Cook PVI R+21 (via Wikipedia)
     "ms04": {
-        "pvi_dem_margin_pts": -21.0,
+        "pvi_dem_margin_pts": -40.47,
         "house_elections": [],
     },
     # Montana 1: 2025 Cook PVI R+5 (via Wikipedia)
     "mt01": {
-        "pvi_dem_margin_pts": -5.0,
+        "pvi_dem_margin_pts": -8.47,
         "house_elections": [],
     },
     # Montana 2: 2025 Cook PVI R+15 (via Wikipedia)
     "mt02": {
-        "pvi_dem_margin_pts": -15.0,
+        "pvi_dem_margin_pts": -28.47,
         "house_elections": [],
     },
     # North Carolina 1: 2025 Cook PVI R+5 (via Wikipedia)
     "nc01": {
-        "pvi_dem_margin_pts": -5.0,
+        "pvi_dem_margin_pts": -8.47,
         "house_elections": [],
     },
     # North Carolina 2: 2025 Cook PVI D+17 (via Wikipedia)
     "nc02": {
-        "pvi_dem_margin_pts": 17.0,
+        "pvi_dem_margin_pts": 35.53,
         "house_elections": [],
     },
     # North Carolina 3: 2025 Cook PVI R+6 (via Wikipedia)
     "nc03": {
-        "pvi_dem_margin_pts": -6.0,
+        "pvi_dem_margin_pts": -10.47,
         "house_elections": [],
     },
     # North Carolina 4: 2025 Cook PVI D+23 (via Wikipedia)
     "nc04": {
-        "pvi_dem_margin_pts": 23.0,
+        "pvi_dem_margin_pts": 47.53,
         "house_elections": [],
     },
     # North Carolina 5: 2025 Cook PVI R+9 (via Wikipedia)
     "nc05": {
-        "pvi_dem_margin_pts": -9.0,
+        "pvi_dem_margin_pts": -16.47,
         "house_elections": [],
     },
     # North Carolina 6: 2025 Cook PVI R+9 (via Wikipedia)
     "nc06": {
-        "pvi_dem_margin_pts": -9.0,
+        "pvi_dem_margin_pts": -16.47,
         "house_elections": [],
     },
     # North Carolina 7: 2025 Cook PVI R+7 (via Wikipedia)
     "nc07": {
-        "pvi_dem_margin_pts": -7.0,
+        "pvi_dem_margin_pts": -12.47,
         "house_elections": [],
     },
     # North Carolina 8: 2025 Cook PVI R+10 (via Wikipedia)
     "nc08": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # North Carolina 9: 2025 Cook PVI R+8 (via Wikipedia)
     "nc09": {
-        "pvi_dem_margin_pts": -8.0,
+        "pvi_dem_margin_pts": -14.47,
         "house_elections": [],
     },
     # North Carolina 10: 2025 Cook PVI R+9 (via Wikipedia)
     "nc10": {
-        "pvi_dem_margin_pts": -9.0,
+        "pvi_dem_margin_pts": -16.47,
         "house_elections": [],
     },
     # North Carolina 11: 2025 Cook PVI R+5 (via Wikipedia)
     "nc11": {
-        "pvi_dem_margin_pts": -5.0,
+        "pvi_dem_margin_pts": -8.47,
         "house_elections": [],
     },
     # North Carolina 12: 2025 Cook PVI D+24 (via Wikipedia)
     "nc12": {
-        "pvi_dem_margin_pts": 24.0,
+        "pvi_dem_margin_pts": 49.53,
         "house_elections": [],
     },
     # North Carolina 13: 2025 Cook PVI R+8 (via Wikipedia)
     "nc13": {
-        "pvi_dem_margin_pts": -8.0,
+        "pvi_dem_margin_pts": -14.47,
         "house_elections": [],
     },
     # North Carolina 14: 2025 Cook PVI R+8 (via Wikipedia)
     "nc14": {
-        "pvi_dem_margin_pts": -8.0,
+        "pvi_dem_margin_pts": -14.47,
         "house_elections": [],
     },
     # North Dakota 1: 2025 Cook PVI R+18 (via Wikipedia)
     "nd01": {
-        "pvi_dem_margin_pts": -18.0,
+        "pvi_dem_margin_pts": -34.47,
         "house_elections": [],
     },
     # Nebraska 1: 2025 Cook PVI R+6 (via Wikipedia)
     "ne01": {
-        "pvi_dem_margin_pts": -6.0,
+        "pvi_dem_margin_pts": -10.47,
         "house_elections": [],
     },
     # Nebraska 2: 2025 Cook PVI D+3 (via Wikipedia)
     "ne02": {
-        "pvi_dem_margin_pts": 3.0,
+        "pvi_dem_margin_pts": 7.53,
         "house_elections": [],
     },
     # Nebraska 3: 2025 Cook PVI R+27 (via Wikipedia)
     "ne03": {
-        "pvi_dem_margin_pts": -27.0,
+        "pvi_dem_margin_pts": -52.47,
         "house_elections": [],
     },
     # New Hampshire 1: 2025 Cook PVI D+2 (via Wikipedia)
     "nh01": {
-        "pvi_dem_margin_pts": 2.0,
+        "pvi_dem_margin_pts": 5.53,
         "house_elections": [],
     },
     # New Hampshire 2: 2025 Cook PVI D+2 (via Wikipedia)
     "nh02": {
-        "pvi_dem_margin_pts": 2.0,
+        "pvi_dem_margin_pts": 5.53,
         "house_elections": [],
     },
     # New Jersey 1: 2025 Cook PVI D+10 (via Wikipedia)
     "nj01": {
-        "pvi_dem_margin_pts": 10.0,
+        "pvi_dem_margin_pts": 21.53,
         "house_elections": [],
     },
     # New Jersey 2: 2025 Cook PVI R+5 (via Wikipedia)
     "nj02": {
-        "pvi_dem_margin_pts": -5.0,
+        "pvi_dem_margin_pts": -8.47,
         "house_elections": [],
     },
     # New Jersey 3: 2025 Cook PVI D+5 (via Wikipedia)
     "nj03": {
-        "pvi_dem_margin_pts": 5.0,
+        "pvi_dem_margin_pts": 11.53,
         "house_elections": [],
     },
     # New Jersey 4: 2025 Cook PVI R+14 (via Wikipedia)
     "nj04": {
-        "pvi_dem_margin_pts": -14.0,
+        "pvi_dem_margin_pts": -26.47,
         "house_elections": [],
     },
     # New Jersey 5: 2025 Cook PVI D+2 (via Wikipedia)
     "nj05": {
-        "pvi_dem_margin_pts": 2.0,
+        "pvi_dem_margin_pts": 5.53,
         "house_elections": [],
     },
     # New Jersey 6: 2025 Cook PVI D+5 (via Wikipedia)
     "nj06": {
-        "pvi_dem_margin_pts": 5.0,
+        "pvi_dem_margin_pts": 11.53,
         "house_elections": [],
     },
     # New Jersey 7: 2025 Cook PVI EVEN (via Wikipedia)
     "nj07": {
-        "pvi_dem_margin_pts": 0.0,
+        "pvi_dem_margin_pts": 1.53,
         "house_elections": [],
     },
     # New Jersey 8: 2025 Cook PVI D+15 (via Wikipedia)
     "nj08": {
-        "pvi_dem_margin_pts": 15.0,
+        "pvi_dem_margin_pts": 31.53,
         "house_elections": [],
     },
     # New Jersey 9: 2025 Cook PVI D+2 (via Wikipedia)
     "nj09": {
-        "pvi_dem_margin_pts": 2.0,
+        "pvi_dem_margin_pts": 5.53,
         "house_elections": [],
     },
     # New Jersey 10: 2025 Cook PVI D+27 (via Wikipedia)
     "nj10": {
-        "pvi_dem_margin_pts": 27.0,
+        "pvi_dem_margin_pts": 55.53,
         "house_elections": [],
     },
     # New Jersey 11: 2025 Cook PVI D+5 (via Wikipedia)
     "nj11": {
-        "pvi_dem_margin_pts": 5.0,
+        "pvi_dem_margin_pts": 11.53,
         "house_elections": [],
     },
     # New Jersey 12: 2025 Cook PVI D+13 (via Wikipedia)
     "nj12": {
-        "pvi_dem_margin_pts": 13.0,
+        "pvi_dem_margin_pts": 27.53,
         "house_elections": [],
     },
     # New Mexico 1: 2025 Cook PVI D+7 (via Wikipedia)
     "nm01": {
-        "pvi_dem_margin_pts": 7.0,
+        "pvi_dem_margin_pts": 15.53,
         "house_elections": [],
     },
     # New Mexico 2: 2025 Cook PVI EVEN (via Wikipedia)
     "nm02": {
-        "pvi_dem_margin_pts": 0.0,
+        "pvi_dem_margin_pts": 1.53,
         "house_elections": [],
     },
     # New Mexico 3: 2025 Cook PVI D+3 (via Wikipedia)
     "nm03": {
-        "pvi_dem_margin_pts": 3.0,
+        "pvi_dem_margin_pts": 7.53,
         "house_elections": [],
     },
     # Nevada 1: 2025 Cook PVI D+2 (via Wikipedia)
     "nv01": {
-        "pvi_dem_margin_pts": 2.0,
+        "pvi_dem_margin_pts": 5.53,
         "house_elections": [],
     },
     # Nevada 2: 2025 Cook PVI R+7 (via Wikipedia)
     "nv02": {
-        "pvi_dem_margin_pts": -7.0,
+        "pvi_dem_margin_pts": -12.47,
         "house_elections": [],
     },
     # Nevada 3: 2025 Cook PVI D+1 (via Wikipedia)
     "nv03": {
-        "pvi_dem_margin_pts": 1.0,
+        "pvi_dem_margin_pts": 3.53,
         "house_elections": [],
     },
     # Nevada 4: 2025 Cook PVI D+2 (via Wikipedia)
     "nv04": {
-        "pvi_dem_margin_pts": 2.0,
+        "pvi_dem_margin_pts": 5.53,
         "house_elections": [],
     },
     # New York 1: 2025 Cook PVI R+4 (via Wikipedia)
     "ny01": {
-        "pvi_dem_margin_pts": -4.0,
+        "pvi_dem_margin_pts": -6.47,
         "house_elections": [],
     },
     # New York 2: 2025 Cook PVI R+6 (via Wikipedia)
     "ny02": {
-        "pvi_dem_margin_pts": -6.0,
+        "pvi_dem_margin_pts": -10.47,
         "house_elections": [],
     },
     # New York 3: 2025 Cook PVI EVEN (via Wikipedia)
     "ny03": {
-        "pvi_dem_margin_pts": 0.0,
+        "pvi_dem_margin_pts": 1.53,
         "house_elections": [],
     },
     # New York 4: 2025 Cook PVI D+2 (via Wikipedia)
     "ny04": {
-        "pvi_dem_margin_pts": 2.0,
+        "pvi_dem_margin_pts": 5.53,
         "house_elections": [],
     },
     # New York 5: 2025 Cook PVI D+24 (via Wikipedia)
     "ny05": {
-        "pvi_dem_margin_pts": 24.0,
+        "pvi_dem_margin_pts": 49.53,
         "house_elections": [],
     },
     # New York 6: 2025 Cook PVI D+6 (via Wikipedia)
     "ny06": {
-        "pvi_dem_margin_pts": 6.0,
+        "pvi_dem_margin_pts": 13.53,
         "house_elections": [],
     },
     # New York 7: 2025 Cook PVI D+25 (via Wikipedia)
     "ny07": {
-        "pvi_dem_margin_pts": 25.0,
+        "pvi_dem_margin_pts": 51.53,
         "house_elections": [],
     },
     # New York 8: 2025 Cook PVI D+24 (via Wikipedia)
     "ny08": {
-        "pvi_dem_margin_pts": 24.0,
+        "pvi_dem_margin_pts": 49.53,
         "house_elections": [],
     },
     # New York 9: 2025 Cook PVI D+22 (via Wikipedia)
     "ny09": {
-        "pvi_dem_margin_pts": 22.0,
+        "pvi_dem_margin_pts": 45.53,
         "house_elections": [],
     },
     # New York 10: 2025 Cook PVI D+32 (via Wikipedia)
     "ny10": {
-        "pvi_dem_margin_pts": 32.0,
+        "pvi_dem_margin_pts": 65.53,
         "house_elections": [],
     },
     # New York 11: 2025 Cook PVI R+10 (via Wikipedia)
     "ny11": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # New York 12: 2025 Cook PVI D+33 (via Wikipedia)
     "ny12": {
-        "pvi_dem_margin_pts": 33.0,
+        "pvi_dem_margin_pts": 67.53,
         "house_elections": [],
     },
     # New York 13: 2025 Cook PVI D+32 (via Wikipedia)
     "ny13": {
-        "pvi_dem_margin_pts": 32.0,
+        "pvi_dem_margin_pts": 65.53,
         "house_elections": [],
     },
     # New York 14: 2025 Cook PVI D+19 (via Wikipedia)
     "ny14": {
-        "pvi_dem_margin_pts": 19.0,
+        "pvi_dem_margin_pts": 39.53,
         "house_elections": [],
     },
     # New York 15: 2025 Cook PVI D+27 (via Wikipedia)
     "ny15": {
-        "pvi_dem_margin_pts": 27.0,
+        "pvi_dem_margin_pts": 55.53,
         "house_elections": [],
     },
     # New York 16: 2025 Cook PVI D+18 (via Wikipedia)
     "ny16": {
-        "pvi_dem_margin_pts": 18.0,
+        "pvi_dem_margin_pts": 37.53,
         "house_elections": [],
     },
     # New York 17: 2025 Cook PVI D+1 (via Wikipedia)
     "ny17": {
-        "pvi_dem_margin_pts": 1.0,
+        "pvi_dem_margin_pts": 3.53,
         "house_elections": [],
     },
     # New York 18: 2025 Cook PVI D+2 (via Wikipedia)
     "ny18": {
-        "pvi_dem_margin_pts": 2.0,
+        "pvi_dem_margin_pts": 5.53,
         "house_elections": [],
     },
     # New York 19: 2025 Cook PVI D+1 (via Wikipedia)
     "ny19": {
-        "pvi_dem_margin_pts": 1.0,
+        "pvi_dem_margin_pts": 3.53,
         "house_elections": [],
     },
     # New York 20: 2025 Cook PVI D+8 (via Wikipedia)
     "ny20": {
-        "pvi_dem_margin_pts": 8.0,
+        "pvi_dem_margin_pts": 17.53,
         "house_elections": [],
     },
     # New York 21: 2025 Cook PVI R+10 (via Wikipedia)
     "ny21": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # New York 22: 2025 Cook PVI D+4 (via Wikipedia)
     "ny22": {
-        "pvi_dem_margin_pts": 4.0,
+        "pvi_dem_margin_pts": 9.53,
         "house_elections": [],
     },
     # New York 23: 2025 Cook PVI R+10 (via Wikipedia)
     "ny23": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # New York 24: 2025 Cook PVI R+11 (via Wikipedia)
     "ny24": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # New York 25: 2025 Cook PVI D+10 (via Wikipedia)
     "ny25": {
-        "pvi_dem_margin_pts": 10.0,
+        "pvi_dem_margin_pts": 21.53,
         "house_elections": [],
     },
     # New York 26: 2025 Cook PVI D+11 (via Wikipedia)
     "ny26": {
-        "pvi_dem_margin_pts": 11.0,
+        "pvi_dem_margin_pts": 23.53,
         "house_elections": [],
     },
     # Ohio 1: 2025 Cook PVI R+1 (via Wikipedia)
     "oh01": {
-        "pvi_dem_margin_pts": -1.0,
+        "pvi_dem_margin_pts": -0.47,
         "house_elections": [],
     },
     # Ohio 2: 2025 Cook PVI R+21 (via Wikipedia)
     "oh02": {
-        "pvi_dem_margin_pts": -21.0,
+        "pvi_dem_margin_pts": -40.47,
         "house_elections": [],
     },
     # Ohio 3: 2025 Cook PVI D+21 (via Wikipedia)
     "oh03": {
-        "pvi_dem_margin_pts": 21.0,
+        "pvi_dem_margin_pts": 43.53,
         "house_elections": [],
     },
     # Ohio 4: 2025 Cook PVI R+21 (via Wikipedia)
     "oh04": {
-        "pvi_dem_margin_pts": -21.0,
+        "pvi_dem_margin_pts": -40.47,
         "house_elections": [],
     },
     # Ohio 5: 2025 Cook PVI R+12 (via Wikipedia)
     "oh05": {
-        "pvi_dem_margin_pts": -12.0,
+        "pvi_dem_margin_pts": -22.47,
         "house_elections": [],
     },
     # Ohio 6: 2025 Cook PVI R+17 (via Wikipedia)
     "oh06": {
-        "pvi_dem_margin_pts": -17.0,
+        "pvi_dem_margin_pts": -32.47,
         "house_elections": [],
     },
     # Ohio 7: 2025 Cook PVI R+5 (via Wikipedia)
     "oh07": {
-        "pvi_dem_margin_pts": -5.0,
+        "pvi_dem_margin_pts": -8.47,
         "house_elections": [],
     },
     # Ohio 8: 2025 Cook PVI R+8 (via Wikipedia)
     "oh08": {
-        "pvi_dem_margin_pts": -8.0,
+        "pvi_dem_margin_pts": -14.47,
         "house_elections": [],
     },
     # Ohio 9: 2025 Cook PVI R+5 (via Wikipedia)
     "oh09": {
-        "pvi_dem_margin_pts": -5.0,
+        "pvi_dem_margin_pts": -8.47,
         "house_elections": [],
     },
     # Ohio 10: 2025 Cook PVI R+4 (via Wikipedia)
     "oh10": {
-        "pvi_dem_margin_pts": -4.0,
+        "pvi_dem_margin_pts": -6.47,
         "house_elections": [],
     },
     # Ohio 11: 2025 Cook PVI D+28 (via Wikipedia)
     "oh11": {
-        "pvi_dem_margin_pts": 28.0,
+        "pvi_dem_margin_pts": 57.53,
         "house_elections": [],
     },
     # Ohio 12: 2025 Cook PVI R+15 (via Wikipedia)
     "oh12": {
-        "pvi_dem_margin_pts": -15.0,
+        "pvi_dem_margin_pts": -28.47,
         "house_elections": [],
     },
     # Ohio 13: 2025 Cook PVI D+2 (via Wikipedia)
     "oh13": {
-        "pvi_dem_margin_pts": 2.0,
+        "pvi_dem_margin_pts": 5.53,
         "house_elections": [],
     },
     # Ohio 14: 2025 Cook PVI R+10 (via Wikipedia)
     "oh14": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Ohio 15: 2025 Cook PVI R+5 (via Wikipedia)
     "oh15": {
-        "pvi_dem_margin_pts": -5.0,
+        "pvi_dem_margin_pts": -8.47,
         "house_elections": [],
     },
     # Oklahoma 1: 2025 Cook PVI R+11 (via Wikipedia)
     "ok01": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Oklahoma 2: 2025 Cook PVI R+28 (via Wikipedia)
     "ok02": {
-        "pvi_dem_margin_pts": -28.0,
+        "pvi_dem_margin_pts": -54.47,
         "house_elections": [],
     },
     # Oklahoma 3: 2025 Cook PVI R+23 (via Wikipedia)
     "ok03": {
-        "pvi_dem_margin_pts": -23.0,
+        "pvi_dem_margin_pts": -44.47,
         "house_elections": [],
     },
     # Oklahoma 4: 2025 Cook PVI R+17 (via Wikipedia)
     "ok04": {
-        "pvi_dem_margin_pts": -17.0,
+        "pvi_dem_margin_pts": -32.47,
         "house_elections": [],
     },
     # Oklahoma 5: 2025 Cook PVI R+9 (via Wikipedia)
     "ok05": {
-        "pvi_dem_margin_pts": -9.0,
+        "pvi_dem_margin_pts": -16.47,
         "house_elections": [],
     },
     # Oregon 1: 2025 Cook PVI D+20 (via Wikipedia)
     "or01": {
-        "pvi_dem_margin_pts": 20.0,
+        "pvi_dem_margin_pts": 41.53,
         "house_elections": [],
     },
     # Oregon 2: 2025 Cook PVI R+14 (via Wikipedia)
     "or02": {
-        "pvi_dem_margin_pts": -14.0,
+        "pvi_dem_margin_pts": -26.47,
         "house_elections": [],
     },
     # Oregon 3: 2025 Cook PVI D+24 (via Wikipedia)
     "or03": {
-        "pvi_dem_margin_pts": 24.0,
+        "pvi_dem_margin_pts": 49.53,
         "house_elections": [],
     },
     # Oregon 4: 2025 Cook PVI D+6 (via Wikipedia)
     "or04": {
-        "pvi_dem_margin_pts": 6.0,
+        "pvi_dem_margin_pts": 13.53,
         "house_elections": [],
     },
     # Oregon 5: 2025 Cook PVI D+4 (via Wikipedia)
     "or05": {
-        "pvi_dem_margin_pts": 4.0,
+        "pvi_dem_margin_pts": 9.53,
         "house_elections": [],
     },
     # Oregon 6: 2025 Cook PVI D+6 (via Wikipedia)
     "or06": {
-        "pvi_dem_margin_pts": 6.0,
+        "pvi_dem_margin_pts": 13.53,
         "house_elections": [],
     },
     # Pennsylvania 1: 2025 Cook PVI D+1 (via Wikipedia)
     "pa01": {
-        "pvi_dem_margin_pts": 1.0,
+        "pvi_dem_margin_pts": 3.53,
         "house_elections": [],
     },
     # Pennsylvania 2: 2025 Cook PVI D+19 (via Wikipedia)
     "pa02": {
-        "pvi_dem_margin_pts": 19.0,
+        "pvi_dem_margin_pts": 39.53,
         "house_elections": [],
     },
     # Pennsylvania 3: 2025 Cook PVI D+40 (via Wikipedia)
     "pa03": {
-        "pvi_dem_margin_pts": 40.0,
+        "pvi_dem_margin_pts": 81.53,
         "house_elections": [],
     },
     # Pennsylvania 4: 2025 Cook PVI D+8 (via Wikipedia)
     "pa04": {
-        "pvi_dem_margin_pts": 8.0,
+        "pvi_dem_margin_pts": 17.53,
         "house_elections": [],
     },
     # Pennsylvania 5: 2025 Cook PVI D+15 (via Wikipedia)
     "pa05": {
-        "pvi_dem_margin_pts": 15.0,
+        "pvi_dem_margin_pts": 31.53,
         "house_elections": [],
     },
     # Pennsylvania 6: 2025 Cook PVI D+6 (via Wikipedia)
     "pa06": {
-        "pvi_dem_margin_pts": 6.0,
+        "pvi_dem_margin_pts": 13.53,
         "house_elections": [],
     },
     # Pennsylvania 7: 2025 Cook PVI R+1 (via Wikipedia)
     "pa07": {
-        "pvi_dem_margin_pts": -1.0,
+        "pvi_dem_margin_pts": -0.47,
         "house_elections": [],
     },
     # Pennsylvania 8: 2025 Cook PVI R+4 (via Wikipedia)
     "pa08": {
-        "pvi_dem_margin_pts": -4.0,
+        "pvi_dem_margin_pts": -6.47,
         "house_elections": [],
     },
     # Pennsylvania 9: 2025 Cook PVI R+19 (via Wikipedia)
     "pa09": {
-        "pvi_dem_margin_pts": -19.0,
+        "pvi_dem_margin_pts": -36.47,
         "house_elections": [],
     },
     # Pennsylvania 10: 2025 Cook PVI R+3 (via Wikipedia)
     "pa10": {
-        "pvi_dem_margin_pts": -3.0,
+        "pvi_dem_margin_pts": -4.47,
         "house_elections": [],
     },
     # Pennsylvania 11: 2025 Cook PVI R+11 (via Wikipedia)
     "pa11": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Pennsylvania 12: 2025 Cook PVI D+10 (via Wikipedia)
     "pa12": {
-        "pvi_dem_margin_pts": 10.0,
+        "pvi_dem_margin_pts": 21.53,
         "house_elections": [],
     },
     # Pennsylvania 13: 2025 Cook PVI R+23 (via Wikipedia)
     "pa13": {
-        "pvi_dem_margin_pts": -23.0,
+        "pvi_dem_margin_pts": -44.47,
         "house_elections": [],
     },
     # Pennsylvania 14: 2025 Cook PVI R+17 (via Wikipedia)
     "pa14": {
-        "pvi_dem_margin_pts": -17.0,
+        "pvi_dem_margin_pts": -32.47,
         "house_elections": [],
     },
     # Pennsylvania 15: 2025 Cook PVI R+19 (via Wikipedia)
     "pa15": {
-        "pvi_dem_margin_pts": -19.0,
+        "pvi_dem_margin_pts": -36.47,
         "house_elections": [],
     },
     # Pennsylvania 16: 2025 Cook PVI R+11 (via Wikipedia)
     "pa16": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Pennsylvania 17: 2025 Cook PVI D+3 (via Wikipedia)
     "pa17": {
-        "pvi_dem_margin_pts": 3.0,
+        "pvi_dem_margin_pts": 7.53,
         "house_elections": [],
     },
     # Rhode Island 1: 2025 Cook PVI D+12 (via Wikipedia)
     "ri01": {
-        "pvi_dem_margin_pts": 12.0,
+        "pvi_dem_margin_pts": 25.53,
         "house_elections": [],
     },
     # Rhode Island 2: 2025 Cook PVI D+4 (via Wikipedia)
     "ri02": {
-        "pvi_dem_margin_pts": 4.0,
+        "pvi_dem_margin_pts": 9.53,
         "house_elections": [],
     },
     # South Carolina 1: 2025 Cook PVI R+6 (via Wikipedia)
     "sc01": {
-        "pvi_dem_margin_pts": -6.0,
+        "pvi_dem_margin_pts": -10.47,
         "house_elections": [],
     },
     # South Carolina 2: 2025 Cook PVI R+7 (via Wikipedia)
     "sc02": {
-        "pvi_dem_margin_pts": -7.0,
+        "pvi_dem_margin_pts": -12.47,
         "house_elections": [],
     },
     # South Carolina 3: 2025 Cook PVI R+21 (via Wikipedia)
     "sc03": {
-        "pvi_dem_margin_pts": -21.0,
+        "pvi_dem_margin_pts": -40.47,
         "house_elections": [],
     },
     # South Carolina 4: 2025 Cook PVI R+11 (via Wikipedia)
     "sc04": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # South Carolina 5: 2025 Cook PVI R+11 (via Wikipedia)
     "sc05": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # South Carolina 6: 2025 Cook PVI D+13 (via Wikipedia)
     "sc06": {
-        "pvi_dem_margin_pts": 13.0,
+        "pvi_dem_margin_pts": 27.53,
         "house_elections": [],
     },
     # South Carolina 7: 2025 Cook PVI R+12 (via Wikipedia)
     "sc07": {
-        "pvi_dem_margin_pts": -12.0,
+        "pvi_dem_margin_pts": -22.47,
         "house_elections": [],
     },
     # South Dakota 1: 2025 Cook PVI R+15 (via Wikipedia)
     "sd01": {
-        "pvi_dem_margin_pts": -15.0,
+        "pvi_dem_margin_pts": -28.47,
         "house_elections": [],
     },
     # Tennessee 1: 2025 Cook PVI R+29 (via Wikipedia)
     "tn01": {
-        "pvi_dem_margin_pts": -29.0,
+        "pvi_dem_margin_pts": -56.47,
         "house_elections": [],
     },
     # Tennessee 2: 2025 Cook PVI R+17 (via Wikipedia)
     "tn02": {
-        "pvi_dem_margin_pts": -17.0,
+        "pvi_dem_margin_pts": -32.47,
         "house_elections": [],
     },
     # Tennessee 3: 2025 Cook PVI R+18 (via Wikipedia)
     "tn03": {
-        "pvi_dem_margin_pts": -18.0,
+        "pvi_dem_margin_pts": -34.47,
         "house_elections": [],
     },
     # Tennessee 4: 2025 Cook PVI R+11 (via Wikipedia)
     "tn04": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Tennessee 5: 2025 Cook PVI R+10 (via Wikipedia)
     "tn05": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Tennessee 6: 2025 Cook PVI R+13 (via Wikipedia)
     "tn06": {
-        "pvi_dem_margin_pts": -13.0,
+        "pvi_dem_margin_pts": -24.47,
         "house_elections": [],
     },
     # Tennessee 7: 2025 Cook PVI R+11 (via Wikipedia)
     "tn07": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Tennessee 8: 2025 Cook PVI R+10 (via Wikipedia)
     "tn08": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Tennessee 9: 2025 Cook PVI R+9 (via Wikipedia)
     "tn09": {
-        "pvi_dem_margin_pts": -9.0,
+        "pvi_dem_margin_pts": -16.47,
         "house_elections": [],
     },
     # Texas 1: 2025 Cook PVI R+24 (via Wikipedia)
     "tx01": {
-        "pvi_dem_margin_pts": -24.0,
+        "pvi_dem_margin_pts": -46.47,
         "house_elections": [],
     },
     # Texas 2: 2025 Cook PVI R+11 (via Wikipedia)
     "tx02": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Texas 3: 2025 Cook PVI R+11 (via Wikipedia)
     "tx03": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Texas 4: 2025 Cook PVI R+12 (via Wikipedia)
     "tx04": {
-        "pvi_dem_margin_pts": -12.0,
+        "pvi_dem_margin_pts": -22.47,
         "house_elections": [],
     },
     # Texas 5: 2025 Cook PVI R+10 (via Wikipedia)
     "tx05": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Texas 6: 2025 Cook PVI R+11 (via Wikipedia)
     "tx06": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Texas 7: 2025 Cook PVI D+13 (via Wikipedia)
     "tx07": {
-        "pvi_dem_margin_pts": 13.0,
+        "pvi_dem_margin_pts": 27.53,
         "house_elections": [],
     },
     # Texas 8: 2025 Cook PVI R+13 (via Wikipedia)
     "tx08": {
-        "pvi_dem_margin_pts": -13.0,
+        "pvi_dem_margin_pts": -24.47,
         "house_elections": [],
     },
     # Texas 9: 2025 Cook PVI R+9 (via Wikipedia)
     "tx09": {
-        "pvi_dem_margin_pts": -9.0,
+        "pvi_dem_margin_pts": -16.47,
         "house_elections": [],
     },
     # Texas 10: 2025 Cook PVI R+10 (via Wikipedia)
     "tx10": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Texas 11: 2025 Cook PVI R+17 (via Wikipedia)
     "tx11": {
-        "pvi_dem_margin_pts": -17.0,
+        "pvi_dem_margin_pts": -32.47,
         "house_elections": [],
     },
     # Texas 12: 2025 Cook PVI R+11 (via Wikipedia)
     "tx12": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Texas 13: 2025 Cook PVI R+23 (via Wikipedia)
     "tx13": {
-        "pvi_dem_margin_pts": -23.0,
+        "pvi_dem_margin_pts": -44.47,
         "house_elections": [],
     },
     # Texas 14: 2025 Cook PVI R+12 (via Wikipedia)
     "tx14": {
-        "pvi_dem_margin_pts": -12.0,
+        "pvi_dem_margin_pts": -22.47,
         "house_elections": [],
     },
     # Texas 15: 2025 Cook PVI R+7 (via Wikipedia)
     "tx15": {
-        "pvi_dem_margin_pts": -7.0,
+        "pvi_dem_margin_pts": -12.47,
         "house_elections": [],
     },
     # Texas 16: 2025 Cook PVI D+11 (via Wikipedia)
     "tx16": {
-        "pvi_dem_margin_pts": 11.0,
+        "pvi_dem_margin_pts": 23.53,
         "house_elections": [],
     },
     # Texas 17: 2025 Cook PVI R+10 (via Wikipedia)
     "tx17": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Texas 18: 2025 Cook PVI D+29 (via Wikipedia)
     "tx18": {
-        "pvi_dem_margin_pts": 29.0,
+        "pvi_dem_margin_pts": 59.53,
         "house_elections": [],
     },
     # Texas 19: 2025 Cook PVI R+25 (via Wikipedia)
     "tx19": {
-        "pvi_dem_margin_pts": -25.0,
+        "pvi_dem_margin_pts": -48.47,
         "house_elections": [],
     },
     # Texas 20: 2025 Cook PVI D+16 (via Wikipedia)
     "tx20": {
-        "pvi_dem_margin_pts": 16.0,
+        "pvi_dem_margin_pts": 33.53,
         "house_elections": [],
     },
     # Texas 21: 2025 Cook PVI R+10 (via Wikipedia)
     "tx21": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Texas 22: 2025 Cook PVI R+11 (via Wikipedia)
     "tx22": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Texas 23: 2025 Cook PVI R+7 (via Wikipedia)
     "tx23": {
-        "pvi_dem_margin_pts": -7.0,
+        "pvi_dem_margin_pts": -12.47,
         "house_elections": [],
     },
     # Texas 24: 2025 Cook PVI R+8 (via Wikipedia)
     "tx24": {
-        "pvi_dem_margin_pts": -8.0,
+        "pvi_dem_margin_pts": -14.47,
         "house_elections": [],
     },
     # Texas 25: 2025 Cook PVI R+11 (via Wikipedia)
     "tx25": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Texas 26: 2025 Cook PVI R+11 (via Wikipedia)
     "tx26": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Texas 27: 2025 Cook PVI R+10 (via Wikipedia)
     "tx27": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Texas 28: 2025 Cook PVI R+3 (via Wikipedia)
     "tx28": {
-        "pvi_dem_margin_pts": -3.0,
+        "pvi_dem_margin_pts": -4.47,
         "house_elections": [],
     },
     # Texas 29: 2025 Cook PVI D+17 (via Wikipedia)
     "tx29": {
-        "pvi_dem_margin_pts": 17.0,
+        "pvi_dem_margin_pts": 35.53,
         "house_elections": [],
     },
     # Texas 30: 2025 Cook PVI D+25 (via Wikipedia)
     "tx30": {
-        "pvi_dem_margin_pts": 25.0,
+        "pvi_dem_margin_pts": 51.53,
         "house_elections": [],
     },
     # Texas 31: 2025 Cook PVI R+11 (via Wikipedia)
     "tx31": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Texas 32: 2025 Cook PVI R+8 (via Wikipedia)
     "tx32": {
-        "pvi_dem_margin_pts": -8.0,
+        "pvi_dem_margin_pts": -14.47,
         "house_elections": [],
     },
     # Texas 33: 2025 Cook PVI D+18 (via Wikipedia)
     "tx33": {
-        "pvi_dem_margin_pts": 18.0,
+        "pvi_dem_margin_pts": 37.53,
         "house_elections": [],
     },
     # Texas 34: 2025 Cook PVI R+3 (via Wikipedia)
     "tx34": {
-        "pvi_dem_margin_pts": -3.0,
+        "pvi_dem_margin_pts": -4.47,
         "house_elections": [],
     },
     # Texas 35: 2025 Cook PVI R+4 (via Wikipedia)
     "tx35": {
-        "pvi_dem_margin_pts": -4.0,
+        "pvi_dem_margin_pts": -6.47,
         "house_elections": [],
     },
     # Texas 36: 2025 Cook PVI R+12 (via Wikipedia)
     "tx36": {
-        "pvi_dem_margin_pts": -12.0,
+        "pvi_dem_margin_pts": -22.47,
         "house_elections": [],
     },
     # Texas 37: 2025 Cook PVI D+30 (via Wikipedia)
     "tx37": {
-        "pvi_dem_margin_pts": 30.0,
+        "pvi_dem_margin_pts": 61.53,
         "house_elections": [],
     },
     # Texas 38: 2025 Cook PVI R+10 (via Wikipedia)
     "tx38": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Utah 1: 2025 Cook PVI D+12 (via Wikipedia)
     "ut01": {
-        "pvi_dem_margin_pts": 12.0,
+        "pvi_dem_margin_pts": 25.53,
         "house_elections": [],
     },
     # Utah 2: 2025 Cook PVI R+15 (via Wikipedia)
     "ut02": {
-        "pvi_dem_margin_pts": -15.0,
+        "pvi_dem_margin_pts": -28.47,
         "house_elections": [],
     },
     # Utah 3: 2025 Cook PVI R+21 (via Wikipedia)
     "ut03": {
-        "pvi_dem_margin_pts": -21.0,
+        "pvi_dem_margin_pts": -40.47,
         "house_elections": [],
     },
     # Utah 4: 2025 Cook PVI R+17 (via Wikipedia)
     "ut04": {
-        "pvi_dem_margin_pts": -17.0,
+        "pvi_dem_margin_pts": -32.47,
         "house_elections": [],
     },
     # Virginia 1: 2025 Cook PVI R+3 (via Wikipedia)
     "va01": {
-        "pvi_dem_margin_pts": -3.0,
+        "pvi_dem_margin_pts": -4.47,
         "house_elections": [],
     },
     # Virginia 2: 2025 Cook PVI EVEN (via Wikipedia)
     "va02": {
-        "pvi_dem_margin_pts": 0.0,
+        "pvi_dem_margin_pts": 1.53,
         "house_elections": [],
     },
     # Virginia 3: 2025 Cook PVI D+18 (via Wikipedia)
     "va03": {
-        "pvi_dem_margin_pts": 18.0,
+        "pvi_dem_margin_pts": 37.53,
         "house_elections": [],
     },
     # Virginia 4: 2025 Cook PVI D+17 (via Wikipedia)
     "va04": {
-        "pvi_dem_margin_pts": 17.0,
+        "pvi_dem_margin_pts": 35.53,
         "house_elections": [],
     },
     # Virginia 5: 2025 Cook PVI R+6 (via Wikipedia)
     "va05": {
-        "pvi_dem_margin_pts": -6.0,
+        "pvi_dem_margin_pts": -10.47,
         "house_elections": [],
     },
     # Virginia 6: 2025 Cook PVI R+12 (via Wikipedia)
     "va06": {
-        "pvi_dem_margin_pts": -12.0,
+        "pvi_dem_margin_pts": -22.47,
         "house_elections": [],
     },
     # Virginia 7: 2025 Cook PVI D+2 (via Wikipedia)
     "va07": {
-        "pvi_dem_margin_pts": 2.0,
+        "pvi_dem_margin_pts": 5.53,
         "house_elections": [],
     },
     # Virginia 8: 2025 Cook PVI D+26 (via Wikipedia)
     "va08": {
-        "pvi_dem_margin_pts": 26.0,
+        "pvi_dem_margin_pts": 53.53,
         "house_elections": [],
     },
     # Virginia 9: 2025 Cook PVI R+22 (via Wikipedia)
     "va09": {
-        "pvi_dem_margin_pts": -22.0,
+        "pvi_dem_margin_pts": -42.47,
         "house_elections": [],
     },
     # Virginia 10: 2025 Cook PVI D+6 (via Wikipedia)
     "va10": {
-        "pvi_dem_margin_pts": 6.0,
+        "pvi_dem_margin_pts": 13.53,
         "house_elections": [],
     },
     # Virginia 11: 2025 Cook PVI D+18 (via Wikipedia)
     "va11": {
-        "pvi_dem_margin_pts": 18.0,
+        "pvi_dem_margin_pts": 37.53,
         "house_elections": [],
     },
     # Vermont 1: 2025 Cook PVI D+17 (via Wikipedia)
     "vt01": {
-        "pvi_dem_margin_pts": 17.0,
+        "pvi_dem_margin_pts": 35.53,
         "house_elections": [],
     },
     # Washington 1: 2025 Cook PVI D+15 (via Wikipedia)
     "wa01": {
-        "pvi_dem_margin_pts": 15.0,
+        "pvi_dem_margin_pts": 31.53,
         "house_elections": [],
     },
     # Washington 2: 2025 Cook PVI D+12 (via Wikipedia)
     "wa02": {
-        "pvi_dem_margin_pts": 12.0,
+        "pvi_dem_margin_pts": 25.53,
         "house_elections": [],
     },
     # Washington 3: 2025 Cook PVI R+2 (via Wikipedia)
     "wa03": {
-        "pvi_dem_margin_pts": -2.0,
+        "pvi_dem_margin_pts": -2.47,
         "house_elections": [],
     },
     # Washington 4: 2025 Cook PVI R+10 (via Wikipedia)
     "wa04": {
-        "pvi_dem_margin_pts": -10.0,
+        "pvi_dem_margin_pts": -18.47,
         "house_elections": [],
     },
     # Washington 5: 2025 Cook PVI R+5 (via Wikipedia)
     "wa05": {
-        "pvi_dem_margin_pts": -5.0,
+        "pvi_dem_margin_pts": -8.47,
         "house_elections": [],
     },
     # Washington 6: 2025 Cook PVI D+10 (via Wikipedia)
     "wa06": {
-        "pvi_dem_margin_pts": 10.0,
+        "pvi_dem_margin_pts": 21.53,
         "house_elections": [],
     },
     # Washington 7: 2025 Cook PVI D+39 (via Wikipedia)
     "wa07": {
-        "pvi_dem_margin_pts": 39.0,
+        "pvi_dem_margin_pts": 79.53,
         "house_elections": [],
     },
     # Washington 8: 2025 Cook PVI D+3 (via Wikipedia)
     "wa08": {
-        "pvi_dem_margin_pts": 3.0,
+        "pvi_dem_margin_pts": 7.53,
         "house_elections": [],
     },
     # Washington 9: 2025 Cook PVI D+22 (via Wikipedia)
     "wa09": {
-        "pvi_dem_margin_pts": 22.0,
+        "pvi_dem_margin_pts": 45.53,
         "house_elections": [],
     },
     # Washington 10: 2025 Cook PVI D+9 (via Wikipedia)
     "wa10": {
-        "pvi_dem_margin_pts": 9.0,
+        "pvi_dem_margin_pts": 19.53,
         "house_elections": [],
     },
     # Wisconsin 1: 2025 Cook PVI R+2 (via Wikipedia)
     "wi01": {
-        "pvi_dem_margin_pts": -2.0,
+        "pvi_dem_margin_pts": -2.47,
         "house_elections": [],
     },
     # Wisconsin 2: 2025 Cook PVI D+21 (via Wikipedia)
     "wi02": {
-        "pvi_dem_margin_pts": 21.0,
+        "pvi_dem_margin_pts": 43.53,
         "house_elections": [],
     },
     # Wisconsin 3: 2025 Cook PVI R+3 (via Wikipedia)
     "wi03": {
-        "pvi_dem_margin_pts": -3.0,
+        "pvi_dem_margin_pts": -4.47,
         "house_elections": [],
     },
     # Wisconsin 4: 2025 Cook PVI D+26 (via Wikipedia)
     "wi04": {
-        "pvi_dem_margin_pts": 26.0,
+        "pvi_dem_margin_pts": 53.53,
         "house_elections": [],
     },
     # Wisconsin 5: 2025 Cook PVI R+11 (via Wikipedia)
     "wi05": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Wisconsin 6: 2025 Cook PVI R+8 (via Wikipedia)
     "wi06": {
-        "pvi_dem_margin_pts": -8.0,
+        "pvi_dem_margin_pts": -14.47,
         "house_elections": [],
     },
     # Wisconsin 7: 2025 Cook PVI R+11 (via Wikipedia)
     "wi07": {
-        "pvi_dem_margin_pts": -11.0,
+        "pvi_dem_margin_pts": -20.47,
         "house_elections": [],
     },
     # Wisconsin 8: 2025 Cook PVI R+8 (via Wikipedia)
     "wi08": {
-        "pvi_dem_margin_pts": -8.0,
+        "pvi_dem_margin_pts": -14.47,
         "house_elections": [],
     },
     # West Virginia 1: 2025 Cook PVI R+22 (via Wikipedia)
     "wv01": {
-        "pvi_dem_margin_pts": -22.0,
+        "pvi_dem_margin_pts": -42.47,
         "house_elections": [],
     },
     # West Virginia 2: 2025 Cook PVI R+20 (via Wikipedia)
     "wv02": {
-        "pvi_dem_margin_pts": -20.0,
+        "pvi_dem_margin_pts": -38.47,
         "house_elections": [],
     },
     # Wyoming 1: 2025 Cook PVI R+23 (via Wikipedia)
     "wy01": {
-        "pvi_dem_margin_pts": -23.0,
+        "pvi_dem_margin_pts": -44.47,
         "house_elections": [],
     },
 }

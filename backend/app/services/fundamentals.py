@@ -208,16 +208,36 @@ def district_lean(
     district's own prior House election results (recency-weighted the same
     way statewide races are, via _recency_weighted_dem_margin).
 
-    `pvi_dem_margin` is a signed point value (positive favors the
-    Democratic candidate) -- see DISTRICT_FUNDAMENTALS[key]["pvi_dem_margin_pts"],
-    parsed from Cook PVI's own "D+N"/"R+N"/"EVEN" notation.
+    `pvi_dem_margin` is a signed two-party *margin* point value (positive
+    favors the Democratic candidate) -- see
+    DISTRICT_FUNDAMENTALS[key]["pvi_dem_margin_pts"]. Cook PVI's own
+    "D+N"/"R+N"/"EVEN" notation is a *vote-share* difference from the
+    national average across the last two presidential cycles, not a margin
+    (a "R+33" district's average Republican two-party vote share was 33
+    points higher than the national average, not a predicted R+33 result
+    outright) -- scripts.generate_house_seed_data._parse_pvi_dem_margin
+    already converts this to a margin (doubling the share difference, then
+    adding back the national baseline margin from those same two cycles)
+    before it ever reaches this function, so `pvi_dem_margin` here is
+    already a real, absolute margin estimate. national_environment_adjustment
+    separately layers on how far *today's* mood differs from a neutral
+    50-50 split, which isn't quite the same reference point as PVI's own
+    two-cycle baseline, but both are small next to PVI's own magnitude.
 
-    `weight` (share on the PVI figure) defaults to settings.district_pvi_weight;
-    a district can override it via
+    `weight` (share on the PVI figure) defaults to settings.district_pvi_weight
+    when there's a real house_elections history to blend against; a
+    district can override it via
     DISTRICT_FUNDAMENTALS[key]["model_overrides"]["district_pvi_weight"],
-    same convention as gubernatorial_lean_weight above.
+    same convention as gubernatorial_lean_weight above. With an *empty*
+    house_elections (most districts, until backfilled), there's no second
+    signal to blend against -- PVI is used at its full value instead of
+    being diluted by the configured weight, since that weight only makes
+    sense once a real house_elections figure exists on the other side of
+    the blend.
     """
     as_of = as_of or date.today()
+    if not house_elections:
+        return pvi_dem_margin
     weight = weight if weight is not None else settings.district_pvi_weight
     house = _recency_weighted_dem_margin(
         house_elections, as_of, settings.presidential_election_half_life_years

@@ -45,7 +45,14 @@ function houseVisualsFor(entries: RaceSummary[]) {
   return Object.fromEntries(
     entries
       .filter((r) => r.candidates[0])
-      .map((r) => [r.race.slug, { party: r.candidates[0].party, winProbability: r.candidates[0].win_probability }])
+      .map((r) => [
+        r.race.slug,
+        {
+          party: r.candidates[0].party,
+          winProbability: r.candidates[0].win_probability,
+          isFlip: r.candidates[0].party !== r.race.current_holder_party,
+        },
+      ])
   );
 }
 

@@ -304,7 +304,14 @@ export function MapPage({ office }: { office: Office }) {
                 .filter((entry) => entry.candidates.length > 0)
                 .map((entry) => {
                   const winner = [...entry.candidates].sort((a, b) => b.win_probability - a.win_probability)[0];
-                  return [entry.race.slug, { party: winner.party, winProbability: winner.win_probability }];
+                  return [
+                    entry.race.slug,
+                    {
+                      party: winner.party,
+                      winProbability: winner.win_probability,
+                      isFlip: winner.party !== entry.race.current_holder_party,
+                    },
+                  ];
                 })
             )}
             onDistrictClick={(slug) => navigate(`/states/${slug}`)}

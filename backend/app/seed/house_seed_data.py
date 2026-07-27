@@ -68,7 +68,8 @@ HOUSE_RACES: dict = {
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+17
         "candidates": [
-            {"name": 'Clyde Jones Jr.', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Jerry Carl', "party": 'Republican', "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Rep._Jerry_Carl_official_photo.jpg/500px-Rep._Jerry_Carl_official_photo.jpg", "kalshi_ticker": "KXHOUSERACE-AL01-26-R"},
+            {"name": 'Clyde Jones Jr.', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": "KXHOUSERACE-AL01-26-D"},
         ],
         "raw_polls": [],
     },
@@ -83,9 +84,22 @@ HOUSE_RACES: dict = {
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+7
         "candidates": [
-            {"name": 'Shomari Figures', "party": 'Democratic', "incumbent": True, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Rhett Marques', "party": 'Republican', "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Rhett_Marques.png", "kalshi_ticker": "KXHOUSERACE-AL02-26-R"},
+            {"name": 'Shomari Figures', "party": 'Democratic', "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Figures_Shomari_119th_Congress_2_%284x5_cropped%29.jpg/960px-Figures_Shomari_119th_Congress_2_%284x5_cropped%29.jpg", "kalshi_ticker": "KXHOUSERACE-AL01-26-D"},
         ],
-        "raw_polls": [],
+        "raw_polls": [{
+                "pollster": "Impact Research",
+                "sponsor": "Bill Hill campaign",
+                "field_start_date": "2026-06-22",
+                "field_end_date": "2026-06-25",
+                "release_date": "2026-06-25",
+                "sample_size": 400,
+                "population": "LV",
+                "margin_of_error": None,
+                "undecided_pct": 11,
+                "source_url": "http://hub.nationaljournal.com/serving-maine-up-on-a-golden-platner",
+                "results": {"Shomari Figures": 44.0, "Rhett Marques": 45.0},
+           },],
     },
     # Alabama enacted new district lines for 2026 (see Wikipedia's
     # "Mid-decade redistricting changes" table) -- some such maps remain under
@@ -98,8 +112,8 @@ HOUSE_RACES: dict = {
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+23
         "candidates": [
-            {"name": 'Mike Rogers', "party": 'Republican', "incumbent": True, "photo_url": None, "kalshi_ticker": None},
-            {"name": 'Lee McInnis', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Mike Rogers', "party": 'Republican', "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Mike_Rogers_119th_Congress.jpg/250px-Mike_Rogers_119th_Congress.jpg", "kalshi_ticker": "KXHOUSERACE-AL03-26-R"},
+            {"name": 'Lee McInnis', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCDFlALxLldWjQkDdVooUbSnYWz6slQSjXicSPYKPiSg&s=10", "kalshi_ticker": "KXHOUSERACE-AL02-26-D"},
         ],
         "raw_polls": [],
     },
@@ -114,8 +128,8 @@ HOUSE_RACES: dict = {
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+33
         "candidates": [
-            {"name": 'Robert Aderholt', "party": 'Republican', "incumbent": True, "photo_url": None, "kalshi_ticker": None},
-            {"name": 'Amanda Pusczek', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Robert Aderholt', "party": 'Republican', "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Robert_Aderholt_official_photo_%28cropped%29.jpg/250px-Robert_Aderholt_official_photo_%28cropped%29.jpg", "kalshi_ticker": "KXHOUSERACE-AL04-26-R"},
+            {"name": 'Amanda Pusczek', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWsK0Woqol95Efz8inV4_CTzuRhbxZTog1-GCJqpR2Rw&s=10", "kalshi_ticker": "KXHOUSERACE-AL04-26-D"},
         ],
         "raw_polls": [],
     },
@@ -130,8 +144,8 @@ HOUSE_RACES: dict = {
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+15
         "candidates": [
-            {"name": 'Dale Strong', "party": 'Republican', "incumbent": True, "photo_url": None, "kalshi_ticker": None},
-            {"name": 'Andrew Sneed', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Dale Strong', "party": 'Republican', "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Dale_Strong_official_House_portrait_%28cropped%29.jpg/250px-Dale_Strong_official_House_portrait_%28cropped%29.jpg", "kalshi_ticker": "KXHOUSERACE-AL05-26-R"},
+            {"name": 'Andrew Sneed', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQz-WKEtVGThdXwROFvdIt6SC4kKC2eEPpmA2yIZkf_WA&s=10", "kalshi_ticker": "KXHOUSERACE-AL05-26-D"},
         ],
         "raw_polls": [],
     },
@@ -146,7 +160,9 @@ HOUSE_RACES: dict = {
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+17
         "candidates": [
-            {"name": 'Gary Palmer', "party": 'Republican', "incumbent": True, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Gary Palmer', "party": 'Republican', "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Gary_Palmer_-_2018.jpg/500px-Gary_Palmer_-_2018.jpg", "kalshi_ticker": "KXHOUSERACE-AL06-26-R"},
+            {"name": 'Democratic Nominee (TBD)', "party": 'Democratic', "incumbent": True, "photo_url": None, "kalshi_ticker": "KXHOUSERACE-AL06-26-D"},
+
         ],
         "raw_polls": [],
     },
@@ -161,7 +177,8 @@ HOUSE_RACES: dict = {
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+10
         "candidates": [
-            {"name": 'Terri Sewell', "party": 'Democratic', "incumbent": True, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Republican Nominee (TBD)', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": "KXHOUSERACE-AL07-26-R"},
+            {"name": 'Terri Sewell', "party": 'Democratic', "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Terri_Sewell_official_photo.jpg/250px-Terri_Sewell_official_photo.jpg", "kalshi_ticker": "KXHOUSERACE-AL07-26-D"},
         ],
         "raw_polls": [],
     },

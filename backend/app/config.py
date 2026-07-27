@@ -34,9 +34,12 @@ class Settings(BaseSettings):
     house_incumbency_bonus_pts: float = 3.0
     # District lean (see app.services.fundamentals.district_lean): how much
     # of a House district's historical-lean blend comes from its Cook PVI
-    # vs. its own prior House election results. Overridable per-district via
-    # DISTRICT_FUNDAMENTALS' "model_overrides", same convention as
-    # gubernatorial_lean_weight above.
+    # vs. its own prior House election results, *once a district actually
+    # has house_elections on file* -- with none (most districts, until
+    # backfilled), PVI is used at full value instead of being diluted by
+    # this weight, since there's no second signal yet to blend against.
+    # Overridable per-district via DISTRICT_FUNDAMENTALS' "model_overrides",
+    # same convention as gubernatorial_lean_weight above.
     district_pvi_weight: float = 0.5
     presidential_approval_coefficient: float = 0.15
     # Generic congressional ballot (see app.services.generic_ballot /
