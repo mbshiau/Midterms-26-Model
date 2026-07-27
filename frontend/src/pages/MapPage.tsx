@@ -3,10 +3,33 @@ import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import type { RaceSummary, RaceSummaryDelta } from "../api/types";
 import { GooeyText, type GooeyTextEntry } from "../components/GooeyText";
+import { HouseDistrictMap } from "../components/HouseDistrictMap";
 import { SenateControlChart } from "../components/SenateControlChart";
 import { SenateControlHistoryChart } from "../components/SenateControlHistoryChart";
 import { UsMap } from "../components/UsMap";
 import { partyAbbrev, partyColorVar, type ProbabilityTier } from "../lib/partyColor";
+
+type Office = "Governor" | "Senate" | "House";
+
+const TITLES: Record<Office, string> = {
+  Senate: "2026 Senate Election Forecast",
+  Governor: "2026 Gubernatorial Election Forecast",
+  House: "2026 House Election Forecast",
+};
+
+const SEAT_NOUNS: Record<Office, string> = {
+  Senate: "Senate seat",
+  Governor: "governorship",
+  House: "House seat",
+};
+
+/** Governor/Senate races are keyed by (2-letter) state_code, one race per
+ * state, for UsMap's per-state choropleth. House has many races per state,
+ * so it's keyed by the full race slug instead, for HouseDistrictMap's
+ * per-district rendering. */
+function raceKey(office: Office, entry: RaceSummary): string {
+  return office === "House" ? entry.race.slug : entry.race.state_code;
+}
 
 const TIER_LABELS: { tier: ProbabilityTier; label: string }[] = [
   { tier: 95, label: "95%+" },
@@ -106,26 +129,26 @@ function leadingPartyOf(entry: RaceSummary): string | null {
   return entry.candidates[0]?.party ?? null;
 }
 
-export function MapPage({ office }: { office: "Governor" | "Senate" }) {
+export function MapPage({ office }: { office: Office }) {
   const navigate = useNavigate();
-  const [racesByState, setRacesByState] = useState<Record<string, RaceSummary>>({});
+  const [racesByKey, setRacesByKey] = useState<Record<string, RaceSummary>>({});
   const [moverSearch, setMoverSearch] = useState("");
   const [viewMode, setViewMode] = useState<ViewMode>("since-refresh");
 
-  const title = office === "Senate" ? "2026 Senate Election Forecast" : "2026 Gubernatorial Election Forecast";
-  const seatNoun = office === "Senate" ? "Senate seat" : "governorship";
+  const title = TITLES[office];
+  const seatNoun = SEAT_NOUNS[office];
 
   useEffect(() => {
     let cancelled = false;
-    setRacesByState({});
+    setRacesByKey({});
 
     (async () => {
       // Single bulk request instead of an N-race x (/forecast +
       // /forecast/history) fan-out -- see GET /races/summary.
       const summaries = await api.getRaceSummaries(office);
       if (cancelled) return;
-      const entries = summaries.map((s) => [s.race.state_code, s] as const);
-      setRacesByState(Object.fromEntries(entries));
+      const entries = summaries.map((s) => [raceKey(office, s), s] as const);
+      setRacesByKey(Object.fromEntries(entries));
     })();
 
     return () => {
@@ -133,7 +156,7 @@ export function MapPage({ office }: { office: "Governor" | "Senate" }) {
     };
   }, [office]);
 
-  const entries = Object.values(racesByState);
+  const entries = Object.values(racesByKey);
   const demCount = entries.filter((r) => leadingPartyOf(r) === "Democratic").length;
   const repCount = entries.filter((r) => leadingPartyOf(r) === "Republican").length;
   const lastUpdated = entries
@@ -274,49 +297,87 @@ export function MapPage({ office }: { office: "Governor" | "Senate" }) {
           </div>
         </div>
 
-        <UsMap
-          getVisual={(id) => {
-            const entry = racesByState[id];
-            if (!entry || entry.candidates.length === 0) return null;
+        {office === "House" ? (
+          <HouseDistrictMap
+            visualsBySlug={Object.fromEntries(
+              entries
+                .filter((entry) => entry.candidates.length > 0)
+                .map((entry) => {
+                  const winner = [...entry.candidates].sort((a, b) => b.win_probability - a.win_probability)[0];
+                  return [entry.race.slug, { party: winner.party, winProbability: winner.win_probability }];
+                })
+            )}
+            onDistrictClick={(slug) => navigate(`/states/${slug}`)}
+            getTooltip={(slug) => {
+              const entry = racesByKey[slug];
+              if (!entry) return null;
 
-            const winner = [...entry.candidates].sort((a, b) => b.win_probability - a.win_probability)[0];
-            if (!winner) return null;
+              const district = slug.split("-").pop();
+              const title = `${entry.race.state_name} — District ${Number(district)}`;
+              if (entry.candidates.length === 0) return { title };
 
-            return {
-              party: winner.party,
-              winProbability: winner.win_probability,
-              isFlip: winner.party !== entry.race.current_holder_party,
-            };
-          }}
-          isClickable={(id) => id in racesByState}
-          onStateClick={(id) => {
-            const entry = racesByState[id];
-            if (entry) navigate(`/states/${entry.race.slug}`);
-          }}
-          getTooltip={(id) => {
-            const entry = racesByState[id];
-            if (!entry || entry.candidates.length === 0) return null;
+              // entry.candidates is already sorted by mean vote share, descending.
+              const sorted = entry.candidates;
+              const winner = sorted[0];
 
-            // entry.candidates is already sorted by mean vote share, descending.
-            const sorted = entry.candidates;
-            const winner = sorted[0];
+              return {
+                title,
+                candidates: sorted.map((r) => ({
+                  name: r.name,
+                  party: r.party,
+                  voteShare: r.mean_vote_share,
+                })),
+                winner: winner
+                  ? { name: winner.name, party: winner.party, probability: winner.win_probability }
+                  : null,
+              };
+            }}
+          />
+        ) : (
+          <UsMap
+            getVisual={(id) => {
+              const entry = racesByKey[id];
+              if (!entry || entry.candidates.length === 0) return null;
 
-            return {
-              candidates: sorted.map((r) => ({
-                name: r.name,
-                party: r.party,
-                voteShare: r.mean_vote_share,
-              })),
-              winner: winner
-                ? {
-                    name: winner.name,
-                    party: winner.party,
-                    probability: winner.win_probability,
-                  }
-                : null,
-            };
-          }}
-        />
+              const winner = [...entry.candidates].sort((a, b) => b.win_probability - a.win_probability)[0];
+              if (!winner) return null;
+
+              return {
+                party: winner.party,
+                winProbability: winner.win_probability,
+                isFlip: winner.party !== entry.race.current_holder_party,
+              };
+            }}
+            isClickable={(id) => id in racesByKey}
+            onStateClick={(id) => {
+              const entry = racesByKey[id];
+              if (entry) navigate(`/states/${entry.race.slug}`);
+            }}
+            getTooltip={(id) => {
+              const entry = racesByKey[id];
+              if (!entry || entry.candidates.length === 0) return null;
+
+              // entry.candidates is already sorted by mean vote share, descending.
+              const sorted = entry.candidates;
+              const winner = sorted[0];
+
+              return {
+                candidates: sorted.map((r) => ({
+                  name: r.name,
+                  party: r.party,
+                  voteShare: r.mean_vote_share,
+                })),
+                winner: winner
+                  ? {
+                      name: winner.name,
+                      party: winner.party,
+                      probability: winner.win_probability,
+                    }
+                  : null,
+              };
+            }}
+          />
+        )}
       </section>
 
       {office === "Senate" && (
@@ -444,16 +505,34 @@ export function MapPage({ office }: { office: "Governor" | "Senate" }) {
       </section>
 
       <p className="mt-4 text-xs" style={{ color: "var(--text-muted)" }}>
-        Map data from{" "}
-        <a
-          href="https://github.com/VictorCazanave/svg-maps/tree/master/packages/usa"
-          target="_blank"
-          rel="noreferrer"
-          className="underline"
-        >
-          @svg-maps/usa
-        </a>{" "}
-        (based on amCharts), used under CC BY-NC 4.0.
+        {office === "House" ? (
+          <>
+            District boundaries:{" "}
+            <a
+              href="https://commons.wikimedia.org/wiki/File:2026_United_States_House_of_Representatives_elections_retirements_or_losses_of_renomination_map.svg"
+              target="_blank"
+              rel="noreferrer"
+              className="underline"
+            >
+              2026 U.S. House elections retirements/renomination-losses map
+            </a>{" "}
+            by Coolxsearcher1414, Wikimedia Commons (CC0). Colored using this app&rsquo;s own
+            forecast, not the source map&rsquo;s own coloring.
+          </>
+        ) : (
+          <>
+            Map data from{" "}
+            <a
+              href="https://github.com/VictorCazanave/svg-maps/tree/master/packages/usa"
+              target="_blank"
+              rel="noreferrer"
+              className="underline"
+            >
+              @svg-maps/usa
+            </a>{" "}
+            (based on amCharts), used under CC BY-NC 4.0.
+          </>
+        )}
       </p>
     </div>
     </div>

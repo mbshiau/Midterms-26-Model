@@ -1014,3 +1014,97 @@ def test_poll_weight_approximates_the_proposed_schedule_anchor_points():
     assert abs(two_weeks_out - 0.80) < 0.1
     assert abs(five_weeks_out - 0.60) < 0.1
     assert abs(four_months_out - 0.40) < 0.1
+
+
+# -- District fundamentals (House) --------------------------------------
+
+_EMPTY_DISTRICT = {
+    "pvi_dem_margin_pts": 0.0,
+    "house_elections": [],
+}
+
+
+def test_district_lean_is_zero_for_a_scaffolded_empty_district():
+    # A district with an EVEN PVI and no House-election history on file --
+    # must be a neutral no-op, same convention as Ohio's empty
+    # registration_snapshots in RACE_FUNDAMENTALS.
+    assert fundamentals.district_lean(0.0, []) == 0.0
+
+
+def test_district_lean_blends_pvi_and_house_results():
+    pvi = 20.0  # D+20
+    house = [{"year": 2022, "dem_share": 52.0}, {"year": 2024, "dem_share": 54.0}]
+    blended = fundamentals.district_lean(pvi, house, as_of=date(2026, 1, 1), weight=0.5)
+    pvi_only = fundamentals.district_lean(pvi, [], as_of=date(2026, 1, 1), weight=1.0)
+    house_only = fundamentals.district_lean(pvi, house, as_of=date(2026, 1, 1), weight=0.0)
+    assert house_only < blended < pvi_only  # house history is less Democratic-favorable than PVI here
+
+
+def test_district_lean_weight_override_shifts_the_blend_toward_pvi():
+    pvi = 30.0  # D+30
+    house = [{"year": 2024, "dem_share": 45.0}]
+    default_blend = fundamentals.district_lean(pvi, house, as_of=date(2026, 1, 1))
+    pvi_heavy = fundamentals.district_lean(pvi, house, as_of=date(2026, 1, 1), weight=0.9)
+    assert pvi_heavy > default_blend
+
+
+def test_district_lean_uses_pvi_signed_margin_directly():
+    # No recency-weighting applied to PVI itself (unlike house_elections) --
+    # it's already a computed figure, used as-is.
+    assert fundamentals.district_lean(-17.0, [], weight=1.0) == -17.0
+    assert fundamentals.district_lean(7.0, [], weight=1.0) == 7.0
+
+
+def test_district_fundamentals_breakdown_is_incumbency_and_environment_only_when_empty():
+    breakdown = fundamentals.district_fundamentals_breakdown(
+        _EMPTY_DISTRICT, incumbent_party="Democratic", approval_pct=37.0, president_party="Republican",
+        as_of=date(2026, 1, 1),
+    )
+    assert breakdown.combined_district_lean_pts == 0.0
+    assert breakdown.incumbency_pts == fundamentals.settings.house_incumbency_bonus_pts
+    assert breakdown.total_dem_margin_pts == breakdown.incumbency_pts + breakdown.national_environment_pts
+    assert not hasattr(breakdown, "registration_trend_pts")
+
+
+def test_district_fundamentals_breakdown_handles_missing_pvi_as_neutral():
+    district = {"pvi_dem_margin_pts": None, "house_elections": []}
+    breakdown = fundamentals.district_fundamentals_breakdown(
+        district, incumbent_party=None, approval_pct=50.0, president_party="Republican",
+        as_of=date(2026, 1, 1),
+    )
+    assert breakdown.district_pvi_lean_pts == 0.0
+    assert breakdown.combined_district_lean_pts == 0.0
+
+
+def test_district_fundamentals_vote_share_favors_the_incumbent_party():
+    dem_share = fundamentals.district_fundamentals_vote_share(
+        _EMPTY_DISTRICT, "Democratic", "Democratic", approval_pct=50.0, president_party="Republican",
+        as_of=date(2026, 1, 1),
+    )
+    rep_share = fundamentals.district_fundamentals_vote_share(
+        _EMPTY_DISTRICT, "Republican", "Democratic", approval_pct=50.0, president_party="Republican",
+        as_of=date(2026, 1, 1),
+    )
+    assert dem_share > rep_share
+    assert abs((dem_share + rep_share) - 100) < 1e-9
+
+
+def test_district_fundamentals_vote_share_reflects_real_pvi():
+    strong_r_district = {"pvi_dem_margin_pts": -30.0, "house_elections": []}
+    rep_share = fundamentals.district_fundamentals_vote_share(
+        strong_r_district, "Republican", None, approval_pct=50.0, president_party="Republican",
+        as_of=date(2026, 1, 1),
+    )
+    assert rep_share > 55  # R+30 district (blended 50/50 with no house_elections) favors Republican
+
+
+def test_incumbency_adjustment_house_bonus_is_smaller_than_governor_by_default():
+    house_bonus = fundamentals.incumbency_adjustment("Democratic", office="House")
+    governor_bonus = fundamentals.incumbency_adjustment("Democratic", office="Governor")
+    assert house_bonus == fundamentals.settings.house_incumbency_bonus_pts
+    assert governor_bonus == fundamentals.settings.incumbency_bonus_pts
+    assert 0 < house_bonus < governor_bonus
+
+
+def test_incumbency_adjustment_office_param_defaults_to_governor_bonus():
+    assert fundamentals.incumbency_adjustment("Republican") == -fundamentals.settings.incumbency_bonus_pts

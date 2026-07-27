@@ -27,6 +27,17 @@ class Settings(BaseSettings):
     gubernatorial_lean_weight: float = 0.45
     senate_lean_weight: float = 0.30
     incumbency_bonus_pts: float = 4.0
+    # House incumbency advantage is generally smaller than gubernatorial's in
+    # the current polarized era (ticket-splitting between a House race and
+    # the top of the ticket is much rarer than it used to be) -- see
+    # app.services.fundamentals.incumbency_adjustment's `office` param.
+    house_incumbency_bonus_pts: float = 3.0
+    # District lean (see app.services.fundamentals.district_lean): how much
+    # of a House district's historical-lean blend comes from its Cook PVI
+    # vs. its own prior House election results. Overridable per-district via
+    # DISTRICT_FUNDAMENTALS' "model_overrides", same convention as
+    # gubernatorial_lean_weight above.
+    district_pvi_weight: float = 0.5
     presidential_approval_coefficient: float = 0.15
     # Generic congressional ballot (see app.services.generic_ballot /
     # app.ingestion.generic_ballot_scraper): a second, more direct national-

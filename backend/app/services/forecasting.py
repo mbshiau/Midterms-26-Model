@@ -36,12 +36,12 @@ import numpy as np
 from sqlalchemy.orm import Session, selectinload
 
 from app.config import settings
-from app.data.fundamentals_data import RACE_FUNDAMENTALS
 from app.models import Candidate, ForecastResult, ForecastSnapshot, Poll, Race
 from app.services import fundamentals
 from app.services.approval import get_current_approval
 from app.services.generic_ballot import get_current_generic_ballot
 from app.services.pollster_ratings import get_pollster_ratings_by_name
+from app.services.races import get_race_fundamentals
 from app.services.simulation import generate_national_shock, run_monte_carlo
 from app.services.weighting import CandidateAverage, two_party_normalize, weighted_polling_averages
 
@@ -77,10 +77,16 @@ def blend_with_fundamentals(
     blended: dict[int, CandidateAverage] = {}
 
     for candidate in candidates:
-        fundamentals_share = fundamentals.fundamentals_vote_share(
-            race_fundamentals, candidate.party, incumbent_party, approval_pct, president_party, as_of,
-            generic_ballot_margin, office,
-        )
+        if office == "House":
+            fundamentals_share = fundamentals.district_fundamentals_vote_share(
+                race_fundamentals, candidate.party, incumbent_party, approval_pct, president_party, as_of,
+                generic_ballot_margin,
+            )
+        else:
+            fundamentals_share = fundamentals.fundamentals_vote_share(
+                race_fundamentals, candidate.party, incumbent_party, approval_pct, president_party, as_of,
+                generic_ballot_margin, office,
+            )
         fundamentals_shares[candidate.id] = fundamentals_share
 
         avg = candidate_averages.get(candidate.id)
@@ -131,7 +137,7 @@ def generate_forecast(
     )
 
     candidates = db.query(Candidate).filter(Candidate.race_id == race.id).all()
-    fundamentals_data = RACE_FUNDAMENTALS[race.state_code]
+    fundamentals_data = get_race_fundamentals(race)
 
     pollster_ratings = get_pollster_ratings_by_name(db)
     polling_averages = two_party_normalize(
@@ -177,12 +183,20 @@ def generate_forecast(
     )
 
     incumbent_party = _incumbent_party(candidates)
-    breakdown = asdict(
-        fundamentals.fundamentals_breakdown(
-            fundamentals_data, incumbent_party, approval.approval_pct, approval.party, as_of,
-            generic_ballot_margin, race.office,
+    if race.office == "House":
+        breakdown = asdict(
+            fundamentals.district_fundamentals_breakdown(
+                fundamentals_data, incumbent_party, approval.approval_pct, approval.party, as_of,
+                generic_ballot_margin,
+            )
         )
-    )
+    else:
+        breakdown = asdict(
+            fundamentals.fundamentals_breakdown(
+                fundamentals_data, incumbent_party, approval.approval_pct, approval.party, as_of,
+                generic_ballot_margin, race.office,
+            )
+        )
     breakdown["president_name"] = approval.name
     breakdown["president_approval_pct"] = approval.approval_pct
     breakdown["president_approval_as_of"] = approval.as_of.isoformat()
@@ -194,10 +208,17 @@ def generate_forecast(
     # Most states use the last 3 elections per race type, but a state can
     # have fewer (e.g. an outlier year discarded rather than backfilled) --
     # exposing the actual count keeps the UI's "(last N races)" labels
-    # honest instead of hardcoding "3" everywhere.
-    breakdown["gubernatorial_elections_count"] = len(fundamentals_data["gubernatorial_elections"])
-    breakdown["senate_elections_count"] = len(fundamentals_data["senate_elections"])
-    breakdown["presidential_elections_count"] = len(fundamentals_data["presidential_elections"])
+    # honest instead of hardcoding "3" everywhere. House districts have a
+    # different shape (no gubernatorial/Senate race of their own -- see
+    # DISTRICT_FUNDAMENTALS) so they expose their own count instead; the PVI
+    # figure itself is already exposed via district_pvi_lean_pts, no count
+    # needed for it since it's a single value, not a series.
+    if race.office == "House":
+        breakdown["district_house_elections_count"] = len(fundamentals_data["house_elections"])
+    else:
+        breakdown["gubernatorial_elections_count"] = len(fundamentals_data["gubernatorial_elections"])
+        breakdown["senate_elections_count"] = len(fundamentals_data["senate_elections"])
+        breakdown["presidential_elections_count"] = len(fundamentals_data["presidential_elections"])
 
     snapshot = ForecastSnapshot(
         race_id=race.id,

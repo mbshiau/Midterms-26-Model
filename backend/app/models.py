@@ -14,24 +14,34 @@ class Population(str, enum.Enum):
     A = "A"  # all adults
 
 
-_OFFICE_SLUGS = {"Governor": "gov", "Senate": "sen"}
+_OFFICE_SLUGS = {"Governor": "gov", "Senate": "sen", "House": "house"}
 
 
 class Race(Base):
-    """A single state race for one office (Governor or Senate) — the unit
+    """A single race for one office (Governor, Senate, or House) — the unit
     everything else is scoped to. Adding a new state/office means adding a
     Race row plus its seed/fundamentals data, not a schema change. A state
-    can have both a Governor and a Senate race at once (unique on
-    (state_code, office), not on state_code alone), distinguished by
-    `slug`."""
+    can have a Governor race, a Senate race, and (unlike the other two,
+    potentially many) House races all at once -- unique on
+    (state_code, office, district), not on state_code alone -- distinguished
+    by `slug`.
+
+    `district` is 0 for every statewide race (Governor, Senate) and the
+    real district number (1+; at-large states use 1) for House. 0 rather
+    than NULL is deliberate: a composite unique constraint doesn't enforce
+    uniqueness across NULLs, so a NULL district would silently let duplicate
+    Governor/Senate rows through."""
 
     __tablename__ = "races"
-    __table_args__ = (UniqueConstraint("state_code", "office", name="uq_races_state_office"),)
+    __table_args__ = (
+        UniqueConstraint("state_code", "office", "district", name="uq_races_state_office_district"),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     state_code: Mapped[str] = mapped_column(String(2), nullable=False)
     state_name: Mapped[str] = mapped_column(String(100), nullable=False)
     office: Mapped[str] = mapped_column(String(100), default="Governor")
+    district: Mapped[int] = mapped_column(Integer, default=0)
     election_date: Mapped[date] = mapped_column(Date, nullable=False)
     wikipedia_page_title: Mapped[str] = mapped_column(String(200), nullable=False)
 
@@ -41,12 +51,16 @@ class Race(Base):
 
     @property
     def slug(self) -> str:
-        """The per-race API identifier, e.g. "pa-gov" / "mi-sen" -- computed,
-        not stored, so no migration/backfill was needed to introduce it. Not
-        a DB column: state_code is always exactly 2 chars, so
-        `f"{state_code}-{office_abbrev}"` round-trips unambiguously in
-        app.services.races.get_race."""
+        """The per-race API identifier, e.g. "pa-gov" / "mi-sen" /
+        "ca-house-12" -- computed, not stored, so no migration/backfill was
+        needed to introduce it. Not a DB column: state_code is always
+        exactly 2 chars, so this round-trips unambiguously in
+        app.services.races._parse_slug. House gets a 3rd segment (the
+        district number, zero-padded to 2 digits) since a state can have
+        many House races at once, unlike Governor/Senate."""
         office_abbrev = _OFFICE_SLUGS.get(self.office, self.office.lower()[:3])
+        if self.office == "House":
+            return f"{self.state_code}-{office_abbrev}-{self.district:02d}"
         return f"{self.state_code}-{office_abbrev}"
 
 

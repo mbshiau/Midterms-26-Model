@@ -169,12 +169,28 @@ class ForecastResultOut(BaseModel):
 
 
 class FundamentalsBreakdownOut(BaseModel):
-    gubernatorial_lean_pts: float
-    senate_lean_pts: float
-    presidential_lean_pts: float
-    combined_historical_lean_pts: float
+    # Governor/Senate-only fields (see app.services.fundamentals.
+    # FundamentalsBreakdown) -- None for a House race, which has no
+    # gubernatorial/Senate/presidential state-level lean of its own and
+    # populates the district_* fields below instead (see
+    # app.services.fundamentals.DistrictFundamentalsBreakdown).
+    gubernatorial_lean_pts: float | None = None
+    senate_lean_pts: float | None = None
+    presidential_lean_pts: float | None = None
+    combined_historical_lean_pts: float | None = None
+    gubernatorial_elections_count: int | None = None
+    senate_elections_count: int | None = None
+    presidential_elections_count: int | None = None
+    # House-only fields -- None for a Governor/Senate race.
+    district_pvi_lean_pts: float | None = None
+    district_house_lean_pts: float | None = None
+    combined_district_lean_pts: float | None = None
+    district_house_elections_count: int | None = None
+    # Shared across every office.
     incumbency_pts: float
-    registration_trend_pts: float
+    # Governor/Senate only -- no per-district voter-registration dataset
+    # exists, so a House race's breakdown simply doesn't produce this key.
+    registration_trend_pts: float | None = None
     national_environment_pts: float
     total_dem_margin_pts: float
     president_name: str
@@ -187,9 +203,6 @@ class FundamentalsBreakdownOut(BaseModel):
     generic_ballot_rep_pct: float | None = None
     generic_ballot_as_of: date | None = None
     generic_ballot_source_url: str | None = None
-    gubernatorial_elections_count: int
-    senate_elections_count: int
-    presidential_elections_count: int
 
 
 class ForecastSnapshotOut(BaseModel):

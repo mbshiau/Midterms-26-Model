@@ -15,7 +15,7 @@ default gets added as nullable instead of failing the whole startup.
 
 import logging
 
-from sqlalchemy import MetaData, inspect, text
+from sqlalchemy import MetaData, UniqueConstraint, inspect, text
 from sqlalchemy.engine import Engine
 
 from app.database import Base
@@ -41,6 +41,54 @@ def _literal_default_clause(column) -> str | None:
             return f"'{value}'"
         return str(value)
     return None
+
+
+def _sync_unique_constraints(conn, table, inspector) -> None:
+    """Replaces a table's unique constraint(s) when the model's declared
+    column set has changed (e.g. Race's uq_races_state_office ->
+    uq_races_state_office_district, adding `district` to the key) --
+    a genuine constraint change, not just a new column, so it needs its own
+    step alongside the column-add loop above.
+
+    Postgres-only: it's the only dialect this project actually runs against
+    in production (see app.config.Settings.database_url), and SQLite (used
+    by the test suite) doesn't support ALTER TABLE ... DROP CONSTRAINT for a
+    table-level unique constraint the same way -- rather than reimplement
+    the "rebuild the table" dance SQLite would need, this step is simply
+    skipped there, logged, and left for a fresh `create_all()` (a brand new
+    test DB every run) to get right from scratch.
+    """
+    if conn.dialect.name != "postgresql":
+        return
+
+    declared_uniques = [c for c in table.constraints if isinstance(c, UniqueConstraint)]
+    if not declared_uniques:
+        return
+
+    existing = inspector.get_unique_constraints(table.name)
+    existing_column_sets = {frozenset(e["column_names"]): e["name"] for e in existing}
+
+    for constraint in declared_uniques:
+        declared_columns = frozenset(c.name for c in constraint.columns)
+        if declared_columns in existing_column_sets:
+            continue  # already matches -- no-op, same as the column-add loop
+
+        # Drop any existing unique constraint that overlaps on columns
+        # (the stale predecessor of this one, e.g. the old 2-column
+        # constraint this 3-column one replaces) before adding the new one.
+        for existing_columns, existing_name in existing_column_sets.items():
+            if existing_columns & declared_columns:
+                ddl = f'ALTER TABLE {table.name} DROP CONSTRAINT "{existing_name}"'
+                logger.info("sync_schema: %s", ddl)
+                conn.execute(text(ddl))
+
+        column_list = ", ".join(c.name for c in constraint.columns)
+        ddl = (
+            f'ALTER TABLE {table.name} ADD CONSTRAINT "{constraint.name}" '
+            f"UNIQUE ({column_list})"
+        )
+        logger.info("sync_schema: %s", ddl)
+        conn.execute(text(ddl))
 
 
 def sync_schema(engine: Engine, metadata: MetaData | None = None) -> None:
@@ -86,3 +134,5 @@ def sync_schema(engine: Engine, metadata: MetaData | None = None) -> None:
 
                 logger.info("sync_schema: %s", ddl)
                 conn.execute(text(ddl))
+
+            _sync_unique_constraints(conn, table, inspector)

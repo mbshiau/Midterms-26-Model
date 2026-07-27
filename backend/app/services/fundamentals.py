@@ -54,6 +54,23 @@ class FundamentalsBreakdown:
     total_dem_margin_pts: float
 
 
+@dataclass
+class DistrictFundamentalsBreakdown:
+    """The House counterpart to FundamentalsBreakdown -- kept as a separate
+    dataclass rather than reusing the statewide one, since a single
+    congressional district has no gubernatorial/Senate race of its own and
+    repurposing those field names for district data would surface
+    mislabeled numbers in the UI's "model composition" breakdown. See
+    district_fundamentals_breakdown."""
+
+    district_pvi_lean_pts: float
+    district_house_lean_pts: float
+    combined_district_lean_pts: float
+    incumbency_pts: float
+    national_environment_pts: float
+    total_dem_margin_pts: float
+
+
 def _recency_weighted_dem_margin(
     elections: list[dict], as_of: date, half_life_years: float
 ) -> float:
@@ -164,13 +181,48 @@ def combined_historical_lean(
     )
 
 
-def incumbency_adjustment(incumbent_party: str | None) -> float:
-    """Signed points added to the Democratic margin for the incumbent party."""
+def incumbency_adjustment(incumbent_party: str | None, office: str = "Governor") -> float:
+    """Signed points added to the Democratic margin for the incumbent party.
+    `office` picks the bonus magnitude -- House incumbency advantage is
+    modeled separately (and smaller by default) than Governor/Senate's, see
+    settings.house_incumbency_bonus_pts."""
+    bonus = settings.house_incumbency_bonus_pts if office == "House" else settings.incumbency_bonus_pts
     if incumbent_party == "Democratic":
-        return settings.incumbency_bonus_pts
+        return bonus
     if incumbent_party == "Republican":
-        return -settings.incumbency_bonus_pts
+        return -bonus
     return 0.0
+
+
+def district_lean(
+    pvi_dem_margin: float,
+    house_elections: list[dict],
+    as_of: date | None = None,
+    weight: float | None = None,
+) -> float:
+    """Democratic margin for a single House district, blending (a) the
+    district's Cook Partisan Voting Index -- already a two-cycle
+    presidential-performance-vs-national-average figure computed on the
+    district's *current* lines, so no separate recency-weighting is needed
+    the way a raw multi-year election series gets -- with (b) the
+    district's own prior House election results (recency-weighted the same
+    way statewide races are, via _recency_weighted_dem_margin).
+
+    `pvi_dem_margin` is a signed point value (positive favors the
+    Democratic candidate) -- see DISTRICT_FUNDAMENTALS[key]["pvi_dem_margin_pts"],
+    parsed from Cook PVI's own "D+N"/"R+N"/"EVEN" notation.
+
+    `weight` (share on the PVI figure) defaults to settings.district_pvi_weight;
+    a district can override it via
+    DISTRICT_FUNDAMENTALS[key]["model_overrides"]["district_pvi_weight"],
+    same convention as gubernatorial_lean_weight above.
+    """
+    as_of = as_of or date.today()
+    weight = weight if weight is not None else settings.district_pvi_weight
+    house = _recency_weighted_dem_margin(
+        house_elections, as_of, settings.presidential_election_half_life_years
+    )
+    return weight * pvi_dem_margin + (1 - weight) * house
 
 
 def registration_trend_adjustment(registration_snapshots: list[dict]) -> float:
@@ -300,6 +352,71 @@ def fundamentals_vote_share(
     """Projected two-party vote share for a candidate of the given party."""
     margin = fundamentals_breakdown(
         race_fundamentals, incumbent_party, approval_pct, president_party, as_of, generic_ballot_margin, office
+    ).total_dem_margin_pts
+    if party == "Democratic":
+        return 50 + margin / 2
+    if party == "Republican":
+        return 50 - margin / 2
+    return 50.0
+
+
+def district_fundamentals_breakdown(
+    district_fundamentals: dict,
+    incumbent_party: str | None,
+    approval_pct: float,
+    president_party: str,
+    as_of: date | None = None,
+    generic_ballot_margin: float | None = None,
+) -> DistrictFundamentalsBreakdown:
+    """The House counterpart to fundamentals_breakdown -- see
+    DistrictFundamentalsBreakdown for why this is a separate function
+    rather than an office branch inside fundamentals_breakdown.
+    `district_fundamentals` is one app.data.district_fundamentals_data.
+    DISTRICT_FUNDAMENTALS entry (pvi_dem_margin_pts, house_elections,
+    optional model_overrides). No registration-trend input -- unlike
+    statewide races, no per-district voter-registration dataset exists, so
+    that adjustment simply isn't part of this breakdown (rather than always
+    computing to a no-op 0 the way Ohio's empty registration_snapshots does
+    for RACE_FUNDAMENTALS). Reuses incumbency_adjustment (with office="House",
+    the smaller default bonus) and national_environment_adjustment unchanged
+    -- only the historical-lean input differs from the statewide version.
+    """
+    as_of = as_of or date.today()
+    model_overrides = district_fundamentals.get("model_overrides", {})
+    # None means PVI wasn't scraped for this district -- degrades to a
+    # neutral 0 (same no-fabrication convention as an empty house_elections
+    # list) rather than crashing.
+    pvi = district_fundamentals["pvi_dem_margin_pts"] or 0.0
+    house_results = district_fundamentals["house_elections"]
+
+    house = _recency_weighted_dem_margin(house_results, as_of, settings.presidential_election_half_life_years)
+    combined = district_lean(pvi, house_results, as_of, model_overrides.get("district_pvi_weight"))
+    inc = incumbency_adjustment(incumbent_party, office="House")
+    env = national_environment_adjustment(approval_pct, president_party, generic_ballot_margin)
+    total = combined + inc + env
+
+    return DistrictFundamentalsBreakdown(
+        district_pvi_lean_pts=pvi,
+        district_house_lean_pts=house,
+        combined_district_lean_pts=combined,
+        incumbency_pts=inc,
+        national_environment_pts=env,
+        total_dem_margin_pts=total,
+    )
+
+
+def district_fundamentals_vote_share(
+    district_fundamentals: dict,
+    party: str,
+    incumbent_party: str | None,
+    approval_pct: float,
+    president_party: str,
+    as_of: date | None = None,
+    generic_ballot_margin: float | None = None,
+) -> float:
+    """Projected two-party vote share for a House candidate of the given party."""
+    margin = district_fundamentals_breakdown(
+        district_fundamentals, incumbent_party, approval_pct, president_party, as_of, generic_ballot_margin
     ).total_dem_margin_pts
     if party == "Democratic":
         return 50 + margin / 2

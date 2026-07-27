@@ -165,7 +165,7 @@ export function StateForecastPage() {
       >
         <div className="relative flex items-center px-4 py-2" style={{ minHeight: NAV_HEIGHT_PX }}>
           <Link
-            to={race?.office === "Senate" ? "/senate" : "/governors"}
+            to={race?.office === "Senate" ? "/senate" : race?.office === "House" ? "/house" : "/governors"}
             className="absolute left-4 inline-flex flex-shrink-0 items-center gap-1 rounded-md px-2.5 py-1.5 underline"
             style={{ color: "var(--text-muted)" }}
           >

@@ -27,7 +27,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const api = {
   getRaces: () => request<Race[]>("/races"),
-  getRaceSummaries: (office: "Governor" | "Senate") =>
+  getRaceSummaries: (office: "Governor" | "Senate" | "House") =>
     request<RaceSummary[]>(`/races/summary?office=${office}`),
   getSenateControl: () => request<ChamberControl>("/chamber-control/senate"),
   getSenateControlHistory: () =>

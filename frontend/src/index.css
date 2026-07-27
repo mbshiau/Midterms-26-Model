@@ -113,3 +113,66 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.6);
   box-shadow: 0 8px 32px rgba(11, 11, 11, 0.08);
 }
+
+/* Liquid-glass sphere used by <Orb> -- the homescreen's stat tiles. Reads
+   its tint from --orb-color (set inline per instance): a soft white
+   specular highlight top-left, a wash of the tint bottom-right, floating on
+   the same frosted/blurred glass as .glass-panel so it feels like part of
+   the same material rather than a flat colored circle. */
+.orb-glass {
+  background:
+    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 42%),
+    radial-gradient(circle at 72% 80%, color-mix(in srgb, var(--orb-color) 45%, transparent), transparent 62%),
+    rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow:
+    0 24px 48px -16px color-mix(in srgb, var(--orb-color) 40%, transparent),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9),
+    inset 0 -16px 28px -10px color-mix(in srgb, var(--orb-color) 35%, transparent);
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease;
+}
+.orb-glass:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 28px 56px -14px color-mix(in srgb, var(--orb-color) 48%, transparent),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9),
+    inset 0 -16px 28px -10px color-mix(in srgb, var(--orb-color) 35%, transparent);
+}
+
+@keyframes orb-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.orb-float {
+  animation: orb-bob 7s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .orb-float {
+    animation: none;
+  }
+}
+
+/* Bottom pill nav on the homescreen -- same frosted material as
+   .glass-panel, just rounded all the way to a stadium shape. */
+.home-nav-link {
+  color: var(--text-muted);
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+}
+.home-nav-link:hover {
+  color: var(--text-primary);
+}
+.home-nav-link.active {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.65);
+}

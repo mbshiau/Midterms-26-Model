@@ -10,6 +10,7 @@ function App() {
         <Route path="/" element={<ElectionTypePage />} />
         <Route path="/governors" element={<MapPage office="Governor" />} />
         <Route path="/senate" element={<MapPage office="Senate" />} />
+        <Route path="/house" element={<MapPage office="House" />} />
         <Route path="/states/:slug" element={<StateForecastPage />} />
       </Routes>
     </BrowserRouter>

@@ -16,6 +16,20 @@ def _no_ai_rate_limit_pause(monkeypatch):
     monkeypatch.setattr(settings, "ai_min_seconds_between_calls", 0.0)
 
 
+@pytest.fixture(autouse=True)
+def _fast_bootstrap_forecasts(monkeypatch):
+    # app.main's lifespan bootstraps one forecast per seeded race on every
+    # `client` fixture use -- with the full HOUSE_RACES registry now seeded
+    # (435 districts, on top of Governor/Senate), that's ~470 races' worth
+    # of Monte Carlo simulation on every single test that touches `client`.
+    # Every test that cares about simulation precision already passes its
+    # own explicit n_simulations (see test_simulation.py, test_api.py's
+    # /simulate calls) rather than relying on this default, so lowering it
+    # only speeds up the throwaway startup bootstrap, not anything a test
+    # actually asserts against.
+    monkeypatch.setattr(settings, "default_n_simulations", 200)
+
+
 @pytest.fixture()
 def test_engine():
     engine = create_engine(

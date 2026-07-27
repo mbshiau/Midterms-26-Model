@@ -36,14 +36,13 @@ import numpy as np
 from sqlalchemy.orm import Session, selectinload
 
 from app.config import settings
-from app.data.fundamentals_data import RACE_FUNDAMENTALS
 from app.models import Candidate, ForecastResult, ForecastSnapshot, Poll, Race
 from app.services.approval import get_current_approval
 from app.services.forecasting import blend_with_fundamentals
 from app.services.fundamentals import poll_weight_for_election
 from app.services.generic_ballot import get_current_generic_ballot
 from app.services.pollster_ratings import get_pollster_ratings_by_name
-from app.services.races import current_holder_party
+from app.services.races import current_holder_party, get_race_fundamentals
 from app.services.simulation import generate_national_shock, run_monte_carlo
 from app.services.weighting import two_party_normalize, weighted_polling_averages
 
@@ -139,7 +138,7 @@ def simulate_chamber_control(
             .options(selectinload(Poll.results))
             .all()
         )
-        fundamentals_data = RACE_FUNDAMENTALS[race.state_code]
+        fundamentals_data = get_race_fundamentals(race)
         polling_averages = two_party_normalize(
             weighted_polling_averages(polls, as_of, half_life_days, pollster_ratings)
         )
