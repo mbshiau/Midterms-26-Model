@@ -20,6 +20,15 @@ named-candidate market) keeps kalshi_ticker: None. Only ever touches a
 candidate line whose kalshi_ticker is CURRENTLY None -- Alabama's
 hand-added tickers are left untouched.
 
+A party-keyed market ("Democratic party") is only trusted when exactly one
+candidate in that race has that party -- a real California/Washington
+jungle-primary race can send two same-party candidates to the general, and
+Kalshi's own market can't distinguish between them, so blindly assigning
+that ticker to both would silently show the same ticker on two different
+people (caught by hand across 8 CA districts, see conversation on
+2026-07-27). Those races are simply left without a ticker rather than
+guessing.
+
 Usage (inside the backend container): python -m scripts.backfill_kalshi_tickers
 """
 
@@ -30,6 +39,7 @@ import time
 from pathlib import Path
 
 from app.ingestion.kalshi_scraper import fetch_house_race_markets
+from app.seed.house_seed_data import HOUSE_RACES
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -95,7 +105,18 @@ def main() -> None:
             fetched_keys.add(current_key)
 
         n_checked += 1
-        ticker = by_party.get(candidate.get("party")) or by_name.get(candidate.get("name"))
+        # Kalshi's "Democratic party"/"Republican party" market is a single
+        # per-party outcome -- meaningless to assign to a specific candidate
+        # when 2+ candidates in this race share that party (e.g. a real
+        # California/Washington jungle-primary top-two-same-party general),
+        # since it can't actually distinguish between them. Only trust the
+        # party-keyed ticker when this race has exactly one candidate of
+        # that party; a named per-candidate market (by_name) is always
+        # unambiguous and safe to use regardless.
+        race_candidates = HOUSE_RACES.get(current_key, {}).get("candidates", [])
+        same_party_count = sum(1 for c in race_candidates if c.get("party") == candidate.get("party"))
+        party_ticker = by_party.get(candidate.get("party")) if same_party_count <= 1 else None
+        ticker = party_ticker or by_name.get(candidate.get("name"))
         if ticker is None:
             out_lines.append(line)
             continue

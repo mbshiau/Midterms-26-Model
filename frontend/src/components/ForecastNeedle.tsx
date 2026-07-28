@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { ForecastResult } from "../api/types";
+import { leadingCandidate } from "../lib/leadingCandidate";
 import { favoriteLabel, partyColorVar } from "../lib/partyColor";
 
 const CX = 170;
@@ -122,7 +123,10 @@ export function ForecastNeedle({ results }: { results: ForecastResult[] }) {
   // Independent, third-party -- still needs to show up somewhere rather
   // than silently vanishing from the page.
   const others = sorted.filter((r) => r !== dem && r !== rep);
-  const leader = sorted[0];
+  // The projected winner (highest win_probability) can differ from
+  // sorted[0] (highest mean_vote_share) in a near-toss-up race -- see
+  // leadingCandidate for why those aren't the same question.
+  const leader = leadingCandidate(sorted) ?? sorted[0];
   const margin = sorted.length >= 2 ? sorted[0].mean_vote_share - sorted[1].mean_vote_share : null;
 
   // pDem: how far toward the left-slot candidate the needle points (0 =

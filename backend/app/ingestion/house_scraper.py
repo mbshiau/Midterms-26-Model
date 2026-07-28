@@ -212,8 +212,14 @@ def _clean_footnotes(text: str) -> str:
     # Also strips stray soft hyphens (U+00AD) -- Wikipedia inserts these
     # inside some words (e.g. "Vac\xadant") as invisible line-break hints,
     # which would otherwise silently break exact-string checks like
-    # `.startswith("vacant")` below.
-    return _FOOTNOTE_RE.sub("", text).replace("\xad", "").strip()
+    # `.startswith("vacant")` below -- and non-breaking spaces (U+00A0),
+    # which Wikipedia sometimes inserts inside a name (e.g. "Van\xa0Orden")
+    # as a line-break hint between words. Left unnormalized, the same
+    # person's name can come out byte-different depending on whether it was
+    # read from the Member column or the Candidates cell, which breaks the
+    # exact-string dedup check in _build_candidates and produces a phantom
+    # duplicate candidate (see wi03, caught by hand -- 2026-07-27).
+    return _FOOTNOTE_RE.sub("", text).replace("\xad", "").replace("\xa0", " ").strip()
 
 
 def _wiki_page_title_for(name: str, cell: Tag) -> str | None:

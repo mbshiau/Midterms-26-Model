@@ -6,6 +6,7 @@ import { GooeyText, type GooeyTextEntry } from "../components/GooeyText";
 import { SenateControlChart } from "../components/SenateControlChart";
 import { SenateControlHistoryChart } from "../components/SenateControlHistoryChart";
 import { UsMap } from "../components/UsMap";
+import { leadingCandidate } from "../lib/leadingCandidate";
 import { partyAbbrev, partyColorVar, type ProbabilityTier } from "../lib/partyColor";
 
 // Lazy-loaded: see ElectionTypePage.tsx for why -- this keeps /senate and
@@ -127,11 +128,8 @@ const EMPTY_MESSAGES: Record<ViewMode, string> = {
   closest: "No forecasts available yet.",
 };
 
-// The map's leading party for a race is whoever has the higher mean vote
-// share -- entry.candidates is already sorted that way by the backend (see
-// race_movement_summary), so the leader is just the first entry.
 function leadingPartyOf(entry: RaceSummary): string | null {
-  return entry.candidates[0]?.party ?? null;
+  return leadingCandidate(entry.candidates)?.party ?? null;
 }
 
 export function MapPage({ office }: { office: Office }) {
@@ -226,7 +224,7 @@ export function MapPage({ office }: { office: Office }) {
 
   return (
     <div className="dashboard-background">
-    <div className="mx-auto max-w-4xl px-4 pt-16 pb-8" style={{ color: "var(--text-secondary)"}}>
+    <div className="mx-auto max-w-4xl px-4 pt-16 pb-8" style={{ color: "var(--text-secondary)" }}>
       <Link
         to="/"
         className="fixed top-4 left-4 z-20 inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-sm underline"
@@ -310,7 +308,7 @@ export function MapPage({ office }: { office: Office }) {
                 entries
                   .filter((entry) => entry.candidates.length > 0)
                   .map((entry) => {
-                    const winner = [...entry.candidates].sort((a, b) => b.win_probability - a.win_probability)[0];
+                    const winner = leadingCandidate(entry.candidates)!;
                     return [
                       entry.race.slug,
                       {
@@ -330,9 +328,11 @@ export function MapPage({ office }: { office: Office }) {
                 const title = `${entry.race.state_name} — District ${Number(district)}`;
                 if (entry.candidates.length === 0) return { title };
 
-                // entry.candidates is already sorted by mean vote share, descending.
+                // Display order (vote share ranking) vs. the projected
+                // winner (highest win_probability) are two different
+                // questions -- see leadingCandidate.
                 const sorted = entry.candidates;
-                const winner = sorted[0];
+                const winner = leadingCandidate(entry.candidates);
 
                 return {
                   title,
@@ -354,7 +354,7 @@ export function MapPage({ office }: { office: Office }) {
               const entry = racesByKey[id];
               if (!entry || entry.candidates.length === 0) return null;
 
-              const winner = [...entry.candidates].sort((a, b) => b.win_probability - a.win_probability)[0];
+              const winner = leadingCandidate(entry.candidates);
               if (!winner) return null;
 
               return {
@@ -372,9 +372,11 @@ export function MapPage({ office }: { office: Office }) {
               const entry = racesByKey[id];
               if (!entry || entry.candidates.length === 0) return null;
 
-              // entry.candidates is already sorted by mean vote share, descending.
+              // Display order (vote share ranking) vs. the projected winner
+              // (highest win_probability) are two different questions --
+              // see leadingCandidate.
               const sorted = entry.candidates;
-              const winner = sorted[0];
+              const winner = leadingCandidate(entry.candidates);
 
               return {
                 candidates: sorted.map((r) => ({

@@ -4,6 +4,7 @@ import { api } from "../api/client";
 import type { ChamberControl, RaceSummary } from "../api/types";
 import { Orb } from "../components/Orb";
 import { UsMap, type StateVisual } from "../components/UsMap";
+import { leadingCandidate } from "../lib/leadingCandidate";
 import { partyColorVar } from "../lib/partyColor";
 
 // Lazy-loaded: the House district shape data is ~900KB on its own and was
@@ -26,8 +27,8 @@ interface RaceGroup {
 function loadGroup(office: "Governor" | "Senate" | "House"): Promise<RaceGroup> {
   return api.getRaceSummaries(office).then((entries) => ({
     entries,
-    demCount: entries.filter((r) => r.candidates[0]?.party === "Democratic").length,
-    repCount: entries.filter((r) => r.candidates[0]?.party === "Republican").length,
+    demCount: entries.filter((r) => leadingCandidate(r.candidates)?.party === "Democratic").length,
+    repCount: entries.filter((r) => leadingCandidate(r.candidates)?.party === "Republican").length,
     lastUpdated: entries
       .map((r) => r.latest_forecast_created_at)
       .filter((ts): ts is string => Boolean(ts))
@@ -40,7 +41,7 @@ function visualFor(entries: RaceSummary[]): (stateId: string) => StateVisual | n
   const byState = Object.fromEntries(entries.map((r) => [r.race.state_code.toLowerCase(), r]));
   return (stateId) => {
     const entry = byState[stateId];
-    const winner = entry?.candidates[0];
+    const winner = entry && leadingCandidate(entry.candidates);
     if (!entry || !winner) return null;
     return {
       party: winner.party,
@@ -53,13 +54,14 @@ function visualFor(entries: RaceSummary[]): (stateId: string) => StateVisual | n
 function houseVisualsFor(entries: RaceSummary[]) {
   return Object.fromEntries(
     entries
-      .filter((r) => r.candidates[0])
-      .map((r) => [
+      .map((r) => ({ r, winner: leadingCandidate(r.candidates) }))
+      .filter((x): x is { r: RaceSummary; winner: NonNullable<typeof x.winner> } => Boolean(x.winner))
+      .map(({ r, winner }) => [
         r.race.slug,
         {
-          party: r.candidates[0].party,
-          winProbability: r.candidates[0].win_probability,
-          isFlip: r.candidates[0].party !== r.race.current_holder_party,
+          party: winner.party,
+          winProbability: winner.win_probability,
+          isFlip: winner.party !== r.race.current_holder_party,
         },
       ])
   );
