@@ -3895,7 +3895,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+7
         "candidates": [
             {"name": 'Melanie Stansbury', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Melanie_Stansbury_117th_Congress.jpg/500px-Melanie_Stansbury_117th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-NM01-26-D'},
-            {"name": 'Didi Okpareke', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-NM01-26-R'},
+            {"name": 'Didi Okpareke', "party": 'Republican', "incumbent": False, "photo_url": 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHPzetRy2UDKbdKBO5G5XEXjC9LGUsHlENf4tQV_nlcQ&s=10', "kalshi_ticker": 'KXHOUSERACE-NM01-26-R'},
         ],
         "raw_polls": [],
     },
@@ -3904,13 +3904,30 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 2,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_New_Mexico',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): EVEN
         "candidates": [
             {"name": 'Gabe Vasquez', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Rep_Gabriel_Vasquez_Official_Portrait.jpg/500px-Rep_Gabriel_Vasquez_Official_Portrait.jpg', "kalshi_ticker": None},
-            {"name": 'Greg Cunningham', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Greg Cunningham', "party": 'Republican', "incumbent": False, "photo_url": 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHFPP3qiK23m64k0rCdxkcb7uTzx0Qdb-cqfkow-HC1w&s=10', "kalshi_ticker": None},
         ],
-        "raw_polls": [],
+        # Real general-election poll from this page's District 2 > General
+        # election > Polling section (verified via
+        # app.ingestion.wikipedia_scraper.fetch_general_election_polls).
+        "raw_polls": [
+            {
+                "pollster": "co/efficient",
+                "sponsor": None,
+                "field_start_date": "2026-04-26",
+                "field_end_date": "2026-04-28",
+                "release_date": "2026-05-01",
+                "sample_size": 879,
+                "population": "LV",
+                "margin_of_error": 3.3,
+                "undecided_pct": 16.0,
+                "source_url": "https://en.wikipedia.org/wiki/2026_United_States_House_of_Representatives_elections_in_New_Mexico",
+                "results": {"Gabe Vasquez": 43.0, "Greg Cunningham": 41.0},
+            },
+        ],
     },
     "nm03": {
         'state_name': 'New Mexico',
@@ -3921,7 +3938,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+3
         "candidates": [
             {"name": 'Teresa Leger Fernández', "party": 'Democratic', "incumbent": True, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-NM03-26-D'},
-            {"name": 'Martin Zamora', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-NM03-26-R'},
+            {"name": 'Martin Zamora', "party": 'Republican', "incumbent": False, "photo_url": 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6FGLT0AC6kJfomsnBNuJYgJ2L5Nz9LfJuwtiAR5qGDWE859SKbq2ehaheemhINGlpQWlo9eO-JSPmWFMuXCk7ZW4gHIsVKbnUVpNp1F7Q&s=10', "kalshi_ticker": 'KXHOUSERACE-NM03-26-R'},
         ],
         "raw_polls": [],
     },

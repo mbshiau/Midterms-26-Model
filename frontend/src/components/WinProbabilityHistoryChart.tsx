@@ -63,8 +63,14 @@ export function WinProbabilityHistoryChart({ history }: { history: ForecastHisto
   const candidateNames = Array.from(
     new Set(snapshots.flatMap((s) => s.results.map((r) => r.candidate.name)))
   ).sort((a, b) => (latestWinProbability.get(b) ?? -1) - (latestWinProbability.get(a) ?? -1));
+  // A candidate who joined the race after the earliest snapshot (e.g. a
+  // primary challenger who wasn't yet a confirmed candidate) wouldn't
+  // appear in snapshots[0] -- looking up their party there alone left them
+  // with no match and a gray fallback color, even though their line still
+  // rendered correctly (candidateNames above is already a proper union
+  // across every snapshot). Union across all snapshots here too.
   const candidateByName = new Map(
-    snapshots[0].results.map((r) => [r.candidate.name, r.candidate])
+    snapshots.flatMap((s) => s.results.map((r) => [r.candidate.name, r.candidate] as const))
   );
 
   const data: HistoryPoint[] = snapshots.map((s) => {

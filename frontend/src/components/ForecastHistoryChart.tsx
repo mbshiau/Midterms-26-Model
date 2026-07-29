@@ -71,8 +71,12 @@ export function ForecastHistoryChart({ history }: { history: ForecastHistory }) 
   const candidateNames = Array.from(
     new Set(snapshots.flatMap((s) => s.results.map((r) => r.candidate.name)))
   );
+  // See WinProbabilityHistoryChart.tsx -- a candidate who joined after the
+  // earliest snapshot wouldn't appear in snapshots[0] alone, leaving them
+  // with no party match and a gray fallback color. Union across all
+  // snapshots instead (candidateNames above already does this correctly).
   const candidateByName = new Map(
-    snapshots[0].results.map((r) => [r.candidate.name, r.candidate])
+    snapshots.flatMap((s) => s.results.map((r) => [r.candidate.name, r.candidate] as const))
   );
 
   const data: HistoryPoint[] = snapshots.map((s) => {
