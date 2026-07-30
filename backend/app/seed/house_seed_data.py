@@ -1322,6 +1322,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+8
         "candidates": [
             {"name": 'Rosa DeLauro', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Rosa_DeLauro_118th_Congress_Cropped_Official_Portrait.jpeg/500px-Rosa_DeLauro_118th_Congress_Cropped_Official_Portrait.jpeg', "kalshi_ticker": 'KXHOUSERACE-CT03-26-D'},
+            {"name": 'Republican Nominee (TBD)', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-CT03-26-R'},
         ],
         "raw_polls": [],
     },
@@ -1334,6 +1335,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+13
         "candidates": [
             {"name": 'Jim Himes', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Jim_Himes_Official_Portrait%2C_117th_Congress.jpg/500px-Jim_Himes_Official_Portrait%2C_117th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-CT04-26-D'},
+            {"name": 'Republican Nominee (TBD)', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-CT04-26-R'},
         ],
         "raw_polls": [],
     },
@@ -1346,6 +1348,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+3
         "candidates": [
             {"name": 'Jahana Hayes', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Jahana_Hayes%2C_official_portrait%2C_116th_Congress.jpg/500px-Jahana_Hayes%2C_official_portrait%2C_116th_Congress.jpg', "kalshi_ticker": None},
+            {"name": 'Republican Nominee (TBD)', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },

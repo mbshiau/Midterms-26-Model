@@ -29,6 +29,7 @@ party" rule rather than a separate "independents hold the balance" outcome.
 """
 
 import bisect
+import hashlib
 from dataclasses import dataclass
 from datetime import date
 
@@ -64,6 +65,16 @@ UNCOMMITTED_INDEPENDENT_PARTY = "Independent"
 # rendered dot gets its own representative draw from roughly this many
 # simulations, rather than the whole column sharing one example.
 SIMULATIONS_PER_DOT = 100
+
+
+def _race_simulation_seed(as_of: date, race_id: int) -> int:
+    """Stable across process restarts and identical for every request on the
+    same calendar day, so repeated hits to /chamber-control/senate (e.g. the
+    home page orb and the Senate page's own control chart, loaded seconds
+    apart) return the same dem_win_probability/rep_win_probability instead
+    of drifting with fresh Monte Carlo noise each time."""
+    digest = hashlib.sha256(f"{as_of.isoformat()}:{race_id}".encode()).hexdigest()
+    return int(digest, 16) % (2**32)
 
 
 @dataclass
@@ -158,6 +169,7 @@ def simulate_chamber_control(
         candidate_parties = {c.id: c.party for c in candidates}
         sim_results = run_monte_carlo(
             blended_averages, error_stdev, n_simulations,
+            seed=_race_simulation_seed(as_of, race.id),
             candidate_parties=candidate_parties, national_shock=national_shock,
         )
 

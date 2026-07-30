@@ -15,7 +15,9 @@ from typing import Callable
 
 from sqlalchemy.orm import Session
 
-from app.ingestion.wikipedia_scraper import fetch_general_election_polls
+from bs4 import BeautifulSoup
+
+from app.ingestion.wikipedia_scraper import fetch_general_election_polls, polls_from_soup
 from app.models import Candidate, Poll, PollResult, Population, Race
 
 logger = logging.getLogger(__name__)
@@ -30,13 +32,26 @@ def fetch_raw_polls(race_seed: dict, candidates: dict[str, Candidate]) -> list[d
     return race_seed["raw_polls"]
 
 
-def fetch_live_polls(candidates: dict[str, Candidate], wikipedia_page_title: str) -> list[dict]:
+def fetch_live_polls(
+    candidates: dict[str, Candidate],
+    wikipedia_page_title: str,
+    soup: BeautifulSoup | None = None,
+) -> list[dict]:
     """Fetcher stage (live). Scrapes Wikipedia's polling table for any polls
     not already known. Returns [] on any failure — network errors or an
     unexpected page structure should never crash the scheduled job, just
-    leave the poll set unchanged until the next run."""
+    leave the poll set unchanged until the next run.
+
+    `soup` lets a caller looping over many races (e.g. the scheduled refresh
+    job) pass in an already-fetched-and-parsed page for races that share one
+    Wikipedia article, instead of this function re-fetching + re-parsing it
+    itself every time -- see wikipedia_scraper.polls_from_soup."""
     surname_to_name = {name.split()[-1]: name for name in candidates}
-    scraped = fetch_general_election_polls(wikipedia_page_title, surname_to_name)
+    scraped = (
+        polls_from_soup(soup, wikipedia_page_title, surname_to_name)
+        if soup is not None
+        else fetch_general_election_polls(wikipedia_page_title, surname_to_name)
+    )
 
     return [
         {

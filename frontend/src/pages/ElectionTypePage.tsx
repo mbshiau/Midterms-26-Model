@@ -245,13 +245,27 @@ export function ElectionTypePage() {
                 to="/house"
                 label="HOUSE"
                 map={
-                  <Suspense fallback={<div style={{ aspectRatio: "3 / 2" }} />}>
-                    <HouseDistrictMap
-                      districts={house.entries.map((e) => ({ slug: e.race.slug, stateCode: e.race.state_code }))}
-                      visualsBySlug={houseVisualsFor(house.entries)}
-                      onDistrictClick={() => {}}
-                    />
-                  </Suspense>
+                  // The hex cartogram's own viewBox is much wider/flatter than
+                  // UsMap's (@svg-maps/usa is ~1028x746, ~1.38 aspect; the
+                  // House map's 12-column layout renders closer to 2.2) --
+                  // reserving this box at UsMap's aspect ratio, then centering
+                  // the (naturally shorter) hex content inside it, keeps all
+                  // three mini-map cards the same height so their labels line
+                  // up instead of the House card's map leaving dead space
+                  // below the headline.
+                  <div className="relative" style={{ aspectRatio: "1028 / 746" }}>
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full">
+                        <Suspense fallback={null}>
+                          <HouseDistrictMap
+                            districts={house.entries.map((e) => ({ slug: e.race.slug, stateCode: e.race.state_code }))}
+                            visualsBySlug={houseVisualsFor(house.entries)}
+                            onDistrictClick={() => {}}
+                          />
+                        </Suspense>
+                      </div>
+                    </div>
+                  </div>
                 }
                 headline={
                   <>

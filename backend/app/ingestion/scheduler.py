@@ -39,6 +39,7 @@ from functools import partial
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
+from bs4 import BeautifulSoup
 
 from app import database
 from app.data.fundamentals_data import PRESIDENT
@@ -47,6 +48,7 @@ from app.ingestion.generic_ballot_scraper import fetch_current_generic_ballot
 from app.ingestion.kalshi_scraper import fetch_market_odds
 from app.ingestion.news_scraper import build_news_query, fetch_race_news, filter_relevant_articles
 from app.ingestion.pipeline import fetch_live_polls, ingest_polls
+from app.ingestion.wikipedia_scraper import fetch_wikipedia_html
 from app.models import Candidate, Race
 from app.services.ai_summary import generate_article_relevance
 from app.services.approval import update_approval
@@ -164,10 +166,33 @@ def _run_market_intel_refresh_job() -> None:
         db.close()
 
 
+def _cached_wikipedia_soup_getter():
+    """Most House districts share one combined Wikipedia page (413 of 435
+    races point at the same "2026 United States House of Representatives
+    elections" article as of 2026) -- fetching + BeautifulSoup-parsing it
+    once per race in the loop below, rather than once per *distinct* page,
+    was the actual cause of the noon/7pm refresh job taking 15-100+ minutes
+    and repeatedly timing out the Render free-tier / GitHub Actions cron
+    trigger (see .github/workflows/render-refresh.yml): 504 races collapse
+    to ~73 distinct pages. Scoped to a single job run (a fresh dict each
+    call, not a module-level cache) so the *next* scheduled run still
+    re-fetches and picks up any newly posted polls."""
+    soup_cache: dict[str, BeautifulSoup | None] = {}
+
+    def get(page_title: str) -> BeautifulSoup | None:
+        if page_title not in soup_cache:
+            html = fetch_wikipedia_html(page_title)
+            soup_cache[page_title] = BeautifulSoup(html, "html.parser") if html is not None else None
+        return soup_cache[page_title]
+
+    return get
+
+
 def _run_forecast_refresh_job() -> None:
     """Noon/7pm job: national approval + generic ballot, each race's poll
     scrape, and forecast regeneration."""
     db = database.SessionLocal()
+    get_cached_soup = _cached_wikipedia_soup_getter()
     try:
         scraped_approval = fetch_current_approval()
         if scraped_approval is not None:
@@ -197,8 +222,11 @@ def _run_forecast_refresh_job() -> None:
             # every remaining state's refresh.
             try:
                 race_seed = get_race_seed(race.slug)
+                page_title = race_seed["wikipedia_page_title"]
                 live_fetcher = partial(
-                    fetch_live_polls, wikipedia_page_title=race_seed["wikipedia_page_title"]
+                    fetch_live_polls,
+                    wikipedia_page_title=page_title,
+                    soup=get_cached_soup(page_title),
                 )
                 new_poll_count = ingest_polls(db, race, race_seed, fetcher=live_fetcher)
                 logger.info(

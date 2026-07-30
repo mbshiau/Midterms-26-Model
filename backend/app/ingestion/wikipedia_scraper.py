@@ -304,8 +304,23 @@ def fetch_general_election_polls(
     html = fetch_wikipedia_html(page_title)
     if html is None:
         return []
-
     soup = BeautifulSoup(html, "html.parser")
+    return polls_from_soup(soup, page_title, candidate_names)
+
+
+def polls_from_soup(
+    soup: BeautifulSoup, page_title: str, candidate_names: dict[str, str]
+) -> list[ScrapedPoll]:
+    """Same extraction as fetch_general_election_polls, against an
+    already-fetched-and-parsed page. Most House districts share one combined
+    Wikipedia page (413 of 435 races point at the same
+    "2026_United_States_House_of_Representatives_elections" article as of
+    2026) -- a caller refreshing every race in a loop should fetch + parse
+    that page once and pass the same soup in for every race that shares it,
+    rather than re-fetching and re-parsing an identical multi-hundred-KB page
+    hundreds of times. That redundant per-race fetch was the actual cause of
+    the scheduled refresh job taking 15-100+ minutes and timing out the
+    Render free-tier / GitHub Actions trigger (see scheduler.py)."""
     table = _find_polling_table(soup, list(candidate_names.keys()))
     if table is None:
         logger.warning("no matching polling table found on %r", page_title)
