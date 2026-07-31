@@ -416,4 +416,26 @@ def chamber_control_history(db: Session, office: str = "Senate") -> list[Chamber
             )
         )
 
+    # The most recent point is "right now" -- overwrite just its win
+    # probabilities (not the expected-seats fields, which are exact
+    # regardless of correlation, see module docstring) with the real
+    # correlated joint simulation used everywhere else on the page
+    # (simulate_chamber_control / the live /chamber-control/senate endpoint),
+    # rather than the independence approximation every other point on this
+    # trend line necessarily uses. Without this, the chart's own endpoint
+    # visibly disagreed with the badges and home page showing the same
+    # "today" -- the two numbers measure different things (independent vs.
+    # correlated races) but a user has no way to know that just by comparing
+    # them on the same page.
+    if points:
+        live = simulate_chamber_control(db, office=office)
+        points[-1] = ChamberControlHistoryPoint(
+            as_of=points[-1].as_of,
+            expected_dem_seats=points[-1].expected_dem_seats,
+            expected_rep_seats=points[-1].expected_rep_seats,
+            expected_independent_seats=points[-1].expected_independent_seats,
+            dem_win_probability=live.dem_win_probability,
+            rep_win_probability=live.rep_win_probability,
+        )
+
     return points

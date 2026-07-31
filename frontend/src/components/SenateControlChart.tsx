@@ -193,49 +193,64 @@ export function SenateControlChart({ currentHolderByState }: SenateControlChartP
           })}
         </div>
 
-        {hoveredColumn && hoveredDot && (
-          <div
-            className="pointer-events-none absolute z-10 w-[400px] rounded-md border p-4 shadow-md"
-            style={{ ...popoverStyle, backgroundColor: "var(--surface)", borderColor: "var(--border)" }}
-          >
-            <p className="mb-2 text-center text-sm" style={{ color: "var(--text-secondary)" }}>
-              <span className="font-semibold" style={{ color: partyColorVar("Republican") }}>
-                {hoveredDot.rep_seats} GOP
-              </span>{" "}
-              /{" "}
-              <span className="font-semibold" style={{ color: partyColorVar("Democratic") }}>
-                {hoveredColumn.dem_seats} DEM
-              </span>
-              {hoveredDot.independent_seats > 0 && (
-                <>
-                  {" "}
-                  /{" "}
-                  <span className="font-semibold" style={{ color: partyColorVar("Independent") }}>
-                    {hoveredDot.independent_seats} ind.
-                  </span>
-                </>
-              )}
-              <br />
-              <span className="text-xs" style={{ color: "var(--text-muted)" }}>
-                ~{(hoveredDot.probability * 100).toFixed(2)}% of scenarios · one example combination · darker =
-                bigger margin
-              </span>
-            </p>
-            <UsMap
-              getVisual={(id) => {
-                const winner = scenarioByState[id];
-                if (!winner) return null;
-                return {
-                  party: winner.party,
-                  winProbability: marginToShadeValue(winner.margin),
-                  isFlip: winner.party !== currentHolderByState[id],
-                };
-              }}
-              isClickable={() => false}
-              onStateClick={() => {}}
-            />
-          </div>
-        )}
+        {hoveredColumn && hoveredDot && (() => {
+          // Same "more seats wins, ties go to the VP's party (Republican)"
+          // rule the backend uses to decide control for this specific draw
+          // (see chamber_control.py's dem_control/rep_control comparison) --
+          // whichever party that gives this scenario is listed first in the
+          // card instead of a fixed GOP-then-DEM order.
+          const demWinsScenario = hoveredColumn.dem_seats > hoveredDot.rep_seats;
+          const demBadge = (
+            <span className="font-semibold" style={{ color: partyColorVar("Democratic") }}>
+              {hoveredColumn.dem_seats} DEM
+            </span>
+          );
+          const repBadge = (
+            <span className="font-semibold" style={{ color: partyColorVar("Republican") }}>
+              {hoveredDot.rep_seats} GOP
+            </span>
+          );
+          const [winnerBadge, loserBadge] = demWinsScenario ? [demBadge, repBadge] : [repBadge, demBadge];
+
+          return (
+            <div
+              className="pointer-events-none absolute z-10 w-[400px] rounded-md border p-4 shadow-md"
+              style={{ ...popoverStyle, backgroundColor: "var(--surface)", borderColor: "var(--border)" }}
+            >
+              <p className="mb-2 text-center text-sm" style={{ color: "var(--text-secondary)" }}>
+                {winnerBadge} /{" "}
+                {loserBadge}
+                {hoveredDot.independent_seats > 0 && (
+                  <>
+                    {" "}
+                    /{" "}
+                    <span className="font-semibold" style={{ color: partyColorVar("Independent") }}>
+                      {hoveredDot.independent_seats} ind.
+                    </span>
+                  </>
+                )}
+                <br />
+                <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+                  ~{(hoveredDot.probability * 100).toFixed(2)}% of scenarios · one example combination · darker =
+                  bigger margin
+                </span>
+              </p>
+              <UsMap
+                getVisual={(id) => {
+                  const winner = scenarioByState[id];
+                  if (!winner) return null;
+                  return {
+                    party: winner.party,
+                    winProbability: marginToShadeValue(winner.margin),
+                    isFlip: winner.party !== currentHolderByState[id],
+                  };
+                }}
+                isClickable={() => false}
+                onStateClick={() => {}}
+              />
+            </div>
+          );
+        })()}
       </div>
       <p className="mt-1 text-center text-xs" style={{ color: "var(--text-muted)" }}>
         Seats held (out of 100) by whichever party controls that scenario · dashed line marks the majority-control

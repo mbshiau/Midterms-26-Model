@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 
 from app import database
 from app.config import settings
@@ -80,6 +81,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# The House office's /races/summary payload (435 districts, each with
+# candidates + movement deltas) is comfortably the largest response this API
+# serves -- gzip cuts JSON's very compressible repeated-key text substantially,
+# which matters more on Render's free tier (limited/shared bandwidth) than on
+# a typical always-on host. 500-byte floor skips compressing tiny responses
+# (e.g. /health) where gzip's own overhead isn't worth it.
+app.add_middleware(GZipMiddleware, minimum_size=500)
 
 app.include_router(races.router)
 app.include_router(polls.router)

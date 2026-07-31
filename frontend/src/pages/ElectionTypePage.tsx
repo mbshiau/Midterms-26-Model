@@ -155,21 +155,24 @@ export function ElectionTypePage() {
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([loadGroup("Senate"), loadGroup("Governor"), loadGroup("House"), api.getSenateControl()]).then(
-      ([senateGroup, governorGroup, houseGroup, control]) => {
-        if (cancelled) return;
-        setSenate(senateGroup);
-        setGovernor(governorGroup);
-        setHouse(houseGroup);
-        setChamberControl(control);
-      }
-    );
+    // Fetched and rendered independently rather than gated behind one
+    // Promise.all -- House's /races/summary payload (435 districts) is by
+    // far the largest and slowest of the four, and the Senate/Governor cards
+    // plus the two "chance to control" orbs don't depend on it at all. Waiting
+    // for House too meant the whole page sat on "Loading forecast..." for as
+    // long as the slowest request, even once everything else was ready.
+    loadGroup("Senate").then((g) => !cancelled && setSenate(g));
+    loadGroup("Governor").then((g) => !cancelled && setGovernor(g));
+    loadGroup("House").then((g) => !cancelled && setHouse(g));
+    api.getSenateControl().then((c) => !cancelled && setChamberControl(c));
     return () => {
       cancelled = true;
     };
   }, []);
 
-  const loaded = senate && governor && house && chamberControl;
+  // Only these three gate the initial page render -- House renders its own
+  // card-level loading state below once everything else is already visible.
+  const coreLoaded = senate && governor && chamberControl;
   const lastUpdated = Math.max(senate?.lastUpdated ?? 0, governor?.lastUpdated ?? 0, house?.lastUpdated ?? 0);
 
   const demPct = chamberControl ? chamberControl.dem_win_probability : 0;
@@ -194,7 +197,7 @@ export function ElectionTypePage() {
           </p>
         )}
 
-        {!loaded ? (
+        {!coreLoaded ? (
           <p className="py-24" style={{ color: "var(--text-muted)" }}>
             Loading forecast…
           </p>
@@ -256,22 +259,28 @@ export function ElectionTypePage() {
                   <div className="relative" style={{ aspectRatio: "1028 / 746" }}>
                     <div className="absolute inset-0 flex items-center">
                       <div className="w-full">
-                        <Suspense fallback={null}>
-                          <HouseDistrictMap
-                            districts={house.entries.map((e) => ({ slug: e.race.slug, stateCode: e.race.state_code }))}
-                            visualsBySlug={houseVisualsFor(house.entries)}
-                            onDistrictClick={() => {}}
-                          />
-                        </Suspense>
+                        {house ? (
+                          <Suspense fallback={null}>
+                            <HouseDistrictMap
+                              districts={house.entries.map((e) => ({ slug: e.race.slug, stateCode: e.race.state_code }))}
+                              visualsBySlug={houseVisualsFor(house.entries)}
+                              onDistrictClick={() => {}}
+                            />
+                          </Suspense>
+                        ) : null}
                       </div>
                     </div>
                   </div>
                 }
                 headline={
-                  <>
-                    <span style={{ color: partyColorVar("Democratic"), fontWeight: 600 }}>Democrats</span> favored in{" "}
-                    {house.demCount} of {house.entries.length} House districts.
-                  </>
+                  house ? (
+                    <>
+                      <span style={{ color: partyColorVar("Democratic"), fontWeight: 600 }}>Democrats</span> favored in{" "}
+                      {house.demCount} of {house.entries.length} House districts.
+                    </>
+                  ) : (
+                    <span style={{ color: "var(--text-muted)" }}>Loading 435 districts…</span>
+                  )
                 }
               />
             </div>

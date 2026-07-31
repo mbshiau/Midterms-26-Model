@@ -122,10 +122,11 @@ export function SenateControlHistoryChart() {
         Expected seats & control probability over time
       </h2>
       <p className="mb-4 text-sm" style={{ color: "var(--text-muted)" }}>
-        Expected seats is exact (linear -- safe seats plus each race's own win probability). Control probability
-        here treats every race as independent, unlike the correlated joint simulation above, since there's no
-        stored historical equivalent of that shared national error to reconstruct -- it understates real
-        day-to-day uncertainty but shows the genuine trend.
+        Expected seats is exact (linear -- safe seats plus each race's own win probability). Control probability for
+        past days treats every race as independent, since there's no stored historical equivalent of the correlated
+        joint simulation above to reconstruct -- it understates real day-to-day uncertainty but shows the genuine
+        trend. Today's point uses that same live correlated simulation, so it matches the numbers shown elsewhere on
+        this page.
       </p>
 
       <div className="grid gap-6 sm:grid-cols-2">
