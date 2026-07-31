@@ -10,11 +10,12 @@ see the project's PVI backfill for how those remain fine with 100% PVI
 weight (app.services.fundamentals.district_lean) until filled in by hand or
 a future, more involved per-district scraper.
 
-New York is also included, via that per-district-subsection fallback
-(app.ingestion.house_scraper._parse_district_results_by_section) rather than
-the clean-table path -- confirmed by hand against NY-01's actual vote totals
-before trusting it for all 26 districts. Only 2024 is used for New York (see
-below on why 2022 is skipped entirely, same as Georgia).
+New York and Pennsylvania are also included, via that per-district-subsection
+fallback (app.ingestion.house_scraper._parse_district_results_by_section)
+rather than the clean-table path -- confirmed by hand against NY-01's actual
+vote totals before trusting it for all 26 districts, and against
+Pennsylvania's own page having no "redistrict" mention at all (see
+scripts/backfill_house_elections_2022.py) before trusting it too.
 
 Only 2024 (not 2022) is used: several states redrew their maps between
 2022 and 2024 independent of the 2026 redistricting fights already tracked
@@ -51,7 +52,7 @@ YEAR = 2024
 # enacted new 2026 district lines (see fetch_redistricting_changes) and is
 # excluded regardless of table shape, since 2024's results wouldn't
 # correspond to the current district registry.
-ELIGIBLE_STATES = ["Georgia", "Michigan", "Minnesota", "New Mexico", "Connecticut", "New York"]
+ELIGIBLE_STATES = ["Georgia", "Michigan", "Minnesota", "New Mexico", "Connecticut", "New York", "Pennsylvania"]
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 _DISTRICT_FUNDAMENTALS_PATH = _REPO_ROOT / "app" / "data" / "district_fundamentals_data.py"
