@@ -55,12 +55,16 @@ function SeatsTooltip({ active, payload }: any) {
 function ProbabilityTooltip({ active, payload }: any) {
   if (!active || !payload?.length) return null;
   const ts = payload[0]?.payload?.timestamp;
+  // Whichever party is favored that day belongs on top, not a fixed
+  // Democratic-then-Republican order (the line/legend order Recharts hands
+  // `payload` in matches declaration order, not each day's actual value).
+  const sorted = [...payload].sort((a: any, b: any) => b.value - a.value);
   return (
     <div className="rounded-md border p-2 text-sm shadow-sm" style={{ backgroundColor: "var(--surface)", borderColor: "var(--border)" }}>
       <div className="mb-1 font-medium" style={{ color: "var(--text-secondary)" }}>
         {ts ? new Date(ts).toLocaleDateString() : ""}
       </div>
-      {payload.map((entry: any) => (
+      {sorted.map((entry: any) => (
         <div key={entry.dataKey} className="flex items-center gap-2">
           <span className="inline-block h-[2px] w-3" style={{ backgroundColor: entry.color }} />
           <span style={{ color: "var(--text-muted)" }}>{entry.dataKey}</span>
