@@ -11,6 +11,18 @@ Confirmed via each state's own 2024 Wikipedia elections page (no
 continuously since the 2020 census cycle: Michigan, Minnesota, New Mexico,
 Connecticut.
 
+New York is a partial case rather than all-or-nothing: its own "2024 United
+States House of Representatives elections in New York" page states the
+February 2024 map only changed the 1st, 3rd, 18th, and 22nd districts
+("resulting in the 3rd, 18th, and 22nd congressional districts becoming
+more Democratic, while the 1st became more Republican") -- the other 22
+districts kept their 2022 (special-master-map) lines. EXCLUDED_DISTRICTS
+skips just those four for New York, the same individual-judgment principle
+as Alabama's AL-2 (there, hand-curated with a comment instead of an
+automated skip, since AL-2 kept a 2024 entry anyway; here the whole point
+of this script is the *2022* entry, so the four affected districts simply
+don't get one).
+
 Only ever appends a 2022 entry to a district whose house_elections
 currently contains exactly the one 2024 entry from the prior backfill --
 never touches Georgia, Alabama/Alaska, or anything else.
@@ -32,7 +44,13 @@ YEAR = 2022
 # Confirmed stable (no mid-decade redraw) -- see module docstring. Georgia
 # is deliberately NOT included here even though it got a 2024 entry from
 # the prior backfill, since its map changed between 2022 and 2024.
-ELIGIBLE_STATES = ["Michigan", "Minnesota", "New Mexico", "Connecticut"]
+ELIGIBLE_STATES = ["Michigan", "Minnesota", "New Mexico", "Connecticut", "New York"]
+
+# Per-state district numbers to skip even though the state itself is
+# otherwise eligible -- see New York's note in the module docstring.
+EXCLUDED_DISTRICTS: dict[str, set[int]] = {
+    "New York": {1, 3, 18, 22},
+}
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 _DISTRICT_FUNDAMENTALS_PATH = _REPO_ROOT / "app" / "data" / "district_fundamentals_data.py"
@@ -49,18 +67,26 @@ def main() -> None:
     to_add: dict[str, dict] = {}
     for state_name in ELIGIBLE_STATES:
         state_code = STATE_POSTAL_CODES[state_name]
+        excluded = EXCLUDED_DISTRICTS.get(state_name, set())
         results = fetch_state_house_results(state_name, YEAR)
         if not results:
             logger.warning("no summary table found for %s %d -- skipped", state_name, YEAR)
             continue
+        n_skipped = 0
         for district, result in results.items():
+            if district in excluded:
+                n_skipped += 1
+                continue
             key = _district_key(state_code, district)
             to_add[key] = {
                 "year": YEAR,
                 "dem_share": result.dem_share,
                 "incumbent_party": result.winner_party,
             }
-        logger.info("%s: parsed %d districts", state_name, len(results))
+        logger.info(
+            "%s: parsed %d districts (%d skipped, redrawn since %d)",
+            state_name, len(results) - n_skipped, n_skipped, YEAR,
+        )
 
     if not to_add:
         logger.warning("nothing parsed -- file left unchanged")

@@ -4006,7 +4006,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+4
         "candidates": [
             {"name": 'Nick LaLota', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Nick_lalota_portrait.jpg/500px-Nick_lalota_portrait.jpg', "kalshi_ticker": 'KXHOUSERACE-NY01-26-R'},
-            {"name": 'Chris Gallant', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-NY01-26-D'},
+            {"name": 'Chris Gallant', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrHOviIcQ6zzmtqQV-0OausFekTlYWzb-CE_-P2sK_z7R01o6EaJqivjUhtHf0HIKpZPxRCkBLJZOMFfDlI7nFpKepGFtzShQdUQtIGFoFKA&s=10", "kalshi_ticker": 'KXHOUSERACE-NY01-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4045,7 +4045,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+2
         "candidates": [
             {"name": 'Laura Gillen', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Gillen_Laura_119th_Congress_%28cropped2%29.jpg/500px-Gillen_Laura_119th_Congress_%28cropped2%29.jpg', "kalshi_ticker": None},
-            {"name": 'Jeanine Driscoll', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Jeanine Driscoll', "party": 'Republican', "incumbent": False, "photo_url": "https://pub-fbf670abd77d4230bf0db5d62ed086c9.r2.dev/people/d3e1a07342ed535f.jpg", "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -4071,7 +4071,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+6
         "candidates": [
             {"name": 'Grace Meng', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Grace_Meng_in_2021.jpg/500px-Grace_Meng_in_2021.jpg', "kalshi_ticker": 'KXHOUSERACE-NY06-26-D'},
-            {"name": 'Joseph Chou', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-NY06-26-R'},
+            {"name": 'Joseph Chou', "party": 'Republican', "incumbent": False, "photo_url": "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Joseph_Chou_20240809_072826.jpg", "kalshi_ticker": 'KXHOUSERACE-NY06-26-R'},
         ],
         "raw_polls": [],
     },
@@ -4110,7 +4110,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+22
         "candidates": [
             {"name": 'Yvette Clarke', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/2026_Official_Portrait_of_Rep._Clarke_%28D-NY%29.jpg/500px-2026_Official_Portrait_of_Rep._Clarke_%28D-NY%29.jpg', "kalshi_ticker": 'KXHOUSERACE-NY09-26-D'},
-            {"name": 'Joel Anabilah-Azumah', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-NY09-26-R'},
+            {"name": 'Joel Anabilah-Azumah', "party": 'Republican', "incumbent": False, "photo_url": "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/fitnyc.sidearmsports.com/images/2016/9/12/Volleyballvsbmcc112.JPG?width=300", "kalshi_ticker": 'KXHOUSERACE-NY09-26-R'},
         ],
         "raw_polls": [],
     },
@@ -4136,7 +4136,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+10
         "candidates": [
             {"name": 'Nicole Malliotakis', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Congresswoman_Nicole_Malliotakis.jpg/500px-Congresswoman_Nicole_Malliotakis.jpg', "kalshi_ticker": 'KXHOUSERACE-NY11-26-R'},
-            {"name": 'Michael DeCillis', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-NY11-26-D'},
+            {"name": 'Michael DeCillis', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzdfO-DlTI9G1V65IUvOS3snzQXTULvkYpWt4guCiM8g&s=10", "kalshi_ticker": 'KXHOUSERACE-NY11-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4149,7 +4149,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+33
         "candidates": [
             {"name": 'Micah Lasher', "party": 'Democratic', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/FWNY25%3B_U.S._Marines_and_Sailors_hold_wreath_laying_ceremony_Micah_Lasher_%28cropped%29.jpg/500px-FWNY25%3B_U.S._Marines_and_Sailors_hold_wreath_laying_ceremony_Micah_Lasher_%28cropped%29.jpg', "kalshi_ticker": 'KXHOUSERACE-NY12-26-D'},
-            {"name": 'Caroline Shinkle', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-NY12-26-R'},
+            {"name": 'Caroline Shinkle', "party": 'Republican', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSayha1AtV4pfCKG_6Jnm9TvM7Byw5RCzHsUcQBQnofhQ&s=10", "kalshi_ticker": 'KXHOUSERACE-NY12-26-R'},
         ],
         "raw_polls": [],
     },
@@ -4162,7 +4162,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+32
         "candidates": [
             {"name": 'Darializa Avila Chevalier', "party": 'Democratic', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Darializa_Avila_Chevalier_during_interview_on_Secretos_CEO.jpg/500px-Darializa_Avila_Chevalier_during_interview_on_Secretos_CEO.jpg', "kalshi_ticker": 'KXHOUSERACE-NY13-26-D'},
-            {"name": 'Jomo Williams', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Jomo Williams', "party": 'Republican', "incumbent": False, "photo_url": "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/JomoWilliams.jpeg", "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -4175,7 +4175,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+19
         "candidates": [
             {"name": 'Alexandria Ocasio-Cortez', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Alexandria_Ocasio-Cortez_Official_Portrait.jpg/500px-Alexandria_Ocasio-Cortez_Official_Portrait.jpg', "kalshi_ticker": 'KXHOUSERACE-NY14-26-D'},
-            {"name": 'Diamant Hysenaj', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-NY14-26-R'},
+            {"name": 'Diamant Hysenaj', "party": 'Republican', "incumbent": False, "photo_url": "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/DiamantHysenaj.JPG", "kalshi_ticker": 'KXHOUSERACE-NY14-26-R'},
         ],
         "raw_polls": [],
     },
@@ -4188,7 +4188,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+27
         "candidates": [
             {"name": 'Ritchie Torres', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Ritchie_Torres_117th_U.S_Congress.jpg/500px-Ritchie_Torres_117th_U.S_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-NY15-26-D'},
-            {"name": 'Stylo Sapaskis', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-NY15-26-R'},
+            {"name": 'Stylo Sapaskis', "party": 'Republican', "incumbent": False, "photo_url": "https://www.localcandidates.org/_next/image?url=https%3A%2F%2Fjanrvuropqrnptyieksp.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fpolitician-images%2Fgonzalo-duran-1778322579319.jpg&w=3840&q=75", "kalshi_ticker": 'KXHOUSERACE-NY15-26-R'},
         ],
         "raw_polls": [],
     },
@@ -4210,11 +4210,15 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 17,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        # This race (and ny21 below) has its own polling table on the NY-specific
+        # page, not the nationwide combined one every other NY district here
+        # shares -- confirmed via the live scraper finding 0 rows on the
+        # combined page but 2 real polls (co/efficient, FM3 Research) here.
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_New_York',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+1
         "candidates": [
             {"name": 'Mike Lawler', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Rep._Mike_Lawler_official_photo.jpg/500px-Rep._Mike_Lawler_official_photo.jpg', "kalshi_ticker": None},
-            {"name": 'Cait Conley', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Cait Conley', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRP_apW7v3KQjNkIQWDagjri2dxbd6BhhEgJh-euj6F9uMPhjQQG4kIIVyHOFBDPlEI6I9Y61BjAqPgyFMd6h07K5NqRkpfq05S4PaAnA&s=10", "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -4227,7 +4231,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+2
         "candidates": [
             {"name": 'Pat Ryan', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Pat_Ryan_117th_Congress_portrait.jpeg/500px-Pat_Ryan_117th_Congress_portrait.jpeg', "kalshi_ticker": None},
-            {"name": 'Jacqueline Auringer', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Jacqueline Auringer', "party": 'Republican', "incumbent": False, "photo_url": "https://www.dailyfreeman.com/wp-content/uploads/2026/07/DFN-L-jma-01.jpg", "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -4253,7 +4257,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+8
         "candidates": [
             {"name": 'Paul Tonko', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Paul_Tonko_118th_Congress.jpeg/500px-Paul_Tonko_118th_Congress.jpeg', "kalshi_ticker": 'KXHOUSERACE-NY20-26-D'},
-            {"name": 'Ralph Ambrosio', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-NY20-26-R'},
+            {"name": 'Ralph Ambrosio', "party": 'Republican', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9HBnkTBeWR4ocEYrI-LfpbJ5_-8pNIKSUFkYxFg7fm9aD5GeAu9E3KfRoY9jE61PlUG_GYO1Trb6aQdbR6YKtS3T0FJ7zF6_8h5MZ7T6Ieg&s=10", "kalshi_ticker": 'KXHOUSERACE-NY20-26-R'},
         ],
         "raw_polls": [],
     },
@@ -4262,11 +4266,13 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 21,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        # See ny17's comment above -- this race's real polling table (Impact
+        # Research) is on the NY-specific page too, not the combined one.
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_New_York',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+10
         "candidates": [
-            {"name": 'Blake Gendebien', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-NY21-26-D'},
-            {"name": 'Anthony Constantino', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-NY21-26-R'},
+            {"name": 'Blake Gendebien', "party": 'Democratic', "incumbent": False, "photo_url": "https://secure.actblue.com/x/object/actblue-cyanotypes/replaced_images/list/1209417/6b5c41ce-8cc9-487b-b47b-e1eed854fb0e-Gendebien-98c8990b.jpg", "kalshi_ticker": 'KXHOUSERACE-NY21-26-D'},
+            {"name": 'Anthony Constantino', "party": 'Republican', "incumbent": False, "photo_url": "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/AnthonyConstantino.jpeg", "kalshi_ticker": 'KXHOUSERACE-NY21-26-R'},
         ],
         "raw_polls": [],
     },
@@ -4279,7 +4285,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+4
         "candidates": [
             {"name": 'John Mannion', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/John_Mannion%2C_official_portrait_%28119th_Congress%29.jpg/500px-John_Mannion%2C_official_portrait_%28119th_Congress%29.jpg', "kalshi_ticker": None},
-            {"name": 'Kailee Buller', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Kailee Buller', "party": 'Republican', "incumbent": False, "photo_url": "https://assets.civicengine.com/uploads/candidate/headshot/947131/947131.jpg", "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -4292,7 +4298,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+10
         "candidates": [
             {"name": 'Nick Langworthy', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Rep._Langworthy_Headshot_118.jpeg/500px-Rep._Langworthy_Headshot_118.jpeg', "kalshi_ticker": 'KXHOUSERACE-NY23-26-R'},
-            {"name": 'Aaron Gies', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-NY23-26-D'},
+            {"name": 'Aaron Gies', "party": 'Democratic', "incumbent": False, "photo_url": "https://assets.civicengine.com/uploads/candidate/headshot/947132/947132.jpg", "kalshi_ticker": 'KXHOUSERACE-NY23-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4305,7 +4311,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+11
         "candidates": [
             {"name": 'Claudia Tenney', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Rep._Claudia_Tenney_official_congressional_photo.jpg/500px-Rep._Claudia_Tenney_official_congressional_photo.jpg', "kalshi_ticker": 'KXHOUSERACE-NY24-26-R'},
-            {"name": 'Alissa Ellman', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-NY24-26-D'},
+            {"name": 'Alissa Ellman', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwFf2F-eduWCi7XK9ymZtepONdcjb-ianosYurJ1Zgpg&s", "kalshi_ticker": 'KXHOUSERACE-NY24-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4318,7 +4324,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+10
         "candidates": [
             {"name": 'Joseph Morelle', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Joe_Morelle_118th_Congress.jpeg/500px-Joe_Morelle_118th_Congress.jpeg', "kalshi_ticker": 'KXHOUSERACE-NY25-26-D'},
-            {"name": 'Virginia McIntyre', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-NY25-26-R'},
+            {"name": 'Virginia McIntyre', "party": 'Republican', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhK2lvShsRYnFHlrNohnSBv87tfd7yqutm5R9f_Z3hQw&s", "kalshi_ticker": 'KXHOUSERACE-NY25-26-R'},
         ],
         "raw_polls": [],
     },
@@ -4331,7 +4337,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+11
         "candidates": [
             {"name": 'Tim Kennedy', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Rep._Tim_Kennedy%27s_Official_Portrait.jpg/500px-Rep._Tim_Kennedy%27s_Official_Portrait.jpg', "kalshi_ticker": 'KXHOUSERACE-NY26-26-D'},
-            {"name": 'Dennis Hannon', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-NY26-26-R'},
+            {"name": 'Dennis Hannon', "party": 'Republican', "incumbent": False, "photo_url": "https://assets.civicengine.com/uploads/candidate/headshot/947140/947140.jpg", "kalshi_ticker": 'KXHOUSERACE-NY26-26-R'},
         ],
         "raw_polls": [],
     },

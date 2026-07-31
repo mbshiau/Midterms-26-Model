@@ -193,19 +193,126 @@ def _parse_district_results_table(soup: BeautifulSoup) -> dict[int, StateDistric
     return None
 
 
+_DISTRICT_HEADING_RE = re.compile(r"^District (\d+)$")
+
+
+def _find_district_results_table(soup: BeautifulSoup, district_heading) -> Tag | None:
+    """Finds one district's General-election results table: the LAST
+    "Results" heading (any level) before the next district's `<h2>` heading.
+    Not "the Results heading nested under General election" -- Wikipedia's
+    heading depth within a district section is inconsistent (e.g. some
+    districts nest their general-election "Results" h4 under a later
+    sibling like "Fundraising" or "Polling" instead of directly under
+    "General election"), so strict nesting misses real tables. Taking the
+    *last* one is still safe: a district's primary-round "Results"
+    headings (if any) always appear earlier in reading order than the
+    general election's, which is always the final contest covered."""
+    results_headings = []
+    el = district_heading
+    while True:
+        el = el.find_next(["h2", "h3", "h4"])
+        if el is None or el.name == "h2":
+            break
+        if el.get_text(strip=True) == "Results":
+            results_headings.append(el)
+    if not results_headings:
+        return None
+    return results_headings[-1].find_next("table")
+
+
+def _parse_general_election_results_table(table: Tag) -> tuple[str, int] | None:
+    """Parses one district's General-election "Party | Candidate | Votes |
+    %" results table (see module docstring) into {candidate: (party,
+    votes)}, by summing every row a candidate appears on rather than trusting
+    Wikipedia's own redundant per-candidate "Total" row -- New York (and
+    other fusion-voting states) lets a candidate appear on more than one
+    party's line (e.g. both "Republican" and "Conservative"), and the votes
+    from every line they're on are real votes for that same person. Returns
+    None if the table doesn't look like the expected shape."""
+    rows = table.find_all("tr")
+    if not rows:
+        return None
+    header = [h.lower() for h in _row_cells(rows[0])]
+    if not all(col in header for col in ("party", "candidate", "votes")):
+        return None
+
+    totals: dict[str, list] = {}  # candidate name -> [party, vote total]
+    for row in rows[1:]:
+        cells = _row_cells(row)
+        # Columns read from the right: a real candidate row is always
+        # Party/Candidate/Votes/% (in that order), but a leading color-swatch
+        # cell some rows have (and the header row doesn't) makes a fixed
+        # left-anchored index unreliable -- this also naturally skips the
+        # shorter "Total votes" footer row and the trailing "<Party> hold"
+        # result row, both of which have fewer than 4 cells.
+        if len(cells) < 4:
+            continue
+        party, candidate, votes_text = cells[-4], cells[-3], cells[-2]
+        if party.strip().lower() == "total":
+            continue  # Wikipedia's own redundant summary row for a fusion candidate -- every individual line is already being summed below
+        if not re.match(r"^[\d,]+$", votes_text.strip()):
+            continue
+        votes = int(votes_text.replace(",", ""))
+        name = re.sub(r"\s*\(incumbent\)\s*$", "", candidate, flags=re.IGNORECASE).strip()
+        if not name:
+            continue
+        if name not in totals:
+            totals[name] = [party.strip(), 0]
+        totals[name][1] += votes
+
+    dem = next(((name, v[1]) for name, v in totals.items() if v[0] == "Democratic"), None)
+    rep = next(((name, v[1]) for name, v in totals.items() if v[0] == "Republican"), None)
+    if dem is None or rep is None or (dem[1] + rep[1]) == 0:
+        return None  # not a real two-party contest here -- left out, not fabricated
+    return ("Democratic" if dem[1] > rep[1] else "Republican"), dem[1], rep[1]
+
+
+def _parse_district_results_by_section(soup: BeautifulSoup) -> dict[int, StateDistrictResult] | None:
+    """Fallback for states whose "{year} ... elections in {state}" page has
+    no single clean per-state summary table (see
+    _parse_district_results_table) but instead spreads results across one
+    "District N" subsection per district, each with its own General-election
+    Results table -- e.g. New York. Returns None if the page has no such
+    "District N" headings at all, so a state with neither table shape still
+    safely yields no data rather than a false match."""
+    district_headings = [
+        h for h in soup.find_all("h2") if _DISTRICT_HEADING_RE.match(h.get_text(strip=True))
+    ]
+    if not district_headings:
+        return None
+
+    out: dict[int, StateDistrictResult] = {}
+    for heading in district_headings:
+        district = int(_DISTRICT_HEADING_RE.match(heading.get_text(strip=True)).group(1))
+        table = _find_district_results_table(soup, heading)
+        if table is None:
+            continue
+        parsed = _parse_general_election_results_table(table)
+        if parsed is None:
+            continue
+        winner_party, dem_votes, rep_votes = parsed
+        out[district] = StateDistrictResult(
+            district=district,
+            dem_share=round(dem_votes / (dem_votes + rep_votes) * 100, 2),
+            winner_party=winner_party,
+        )
+    return out or None
+
+
 def fetch_state_house_results(state_name: str, year: int) -> dict[int, StateDistrictResult] | None:
     """Real two-party dem_share per district for one state+year, parsed from
     that state's own "{year} United States House of Representatives
-    elections in {state_name}" Wikipedia page. Only returns data when a
-    trustworthy per-district summary table was actually found (see
-    _parse_district_results_table) -- None otherwise, so callers never
-    silently backfill a guess."""
+    elections in {state_name}" Wikipedia page. Tries the clean single-table
+    shape first (_parse_district_results_table), then falls back to the
+    per-district-subsection shape (_parse_district_results_by_section) --
+    only returns data when one of the two actually found a trustworthy
+    result, never a guess."""
     title = f"{year}_United_States_House_of_Representatives_elections_in_{state_name.replace(' ', '_')}"
     html = fetch_wikipedia_html(title)
     if html is None:
         return None
     soup = BeautifulSoup(html, "html.parser")
-    return _parse_district_results_table(soup)
+    return _parse_district_results_table(soup) or _parse_district_results_by_section(soup)
 
 
 def _clean_footnotes(text: str) -> str:
