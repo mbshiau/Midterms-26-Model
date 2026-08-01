@@ -775,22 +775,34 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Iowa 1: 2025 Cook PVI R+4 (via Wikipedia)
     "ia01": {
         "pvi_dem_margin_pts": -6.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 46.6, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 49.9, "incumbent_party": 'Republican'},
+        ],
     },
     # Iowa 2: 2025 Cook PVI R+4 (via Wikipedia)
     "ia02": {
         "pvi_dem_margin_pts": -6.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 45.88, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 42.11, "incumbent_party": 'Republican'},
+        ],
     },
     # Iowa 3: 2025 Cook PVI R+2 (via Wikipedia)
     "ia03": {
         "pvi_dem_margin_pts": -2.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 49.65, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 48.08, "incumbent_party": 'Republican'},
+        ],
     },
     # Iowa 4: 2025 Cook PVI R+15 (via Wikipedia)
     "ia04": {
         "pvi_dem_margin_pts": -28.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 31.12, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 32.78, "incumbent_party": 'Republican'},
+        ],
     },
     # Idaho 1: 2025 Cook PVI R+22 (via Wikipedia)
     "id01": {

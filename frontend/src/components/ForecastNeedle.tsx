@@ -117,7 +117,13 @@ function CandidateLabel({
 export function ForecastNeedle({ results }: { results: ForecastResult[] }) {
   const sorted = [...results].sort((a, b) => b.mean_vote_share - a.mean_vote_share);
   const dem = results.find((r) => r.candidate.party === "Democratic") ?? sorted[1] ?? sorted[0];
-  const rep = results.find((r) => r.candidate.party === "Republican") ?? sorted[0];
+  // Mirrors dem's own fallback: prefer whichever candidate isn't already
+  // occupying the other slot, rather than unconditionally grabbing sorted[0]
+  // -- a race with no real Republican (e.g. an Independent as the only
+  // challenger) would otherwise put the same candidate in both slots
+  // whenever they're also the front-runner, duplicating one person's name
+  // across the whole needle instead of showing the real second candidate.
+  const rep = results.find((r) => r.candidate.party === "Republican") ?? sorted.find((r) => r !== dem) ?? sorted[0];
   // The dial itself is a fixed Dem-vs-Rep spectrum (there's no third point
   // on a 180deg arc to put an independent), but any other candidate --
   // Independent, third-party -- still needs to show up somewhere rather

@@ -17,6 +17,10 @@ vote totals before trusting it for all 26 districts, and against
 Pennsylvania's own page having no "redistrict" mention at all (see
 scripts/backfill_house_elections_2022.py) before trusting it too.
 
+Iowa is included via the clean-table path (like Georgia/Michigan/etc.) --
+confirmed via fetch_redistricting_changes returning no entry for Iowa, so
+its 4 districts have used the same lines across 2022/2024/2026.
+
 Only 2024 (not 2022) is used: several states redrew their maps between
 2022 and 2024 independent of the 2026 redistricting fights already tracked
 in app.ingestion.house_scraper.fetch_redistricting_changes, so trusting
@@ -46,13 +50,13 @@ logger = logging.getLogger(__name__)
 YEAR = 2024
 
 # Confirmed by hand to publish a single clean per-district summary table
-# (Georgia, Michigan, Minnesota, New Mexico, Connecticut) or, for New York,
-# a per-district-subsection page the fallback parser handles -- see module
-# docstring. Every other state either lacks a parseable shape entirely, or
-# enacted new 2026 district lines (see fetch_redistricting_changes) and is
-# excluded regardless of table shape, since 2024's results wouldn't
-# correspond to the current district registry.
-ELIGIBLE_STATES = ["Georgia", "Michigan", "Minnesota", "New Mexico", "Connecticut", "New York", "Pennsylvania"]
+# (Georgia, Michigan, Minnesota, New Mexico, Connecticut, Iowa) or, for New
+# York, a per-district-subsection page the fallback parser handles -- see
+# module docstring. Every other state either lacks a parseable shape
+# entirely, or enacted new 2026 district lines (see
+# fetch_redistricting_changes) and is excluded regardless of table shape,
+# since 2024's results wouldn't correspond to the current district registry.
+ELIGIBLE_STATES = ["Georgia", "Michigan", "Minnesota", "New Mexico", "Connecticut", "New York", "Pennsylvania", "Iowa"]
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 _DISTRICT_FUNDAMENTALS_PATH = _REPO_ROOT / "app" / "data" / "district_fundamentals_data.py"

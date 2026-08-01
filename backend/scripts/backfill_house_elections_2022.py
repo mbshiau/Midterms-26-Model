@@ -9,7 +9,7 @@ required individual per-district judgment rather than a blind bulk merge.
 Confirmed via each state's own 2024 Wikipedia elections page (no
 "redistrict" mention at all) to have used the same district lines
 continuously since the 2020 census cycle: Michigan, Minnesota, New Mexico,
-Connecticut, Pennsylvania.
+Connecticut, Pennsylvania, Iowa.
 
 New York is a partial case rather than all-or-nothing: its own "2024 United
 States House of Representatives elections in New York" page states the
@@ -44,7 +44,7 @@ YEAR = 2022
 # Confirmed stable (no mid-decade redraw) -- see module docstring. Georgia
 # is deliberately NOT included here even though it got a 2024 entry from
 # the prior backfill, since its map changed between 2022 and 2024.
-ELIGIBLE_STATES = ["Michigan", "Minnesota", "New Mexico", "Connecticut", "New York", "Pennsylvania"]
+ELIGIBLE_STATES = ["Michigan", "Minnesota", "New Mexico", "Connecticut", "New York", "Pennsylvania", "Iowa"]
 
 # Per-state district numbers to skip even though the state itself is
 # otherwise eligible -- see New York's note in the module docstring.

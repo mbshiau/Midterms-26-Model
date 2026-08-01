@@ -374,15 +374,28 @@ def fundamentals_vote_share(
     generic_ballot_margin: float | None = None,
     office: str = "Governor",
 ) -> float:
-    """Projected two-party vote share for a candidate of the given party."""
+    """Projected two-party vote share for a candidate of the given party.
+
+    Any non-Democratic party (Republican, Independent, third-party) shares
+    the same `50 - margin/2` baseline -- `margin` is fundamentally a
+    Democratic-vs-everyone-else figure (derived from the state's own
+    historical Democratic performance), so a flat lean-agnostic 50% for
+    anyone who isn't literally "Republican" would silently ignore the real
+    partisan lean for e.g. an Independent challenger. That previously let an
+    Independent in a lopsided district (e.g. a D+40 seat with no
+    Republican on the ballot) come out looking artificially competitive once
+    normalized against the Democratic candidate's correctly-adjusted share
+    -- see the Pennsylvania-3 case (Rabb ~90% vs. flat-50% Mahoney
+    normalizing to a nonsensical ~65/35). This only matters when there's
+    little or no real polling to outweigh it (see poll_weight_for_election);
+    once real per-candidate polls exist, they dominate the blend regardless.
+    """
     margin = fundamentals_breakdown(
         race_fundamentals, incumbent_party, approval_pct, president_party, as_of, generic_ballot_margin, office
     ).total_dem_margin_pts
     if party == "Democratic":
         return 50 + margin / 2
-    if party == "Republican":
-        return 50 - margin / 2
-    return 50.0
+    return 50 - margin / 2
 
 
 def district_fundamentals_breakdown(
@@ -439,15 +452,16 @@ def district_fundamentals_vote_share(
     as_of: date | None = None,
     generic_ballot_margin: float | None = None,
 ) -> float:
-    """Projected two-party vote share for a House candidate of the given party."""
+    """Projected two-party vote share for a House candidate of the given
+    party. See fundamentals_vote_share's docstring for why any non-Democratic
+    party shares the same `50 - margin/2` baseline rather than a flat,
+    PVI-agnostic 50%."""
     margin = district_fundamentals_breakdown(
         district_fundamentals, incumbent_party, approval_pct, president_party, as_of, generic_ballot_margin
     ).total_dem_margin_pts
     if party == "Democratic":
         return 50 + margin / 2
-    if party == "Republican":
-        return 50 - margin / 2
-    return 50.0
+    return 50 - margin / 2
 
 
 def poll_weight_for_election(

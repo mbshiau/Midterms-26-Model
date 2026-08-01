@@ -4733,7 +4733,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+1
         "candidates": [
             {"name": 'Brian Fitzpatrick', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Brian_Fitzpatrick_official_congressional_photo.jpg/500px-Brian_Fitzpatrick_official_congressional_photo.jpg', "kalshi_ticker": None},
-            {"name": 'Bob Harvie', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Bob Harvie', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxQiJy7zEo0zqaMWmYZdm2sMYzieggtRqFIO64W7zBKHImTxq1PjPehnp6JhbfDaHCIjfGq5P54h6mJia6d-68ufeBi-7wx0-q0PqVrbEu&s=10", "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -4746,7 +4746,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+19
         "candidates": [
             {"name": 'Brendan Boyle', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Brendan_Boyle_-_2018-05-21_ec_0004.jpg/500px-Brendan_Boyle_-_2018-05-21_ec_0004.jpg', "kalshi_ticker": 'KXHOUSERACE-PA02-26-D'},
-            {"name": 'Jessica Arriaga', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-PA02-26-R'},
+            {"name": 'Jessica Arriaga', "party": 'Republican', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAeh8PfBND4yAOCmNoynyFsCaWdb668TBb-RN_wZdxvg&s", "kalshi_ticker": 'KXHOUSERACE-PA02-26-R'},
         ],
         "raw_polls": [],
     },
@@ -4757,8 +4757,15 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+40
+        # No Republican qualified for the 2026 primary in this seat (per
+        # "2026 United States House of Representatives elections in
+        # Pennsylvania"'s District 3 section -- Republican primary: "Failed
+        # to qualify"). Joseph Mahoney is the one candidate who filed
+        # paperwork to run as an Independent in the general -- no Wikipedia
+        # article of his own, so no photo_url.
         "candidates": [
             {"name": 'Chris Rabb', "party": 'Democratic', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Rep._Chris_Rabb_speaks_at_a_fundraiser.jpg/500px-Rep._Chris_Rabb_speaks_at_a_fundraiser.jpg', "kalshi_ticker": 'KXHOUSERACE-PA03-26-D'},
+            {"name": 'Joseph Mahoney', "party": 'Independent', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -4771,7 +4778,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+8
         "candidates": [
             {"name": 'Madeleine Dean', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Madeleine_Dean_Official_Portrait_116th_Congress.jpg/500px-Madeleine_Dean_Official_Portrait_116th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-PA04-26-D'},
-            {"name": 'Aurora Stuski', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-PA04-26-R'},
+            {"name": 'Aurora Stuski', "party": 'Republican', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0Cq4txkGj7c8CssDEtl2WybzAKipKB2D4rYbH4jjvkw&s=10", "kalshi_ticker": 'KXHOUSERACE-PA04-26-R'},
         ],
         "raw_polls": [],
     },
@@ -4784,7 +4791,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+15
         "candidates": [
             {"name": 'Mary Gay Scanlon', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Mary_Gay_Scanlon%2C_official_portrait%2C_2018_%283x4_cropped%29.jpg/500px-Mary_Gay_Scanlon%2C_official_portrait%2C_2018_%283x4_cropped%29.jpg', "kalshi_ticker": 'KXHOUSERACE-PA05-26-D'},
-            {"name": 'Nicholas Manganaro', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-PA05-26-R'},
+            {"name": 'Nicholas Manganaro', "party": 'Republican', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-yI_ExE6jQyrTwUg8UtO99DLpS5PokPhGQuuV32ATBw&s=10", "kalshi_ticker": 'KXHOUSERACE-PA05-26-R'},
         ],
         "raw_polls": [],
     },
@@ -4797,7 +4804,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+6
         "candidates": [
             {"name": 'Chrissy Houlahan', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Houlahan_Chrissy_119th_Congress.jpg/500px-Houlahan_Chrissy_119th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-PA06-26-D'},
-            {"name": 'Marty Young', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-PA06-26-R'},
+            {"name": 'Marty Young', "party": 'Republican', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReaR7dqAaOvH2XJtJ-nMwhDVTVHksdWSZnyyLbY5CLcQ&s=10", "kalshi_ticker": 'KXHOUSERACE-PA06-26-R'},
         ],
         "raw_polls": [],
     },
@@ -4810,7 +4817,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+1
         "candidates": [
             {"name": 'Ryan Mackenzie', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Rep._Ryan_Mackenzie_official_photo%2C_119th_Congress.jpg/500px-Rep._Ryan_Mackenzie_official_photo%2C_119th_Congress.jpg', "kalshi_ticker": None},
-            {"name": 'Bob Brooks', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Bob Brooks', "party": 'Democratic', "incumbent": False, "photo_url": "https://jstreetpac.org/wp-content/uploads/2025/11/Bob-Brooks-e1762201636742.jpg", "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -4836,7 +4843,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+19
         "candidates": [
             {"name": 'Dan Meuser', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Meuser_Dan_118th_Congress.jpg/500px-Meuser_Dan_118th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-PA09-26-R'},
-            {"name": 'Rachel Wallace', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-PA09-26-D'},
+            {"name": 'Rachel Wallace', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPyqsrqo5bKGI3XrFRqd_UTkUUneccmyJb3eZEWF7qpQ&s=10", "kalshi_ticker": 'KXHOUSERACE-PA09-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4849,7 +4856,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+3
         "candidates": [
             {"name": 'Scott Perry', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Rep._Scott_Perry%2C_official_portrait%2C_118th_Congress.jpg/500px-Rep._Scott_Perry%2C_official_portrait%2C_118th_Congress.jpg', "kalshi_ticker": None},
-            {"name": 'Janelle Stelson', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Janelle Stelson', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDR_hIJEeuZi56Mbz7_Cn4Mz8Q4ElW5J3fCr8k_eZRRg&s=10", "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -4862,7 +4869,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+11
         "candidates": [
             {"name": 'Lloyd Smucker', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Lloyd_Smucker_Official_Congressional_Photo.jpg/500px-Lloyd_Smucker_Official_Congressional_Photo.jpg', "kalshi_ticker": 'KXHOUSERACE-PA11-26-R'},
-            {"name": 'Nancy Mannion', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-PA11-26-D'},
+            {"name": 'Nancy Mannion', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKKMLYwYsYKgvZVV1FM_w094g5OyeXydxhTEBSZt_NVg&s", "kalshi_ticker": 'KXHOUSERACE-PA11-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4875,7 +4882,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+10
         "candidates": [
             {"name": 'Summer Lee', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Rep._Summer_Lee_-_118th_Congress_%283x4_cropped%29.jpg/500px-Rep._Summer_Lee_-_118th_Congress_%283x4_cropped%29.jpg', "kalshi_ticker": 'KXHOUSERACE-PA12-26-D'},
-            {"name": 'James Hayes', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-PA12-26-R'},
+            {"name": 'James Hayes', "party": 'Republican', "incumbent": False, "photo_url": "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/JamesHayes2023.jpeg", "kalshi_ticker": 'KXHOUSERACE-PA12-26-R'},
         ],
         "raw_polls": [],
     },
@@ -4888,7 +4895,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+23
         "candidates": [
             {"name": 'John Joyce', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/John_Joyce_119th_Congress.jpg/500px-John_Joyce_119th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-PA13-26-R'},
-            {"name": 'Beth Farnham', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-PA13-26-D'},
+            {"name": 'Beth Farnham', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQx0Jfo3TeV61XHDr-rJ0orgmHwIqba4ckWWN_NCUzsTyOnAa48SMqPJmHSW24exF59iFkwh3c4oW2pcFcRqTcTOfZfBMQijclnajEBfBjb&s=10", "kalshi_ticker": 'KXHOUSERACE-PA13-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4901,7 +4908,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+17
         "candidates": [
             {"name": 'Guy Reschenthaler', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Guy_Reschenthaler_Official_Portrait_2022_%28cropped2%29.jpg/500px-Guy_Reschenthaler_Official_Portrait_2022_%28cropped2%29.jpg', "kalshi_ticker": 'KXHOUSERACE-PA14-26-R'},
-            {"name": 'Alan Bradstock', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-PA14-26-D'},
+            {"name": 'Alan Bradstock', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRy_99ceIGWsaofOHYF7Y_UBqv6a07JSyArj4ZSSC45Bg&s", "kalshi_ticker": 'KXHOUSERACE-PA14-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4914,7 +4921,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+19
         "candidates": [
             {"name": 'Glenn Thompson', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/3/30/Glenn_Thompson_portrait_%28118th_Congress%29.jpg', "kalshi_ticker": 'KXHOUSERACE-PA15-26-R'},
-            {"name": 'Ray Bilger', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-PA15-26-D'},
+            {"name": 'Ray Bilger', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHIgLzu6oNC_IBsXdwraMWcQMn0ERxctXDyWvfM9ER_A&s", "kalshi_ticker": 'KXHOUSERACE-PA15-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4927,7 +4934,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+11
         "candidates": [
             {"name": 'Mike Kelly', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Mike_Kelly%2C_official_portrait%2C_112th_Congress_%28cropped%29.jpg/500px-Mike_Kelly%2C_official_portrait%2C_112th_Congress_%28cropped%29.jpg', "kalshi_ticker": 'KXHOUSERACE-PA16-26-R'},
-            {"name": 'Justin Wagner', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-PA16-26-D'},
+            {"name": 'Justin Wagner', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLekRNp88qjpDzPMTUIVts5DCRDNNKMxWFYGdO28MCVg&s=10", "kalshi_ticker": 'KXHOUSERACE-PA16-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4940,7 +4947,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+3
         "candidates": [
             {"name": 'Chris Deluzio', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Chris_Deluzio_119th_Congress.jpg/500px-Chris_Deluzio_119th_Congress.jpg', "kalshi_ticker": None},
-            {"name": 'Tony Guy', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Tony Guy', "party": 'Republican', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqbjxPI7STNHetyMYlVL4fzGv1fn5TFuZrtHUV9DKOyQ&s", "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
