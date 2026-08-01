@@ -113,16 +113,21 @@ def presidential_lean(presidential_elections: list[dict], as_of: date | None = N
     )
 
 
-def _resolve_overrides(model_overrides: dict, office: str) -> dict:
+def resolve_overrides(model_overrides: dict, office: str) -> dict:
     """Resolves a RACE_FUNDAMENTALS entry's "model_overrides" for the given
     office. A state with only one race (the common case, e.g. Vermont) just
     uses flat top-level keys, applied regardless of office. A state with
     *two* races that need genuinely different overrides (e.g. Ohio's
     Senate race excluding gubernatorial history entirely, while its
-    Governor race's own weighting stays untouched) nests an office-keyed
-    dict instead -- `{"Senate": {"gubernatorial_lean_weight": 0.0}}` --
-    which is merged over the flat keys (and wins on conflict) only when
-    resolving for that specific office."""
+    Governor race's own weighting stays untouched; or Texas's Senate race
+    weighting real-time polling more heavily than its Governor race, see
+    poll_weight_for_election) nests an office-keyed dict instead --
+    `{"Senate": {"gubernatorial_lean_weight": 0.0}}` -- which is merged over
+    the flat keys (and wins on conflict) only when resolving for that
+    specific office. Public (not a fundamentals.py-only helper): also called
+    from app.services.forecasting.generate_forecast, since poll_weight_floor
+    /ceiling overrides need the same office-scoping as the historical-lean
+    ones resolved here."""
     office_specific = model_overrides.get(office)
     if isinstance(office_specific, dict):
         return {**model_overrides, **office_specific}
@@ -147,7 +152,7 @@ def _historical_lean_weights(
     would have gotten from the old gov/Senate swap
     (`settings.gubernatorial_lean_weight`, still the stronger of the two
     non-president inputs). `model_overrides` (already resolved for `office`
-    by `_resolve_overrides` -- see fundamentals_breakdown) can still
+    by `resolve_overrides` -- see fundamentals_breakdown) can still
     override either weight for one specific state/office -- e.g. Phil
     Scott's Vermont, where the governor's own race is a far stronger signal
     than the state's Senate/presidential results, uses gov=0.70/sen=0.15;
@@ -172,7 +177,7 @@ def combined_historical_lean(
     office: str = "Governor",
 ) -> float:
     """Blends the governor/Senate/presidential leans by the weights above."""
-    resolved_overrides = _resolve_overrides(model_overrides or {}, office)
+    resolved_overrides = resolve_overrides(model_overrides or {}, office)
     w_gov, w_sen, w_pres = _historical_lean_weights(resolved_overrides, office)
     return (
         w_gov * gubernatorial_lean(gubernatorial_elections, as_of)
@@ -323,10 +328,10 @@ def fundamentals_breakdown(
 
     Either key can also be nested under an office name (e.g.
     `{"Senate": {"gubernatorial_lean_weight": 0.0}}`) for a state whose two
-    races need different overrides -- see _resolve_overrides.
+    races need different overrides -- see resolve_overrides.
     """
     as_of = as_of or date.today()
-    model_overrides = _resolve_overrides(race_fundamentals.get("model_overrides", {}), office)
+    model_overrides = resolve_overrides(race_fundamentals.get("model_overrides", {}), office)
     gub_elections = race_fundamentals["gubernatorial_elections"]
     sen_elections = race_fundamentals["senate_elections"]
     pres_elections = race_fundamentals["presidential_elections"]

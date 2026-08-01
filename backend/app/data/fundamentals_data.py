@@ -291,6 +291,19 @@ RACE_FUNDAMENTALS = {
         # primary choice each cycle isn't a permanent registration record),
         # confirmed directly via the Texas Secretary of State.
         "registration_snapshots": [],
+        # Senate-only override (Governor untouched -- Abbott's own race has
+        # no comparable candidate-quality concern): Ken Paxton (impeached,
+        # securities-fraud indictment, scandal-plagued 2026 nominee) is a
+        # weak enough candidate that Texas's normal deep-red fundamentals
+        # baseline (statewide history + PVI-style priors) overstates his
+        # true chances -- real, current polling of this specific matchup is
+        # a much more reliable signal here than usual, so poll_weight_floor
+        # /ceiling are both raised well above the global defaults (0.25/0.80)
+        # to weight polls more heavily across the whole race, not just close
+        # to election day.
+        "model_overrides": {
+            "Senate": {"poll_weight_floor": 0.45, "poll_weight_ceiling": 0.85},
+        },
     },
     "fl": {
         "gubernatorial_elections": [

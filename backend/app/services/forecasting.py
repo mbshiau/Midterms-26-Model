@@ -10,7 +10,11 @@ components are kept on each ForecastResult so the UI can show its
 composition. A race's RACE_FUNDAMENTALS entry can carry an optional
 "model_overrides" dict replacing poll_weight_floor/ceiling (and the
 fundamentals-side weights -- see fundamentals.fundamentals_breakdown) for
-that state specifically.
+that state specifically -- resolved per-office via
+fundamentals.resolve_overrides before use here, so a state with two races
+sharing one RACE_FUNDAMENTALS entry (e.g. Texas's Governor and Senate races)
+can nest an override under just one office's name (e.g.
+`{"Senate": {"poll_weight_floor": 0.45}}`) without affecting the other.
 
 The fundamentals model's national-environment input blends presidential
 approval with the generic congressional ballot (see
@@ -151,7 +155,7 @@ def generate_forecast(
     # weight (100% fundamentals) rather than reporting the normal alpha
     # curve's value, which would misleadingly imply polls are contributing
     # to a blend that, in reality, has none to draw on.
-    model_overrides = fundamentals_data.get("model_overrides", {})
+    model_overrides = fundamentals.resolve_overrides(fundamentals_data.get("model_overrides", {}), race.office)
     alpha = (
         fundamentals.poll_weight_for_election(
             race.election_date,

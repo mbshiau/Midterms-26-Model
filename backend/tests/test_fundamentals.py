@@ -802,10 +802,10 @@ def test_office_scoped_override_only_affects_that_office():
     # Governor race's own default must stay untouched.
     overrides = {"Senate": {"gubernatorial_lean_weight": 0.20}}
     gov_w_gov, _, _ = fundamentals._historical_lean_weights(
-        fundamentals._resolve_overrides(overrides, "Governor"), "Governor"
+        fundamentals.resolve_overrides(overrides, "Governor"), "Governor"
     )
     sen_w_gov, sen_w_sen, sen_w_pres = fundamentals._historical_lean_weights(
-        fundamentals._resolve_overrides(overrides, "Senate"), "Senate"
+        fundamentals.resolve_overrides(overrides, "Senate"), "Senate"
     )
     assert gov_w_gov == fundamentals.settings.gubernatorial_lean_weight  # unaffected by the Senate-scoped override
     assert sen_w_gov == 0.20
