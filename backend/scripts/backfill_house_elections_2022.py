@@ -27,6 +27,12 @@ Only ever appends a 2022 entry to a district whose house_elections
 currently contains exactly the one 2024 entry from the prior backfill --
 never touches Georgia, Alabama/Alaska, or anything else.
 
+Idempotency: if a district already has an entry for YEAR (e.g. this script
+was already run for it), it is never touched again -- the district key is
+printed to the terminal instead, so a rerun surfaces exactly which
+districts already have data rather than silently duplicating it or
+silently overwriting a value that may have been hand-corrected since.
+
 Usage: python -m scripts.backfill_house_elections_2022
 """
 
@@ -57,6 +63,7 @@ _DISTRICT_FUNDAMENTALS_PATH = _REPO_ROOT / "app" / "data" / "district_fundamenta
 
 _KEY_RE = re.compile(r'^\s*"([a-z]{2}\d{2})":\s*\{\s*$')
 _2024_ENTRY_RE = re.compile(r'^(\s*)\{"year": 2024, "dem_share":.*\},\s*$')
+_ANY_YEAR_ENTRY_RE = re.compile(r'^\s*\{"year":\s*(\d+),.*\},\s*$')
 
 
 def _district_key(state_code: str, district: int) -> str:
@@ -94,17 +101,29 @@ def main() -> None:
 
     lines = _DISTRICT_FUNDAMENTALS_PATH.read_text().splitlines(keepends=True)
     current_key: str | None = None
+    year_already_present = False
     n_added = 0
+    already_present: list[str] = []
     out_lines: list[str] = []
     for line in lines:
         key_match = _KEY_RE.match(line)
         if key_match:
             current_key = key_match.group(1)
+            year_already_present = False
             out_lines.append(line)
             continue
 
+        any_year_match = _ANY_YEAR_ENTRY_RE.match(line)
+        if any_year_match and int(any_year_match.group(1)) == YEAR:
+            year_already_present = True
+
         entry_match = _2024_ENTRY_RE.match(line)
         if entry_match and current_key in to_add:
+            if year_already_present:
+                already_present.append(current_key)
+                current_key = None
+                out_lines.append(line)
+                continue
             indent = entry_match.group(1)
             e = to_add[current_key]
             out_lines.append(
@@ -120,6 +139,11 @@ def main() -> None:
 
     _DISTRICT_FUNDAMENTALS_PATH.write_text("".join(out_lines))
     logger.info("added a 2022 house_elections entry to %d/%d parsed districts", n_added, len(to_add))
+    if already_present:
+        logger.warning(
+            "%d district(s) already had a %d entry -- left untouched, review by hand: %s",
+            len(already_present), YEAR, ", ".join(sorted(already_present)),
+        )
 
 
 if __name__ == "__main__":

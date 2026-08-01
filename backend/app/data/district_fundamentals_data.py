@@ -495,8 +495,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": 9.53,
         "house_elections": [
             {"year": 2022, "dem_share": 59.17, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 59.17, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 59.17, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 58.02, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1123,8 +1121,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi01": {
         "pvi_dem_margin_pts": -20.47,
         "house_elections": [
-            {"year": 2022, "dem_share": 38.40, "incumbent_party": 'Republican'},
-            {"year": 2022, "dem_share": 38.42, "incumbent_party": 'Republican'},
             {"year": 2022, "dem_share": 38.42, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 41.36, "incumbent_party": 'Republican'},
         ],
@@ -1133,8 +1129,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi02": {
         "pvi_dem_margin_pts": -28.47,
         "house_elections": [
-            {"year": 2022, "dem_share": 35.00, "incumbent_party": 'Republican'},
-            {"year": 2022, "dem_share": 35.0, "incumbent_party": 'Republican'},
             {"year": 2022, "dem_share": 35.0, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 32.73, "incumbent_party": 'Republican'},
         ],
@@ -1144,8 +1138,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": 9.53,
         "house_elections": [
             {"year": 2022, "dem_share": 56.66, "incumbent_party": None},
-            {"year": 2022, "dem_share": 56.67, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 56.67, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 55.07, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1154,8 +1146,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": -4.47,
         "house_elections": [
             {"year": 2022, "dem_share": 43.86, "incumbent_party": 'Republican'},
-            {"year": 2022, "dem_share": 43.86, "incumbent_party": 'Republican'},
-            {"year": 2022, "dem_share": 43.86, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 44.05, "incumbent_party": 'Republican'},
         ],
     },
@@ -1163,8 +1153,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi05": {
         "pvi_dem_margin_pts": -24.47,
         "house_elections": [
-            {"year": 2022, "dem_share": 35.93, "incumbent_party": 'Republican'},
-            {"year": 2022, "dem_share": 35.91, "incumbent_party": 'Republican'},
             {"year": 2022, "dem_share": 35.91, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 33.28, "incumbent_party": 'Republican'},
         ],
@@ -1173,8 +1161,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi06": {
         "pvi_dem_margin_pts": 25.53,
         "house_elections": [
-            {"year": 2022, "dem_share": 65.90, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 65.89, "incumbent_party": 'Democratic'},
             {"year": 2022, "dem_share": 65.89, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 63.93, "incumbent_party": 'Democratic'},
         ],
@@ -1184,8 +1170,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": 1.53,
         "house_elections": [
             {"year": 2022, "dem_share": 52.76, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 52.76, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 52.76, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 48.08, "incumbent_party": None},
         ],
     },
@@ -1193,8 +1177,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi08": {
         "pvi_dem_margin_pts": -0.47,
         "house_elections": [
-            {"year": 2022, "dem_share": 55.37, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 55.35, "incumbent_party": 'Democratic'},
             {"year": 2022, "dem_share": 55.35, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 53.46, "incumbent_party": 'Democratic'},
         ],
@@ -1203,8 +1185,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi09": {
         "pvi_dem_margin_pts": -30.47,
         "house_elections": [
-            {"year": 2022, "dem_share": 34.19, "incumbent_party": 'Republican'},
-            {"year": 2022, "dem_share": 34.17, "incumbent_party": 'Republican'},
             {"year": 2022, "dem_share": 34.17, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 30.65, "incumbent_party": 'Republican'},
         ],
@@ -1214,8 +1194,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": -4.47,
         "house_elections": [
             {"year": 2022, "dem_share": 49.75, "incumbent_party": None},
-            {"year": 2022, "dem_share": 49.75, "incumbent_party": 'Republican'},
-            {"year": 2022, "dem_share": 49.75, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 46.81, "incumbent_party": 'Republican'},
         ],
     },
@@ -1223,8 +1201,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi11": {
         "pvi_dem_margin_pts": 19.53,
         "house_elections": [
-            {"year": 2022, "dem_share": 61.30, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 61.32, "incumbent_party": 'Democratic'},
             {"year": 2022, "dem_share": 61.32, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 59.51, "incumbent_party": 'Democratic'},
         ],
@@ -1233,8 +1209,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mi12": {
         "pvi_dem_margin_pts": 43.53,
         "house_elections": [
-            {"year": 2022, "dem_share": 72.91, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 72.96, "incumbent_party": 'Democratic'},
             {"year": 2022, "dem_share": 72.96, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 73.26, "incumbent_party": 'Democratic'},
         ],
@@ -1244,8 +1218,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": 45.53,
         "house_elections": [
             {"year": 2022, "dem_share": 74.78, "incumbent_party": None},
-            {"year": 2022, "dem_share": 74.79, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 74.79, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 73.67, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1253,8 +1225,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mn01": {
         "pvi_dem_margin_pts": -10.47,
         "house_elections": [
-            {"year": 2022, "dem_share": 44.01, "incumbent_party": 'Republican'},
-            {"year": 2022, "dem_share": 44.01, "incumbent_party": 'Republican'},
             {"year": 2022, "dem_share": 44.01, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 41.45, "incumbent_party": 'Republican'},
         ],
@@ -1264,8 +1234,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": 7.53,
         "house_elections": [
             {"year": 2022, "dem_share": 52.71, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 52.71, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 52.71, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 56.89, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1273,8 +1241,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mn03": {
         "pvi_dem_margin_pts": 23.53,
         "house_elections": [
-            {"year": 2022, "dem_share": 59.6, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 59.6, "incumbent_party": 'Democratic'},
             {"year": 2022, "dem_share": 59.6, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 58.5, "incumbent_party": 'Democratic'},
         ],
@@ -1284,8 +1250,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": 37.53,
         "house_elections": [
             {"year": 2022, "dem_share": 67.69, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 67.69, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 67.69, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 67.37, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1293,8 +1257,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mn05": {
         "pvi_dem_margin_pts": 65.53,
         "house_elections": [
-            {"year": 2022, "dem_share": 75.19, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 75.19, "incumbent_party": 'Democratic'},
             {"year": 2022, "dem_share": 75.19, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 75.17, "incumbent_party": 'Democratic'},
         ],
@@ -1304,8 +1266,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": -18.47,
         "house_elections": [
             {"year": 2022, "dem_share": 37.88, "incumbent_party": 'Republican'},
-            {"year": 2022, "dem_share": 37.88, "incumbent_party": 'Republican'},
-            {"year": 2022, "dem_share": 37.88, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 37.47, "incumbent_party": 'Republican'},
         ],
     },
@@ -1314,8 +1274,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": -34.47,
         "house_elections": [
             {"year": 2022, "dem_share": 29.2, "incumbent_party": 'Republican'},
-            {"year": 2022, "dem_share": 29.2, "incumbent_party": 'Republican'},
-            {"year": 2022, "dem_share": 29.2, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 29.48, "incumbent_party": 'Republican'},
         ],
     },
@@ -1323,8 +1281,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "mn08": {
         "pvi_dem_margin_pts": -12.47,
         "house_elections": [
-            {"year": 2022, "dem_share": 42.76, "incumbent_party": 'Republican'},
-            {"year": 2022, "dem_share": 42.76, "incumbent_party": 'Republican'},
             {"year": 2022, "dem_share": 42.76, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 41.96, "incumbent_party": 'Republican'},
         ],
@@ -1564,8 +1520,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": 15.53,
         "house_elections": [
             {"year": 2022, "dem_share": 55.76, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 55.76, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 55.76, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 56.37, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1574,8 +1528,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": 1.53,
         "house_elections": [
             {"year": 2022, "dem_share": 50.35, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 50.35, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 50.35, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 52.08, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1583,8 +1535,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "nm03": {
         "pvi_dem_margin_pts": 7.53,
         "house_elections": [
-            {"year": 2022, "dem_share": 58.16, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 58.16, "incumbent_party": 'Democratic'},
             {"year": 2022, "dem_share": 58.16, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 56.29, "incumbent_party": 'Democratic'},
         ],
@@ -1621,7 +1571,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": -10.47,
         "house_elections": [
             {"year": 2022, "dem_share": 39.27, "incumbent_party": 'Republican'},
-            {"year": 2022, "dem_share": 39.27, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 40.23, "incumbent_party": 'Republican'},
         ],
     },
@@ -1637,7 +1586,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": 5.53,
         "house_elections": [
             {"year": 2022, "dem_share": 48.2, "incumbent_party": 'Republican'},
-            {"year": 2022, "dem_share": 48.2, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 51.15, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1645,7 +1593,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "ny05": {
         "pvi_dem_margin_pts": 49.53,
         "house_elections": [
-            {"year": 2022, "dem_share": 75.21, "incumbent_party": 'Democratic'},
             {"year": 2022, "dem_share": 75.21, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 72.93, "incumbent_party": 'Democratic'},
         ],
@@ -1655,7 +1602,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": 13.53,
         "house_elections": [
             {"year": 2022, "dem_share": 63.95, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 63.95, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 61.72, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1663,7 +1609,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "ny07": {
         "pvi_dem_margin_pts": 51.53,
         "house_elections": [
-            {"year": 2022, "dem_share": 80.69, "incumbent_party": 'Democratic'},
             {"year": 2022, "dem_share": 80.69, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 78.11, "incumbent_party": 'Democratic'},
         ],
@@ -1673,7 +1618,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": 49.53,
         "house_elections": [
             {"year": 2022, "dem_share": 71.72, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 71.72, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 75.39, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1681,7 +1625,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "ny09": {
         "pvi_dem_margin_pts": 45.53,
         "house_elections": [
-            {"year": 2022, "dem_share": 100.0, "incumbent_party": 'Democratic'},
             {"year": 2022, "dem_share": 100.0, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 74.25, "incumbent_party": 'Democratic'},
         ],
@@ -1691,7 +1634,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": 65.53,
         "house_elections": [
             {"year": 2022, "dem_share": 84.68, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 84.68, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 84.59, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1699,7 +1641,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "ny11": {
         "pvi_dem_margin_pts": -18.47,
         "house_elections": [
-            {"year": 2022, "dem_share": 38.23, "incumbent_party": 'Republican'},
             {"year": 2022, "dem_share": 38.23, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 35.9, "incumbent_party": 'Republican'},
         ],
@@ -1709,7 +1650,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": 67.53,
         "house_elections": [
             {"year": 2022, "dem_share": 81.97, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 81.97, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 80.51, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1717,7 +1657,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "ny13": {
         "pvi_dem_margin_pts": 65.53,
         "house_elections": [
-            {"year": 2022, "dem_share": 100.0, "incumbent_party": 'Democratic'},
             {"year": 2022, "dem_share": 100.0, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 83.54, "incumbent_party": 'Democratic'},
         ],
@@ -1727,7 +1666,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": 39.53,
         "house_elections": [
             {"year": 2022, "dem_share": 72.08, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 72.08, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 69.2, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1735,7 +1673,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "ny15": {
         "pvi_dem_margin_pts": 55.53,
         "house_elections": [
-            {"year": 2022, "dem_share": 82.79, "incumbent_party": 'Democratic'},
             {"year": 2022, "dem_share": 82.79, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 78.36, "incumbent_party": 'Democratic'},
         ],
@@ -1745,7 +1682,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": 37.53,
         "house_elections": [
             {"year": 2022, "dem_share": 64.3, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 64.3, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 71.58, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1753,7 +1689,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "ny17": {
         "pvi_dem_margin_pts": 3.53,
         "house_elections": [
-            {"year": 2022, "dem_share": 49.68, "incumbent_party": 'Republican'},
             {"year": 2022, "dem_share": 49.68, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 46.78, "incumbent_party": 'Republican'},
         ],
@@ -1770,7 +1705,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": 3.53,
         "house_elections": [
             {"year": 2022, "dem_share": 49.22, "incumbent_party": 'Republican'},
-            {"year": 2022, "dem_share": 49.22, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 51.11, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1779,7 +1713,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": 17.53,
         "house_elections": [
             {"year": 2022, "dem_share": 55.07, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 55.07, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 61.13, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1787,7 +1720,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "ny21": {
         "pvi_dem_margin_pts": -18.47,
         "house_elections": [
-            {"year": 2022, "dem_share": 40.85, "incumbent_party": 'Republican'},
             {"year": 2022, "dem_share": 40.85, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 37.86, "incumbent_party": 'Republican'},
         ],
@@ -1804,7 +1736,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": -18.47,
         "house_elections": [
             {"year": 2022, "dem_share": 35.08, "incumbent_party": 'Republican'},
-            {"year": 2022, "dem_share": 35.08, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 34.19, "incumbent_party": 'Republican'},
         ],
     },
@@ -1812,7 +1743,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "ny24": {
         "pvi_dem_margin_pts": -20.47,
         "house_elections": [
-            {"year": 2022, "dem_share": 34.3, "incumbent_party": 'Republican'},
             {"year": 2022, "dem_share": 34.3, "incumbent_party": 'Republican'},
             {"year": 2024, "dem_share": 34.33, "incumbent_party": 'Republican'},
         ],
@@ -1822,7 +1752,6 @@ DISTRICT_FUNDAMENTALS: dict = {
         "pvi_dem_margin_pts": 21.53,
         "house_elections": [
             {"year": 2022, "dem_share": 53.87, "incumbent_party": 'Democratic'},
-            {"year": 2022, "dem_share": 53.87, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 60.82, "incumbent_party": 'Democratic'},
         ],
     },
@@ -1830,7 +1759,6 @@ DISTRICT_FUNDAMENTALS: dict = {
     "ny26": {
         "pvi_dem_margin_pts": 23.53,
         "house_elections": [
-            {"year": 2022, "dem_share": 63.98, "incumbent_party": 'Democratic'},
             {"year": 2022, "dem_share": 63.98, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 65.17, "incumbent_party": 'Democratic'},
         ],
