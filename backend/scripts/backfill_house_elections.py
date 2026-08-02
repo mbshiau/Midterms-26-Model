@@ -21,11 +21,43 @@ Iowa is included via the clean-table path (like Georgia/Michigan/etc.) --
 confirmed via fetch_redistricting_changes returning no entry for Iowa, so
 its 4 districts have used the same lines across 2022/2024/2026.
 
-Only 2024 (not 2022) is used: several states redrew their maps between
-2022 and 2024 independent of the 2026 redistricting fights already tracked
-in app.ingestion.house_scraper.fetch_redistricting_changes, so trusting
-2022's district numbering at all 50-state scale isn't safe without
-individual verification (same lesson as Alabama's AL-2, done by hand).
+The remaining 31 states below were added after fetch_state_house_results
+was extended to handle a few more page shapes it previously choked on: (1)
+at-large states (Alaska, Delaware, North Dakota, South Dakota, Vermont,
+Wyoming) use a singular "...election in {state}" title, not the plural
+"...elections in {state}" every numbered-district state uses, and have no
+"District N" subsections to fall back on either -- both now handled by a
+dedicated at-large parser (Alaska itself is still excluded: its results
+table is ranked-choice, a shape too different to safely reuse this parser
+on); (2) some states' per-district tables use a trailing "±%" swing column
+after "%" that the column-position logic used to read from the right,
+silently misaligning every field on tables that have it (Maryland,
+California); (3) North Dakota's Democratic candidates run under the
+state's real "Democratic-NPL" party label, which needed normalizing to
+"Democratic" the same way Minnesota's "DFL" already is; (4) Connecticut's
+own table attaches a bare, non-bracketed "*" citation marker straight
+after some districts' vote counts, which broke the numeric-only regex and
+silently dropped 3 of its 5 districts.
+
+All 9 states with new 2026 map lines (per fetch_redistricting_changes:
+Alabama, Florida, Louisiana, Missouri, North Carolina, Ohio, Tennessee,
+Texas, Utah) are deliberately EXCLUDED even though several of them do
+parse cleanly now -- their 2024 Wikipedia district numbers don't
+necessarily correspond to the current 2026 registry, same reasoning as
+Georgia's exclusion. Alabama also already has hand-verified entries for
+5 of its 7 districts (see AL-2 above) that a blind bulk pass shouldn't
+risk touching regardless. California (no per-district "General election"
+section published on this page at all -- only a primary-round table,
+since it's a top-two state) and Alaska (ranked-choice) remain the only
+two states this scraper still can't parse at all.
+
+Only 2024 (not 2022) is used here: several states redrew their maps
+between 2022 and 2024 independent of the 2026 redistricting fights
+already tracked in app.ingestion.house_scraper.fetch_redistricting_changes,
+so trusting 2022's district numbering at 50-state scale isn't safe
+without individual per-state verification -- see
+scripts/backfill_house_elections_2022.py, which adds 2022 only for the
+subset of these states confirmed stable since 2022.
 
 This only ever fills in a district whose `house_elections` is CURRENTLY an
 empty list `[]` in the source file -- it will never overwrite Alabama's or
@@ -56,7 +88,18 @@ YEAR = 2024
 # entirely, or enacted new 2026 district lines (see
 # fetch_redistricting_changes) and is excluded regardless of table shape,
 # since 2024's results wouldn't correspond to the current district registry.
-ELIGIBLE_STATES = ["Georgia", "Michigan", "Minnesota", "New Mexico", "Connecticut", "New York", "Pennsylvania", "Iowa"]
+ELIGIBLE_STATES = [
+    "Georgia", "Michigan", "Minnesota", "New Mexico", "Connecticut", "New York", "Pennsylvania", "Iowa",
+    # See module docstring for what changed in fetch_state_house_results to
+    # make these 31 parseable, and why Alabama/Florida/Louisiana/Missouri/
+    # North Carolina/Ohio/Tennessee/Texas/Utah (2026 redraw) and California/
+    # Alaska (still unparseable) are deliberately left out.
+    "Arizona", "Arkansas", "Colorado", "Delaware", "Hawaii", "Idaho", "Illinois", "Indiana",
+    "Kansas", "Kentucky", "Maine", "Maryland", "Massachusetts", "Mississippi", "Montana",
+    "Nebraska", "Nevada", "New Hampshire", "New Jersey", "North Dakota", "Oklahoma", "Oregon",
+    "Rhode Island", "South Carolina", "South Dakota", "Vermont", "Virginia", "Washington",
+    "West Virginia", "Wisconsin", "Wyoming",
+]
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 _DISTRICT_FUNDAMENTALS_PATH = _REPO_ROOT / "app" / "data" / "district_fundamentals_data.py"

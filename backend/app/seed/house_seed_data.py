@@ -1996,7 +1996,11 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 1,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        # Iowa's districts each have their own polling table on the
+        # Iowa-specific page, not the nationwide combined one -- confirmed
+        # via the live scraper finding 0 rows on the combined page but real
+        # polls (The Bullfinch Group, Public Policy Polling) here.
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Iowa',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+4
         "candidates": [
             {"name": 'Mariannette Miller-Meeks', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Mariannette_Miller-Meeks_117th_U.S_Congress.jpg/500px-Mariannette_Miller-Meeks_117th_U.S_Congress.jpg', "kalshi_ticker": None},
@@ -2009,7 +2013,8 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 2,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        # See ia01's comment -- real polling table on the Iowa-specific page.
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Iowa',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+4
         "candidates": [
             {"name": 'Lindsay James', "party": 'Democratic', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Member_of_the_Iowa_House_of_Representatives_Lindsay_James.jpg/500px-Member_of_the_Iowa_House_of_Representatives_Lindsay_James.jpg', "kalshi_ticker": 'KXHOUSERACE-IA02-26-D'},
@@ -2022,7 +2027,8 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 3,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        # See ia01's comment -- real polling table on the Iowa-specific page.
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Iowa',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+2
         "candidates": [
             {"name": 'Zach Nunn', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Rep._Zach_Nunn_official_photo%2C_118th_Congress_%283x4%29.jpg/500px-Rep._Zach_Nunn_official_photo%2C_118th_Congress_%283x4%29.jpg', "kalshi_ticker": None},
@@ -2035,7 +2041,10 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 4,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        # See ia01's comment. No polls found here yet (as expected for an
+        # R+15 seat), but pointed at the right page so a future one is
+        # picked up by the scheduled refresh instead of silently missed.
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Iowa',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+15
         "candidates": [
             {"name": 'David Dawson', "party": 'Democratic', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Member_of_the_Iowa_House_of_Representatives_David_Alan_Dawson.jpg/500px-Member_of_the_Iowa_House_of_Representatives_David_Alan_Dawson.jpg', "kalshi_ticker": None},

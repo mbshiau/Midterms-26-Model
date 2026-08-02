@@ -123,67 +123,106 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Arkansas 1: 2025 Cook PVI R+23 (via Wikipedia)
     "ar01": {
         "pvi_dem_margin_pts": -44.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 26.2, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 24.77, "incumbent_party": 'Republican'},
+        ],
     },
     # Arkansas 2: 2025 Cook PVI R+8 (via Wikipedia)
     "ar02": {
         "pvi_dem_margin_pts": -14.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 36.99, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 41.07, "incumbent_party": 'Republican'},
+        ],
     },
     # Arkansas 3: 2025 Cook PVI R+13 (via Wikipedia)
     "ar03": {
         "pvi_dem_margin_pts": -24.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 34.06, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 33.24, "incumbent_party": 'Republican'},
+        ],
     },
     # Arkansas 4: 2025 Cook PVI R+20 (via Wikipedia)
     "ar04": {
         "pvi_dem_margin_pts": -38.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 26.95, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 27.09, "incumbent_party": 'Republican'},
+        ],
     },
     # Arizona 1: 2025 Cook PVI R+1 (via Wikipedia)
     "az01": {
         "pvi_dem_margin_pts": -0.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 49.56, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 48.09, "incumbent_party": 'Republican'},
+        ],
     },
     # Arizona 2: 2025 Cook PVI R+7 (via Wikipedia)
     "az02": {
         "pvi_dem_margin_pts": -12.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 46.13, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 45.52, "incumbent_party": 'Republican'},
+        ],
     },
     # Arizona 3: 2025 Cook PVI D+22 (via Wikipedia)
     "az03": {
         "pvi_dem_margin_pts": 45.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 76.98, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 72.74, "incumbent_party": 'Democratic'},
+        ],
     },
     # Arizona 4: 2025 Cook PVI D+4 (via Wikipedia)
     "az04": {
         "pvi_dem_margin_pts": 9.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 56.11, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 53.71, "incumbent_party": 'Democratic'},
+        ],
     },
     # Arizona 5: 2025 Cook PVI R+10 (via Wikipedia)
     "az05": {
         "pvi_dem_margin_pts": -18.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 39.72, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 39.61, "incumbent_party": 'Republican'},
+        ],
     },
     # Arizona 6: 2025 Cook PVI EVEN (via Wikipedia)
     "az06": {
         "pvi_dem_margin_pts": 1.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 49.25, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 48.71, "incumbent_party": 'Republican'},
+        ],
     },
     # Arizona 7: 2025 Cook PVI D+13 (via Wikipedia)
     "az07": {
         "pvi_dem_margin_pts": 27.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 64.54, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 63.45, "incumbent_party": 'Democratic'},
+        ],
     },
     # Arizona 8: 2025 Cook PVI R+8 (via Wikipedia)
     "az08": {
         "pvi_dem_margin_pts": -14.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 3.5, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 43.5, "incumbent_party": 'Republican'},
+        ],
     },
     # Arizona 9: 2025 Cook PVI R+15 (via Wikipedia)
     "az09": {
         "pvi_dem_margin_pts": -28.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 2.23, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 34.7, "incumbent_party": 'Republican'},
+        ],
     },
     # California 1: 2025 Cook PVI D+7 (via Wikipedia)
     "ca01": {
@@ -448,47 +487,74 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Colorado 1: 2025 Cook PVI D+29 (via Wikipedia)
     "co01": {
         "pvi_dem_margin_pts": 59.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 82.08, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 78.01, "incumbent_party": 'Democratic'},
+        ],
     },
     # Colorado 2: 2025 Cook PVI D+20 (via Wikipedia)
     "co02": {
         "pvi_dem_margin_pts": 41.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 71.42, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 70.26, "incumbent_party": 'Democratic'},
+        ],
     },
     # Colorado 3: 2025 Cook PVI R+5 (via Wikipedia)
     "co03": {
         "pvi_dem_margin_pts": -8.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 49.92, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 47.42, "incumbent_party": 'Republican'},
+        ],
     },
     # Colorado 4: 2025 Cook PVI R+9 (via Wikipedia)
     "co04": {
         "pvi_dem_margin_pts": -16.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 37.5, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 43.94, "incumbent_party": 'Republican'},
+        ],
     },
     # Colorado 5: 2025 Cook PVI R+5 (via Wikipedia)
     "co05": {
         "pvi_dem_margin_pts": -8.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 41.86, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 42.78, "incumbent_party": 'Republican'},
+        ],
     },
     # Colorado 6: 2025 Cook PVI D+11 (via Wikipedia)
     "co06": {
         "pvi_dem_margin_pts": 23.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 61.82, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 60.53, "incumbent_party": 'Democratic'},
+        ],
     },
     # Colorado 7: 2025 Cook PVI D+8 (via Wikipedia)
     "co07": {
         "pvi_dem_margin_pts": 17.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 57.66, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 57.35, "incumbent_party": 'Democratic'},
+        ],
     },
     # Colorado 8: 2025 Cook PVI EVEN (via Wikipedia)
     "co08": {
         "pvi_dem_margin_pts": 1.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 50.36, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 49.62, "incumbent_party": 'Republican'},
+        ],
     },
     # Connecticut 1: 2025 Cook PVI D+12 (via Wikipedia)
     "ct01": {
         "pvi_dem_margin_pts": 25.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 62.04, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 64.45, "incumbent_party": 'Democratic'},
+        ],
     },
     # Connecticut 2: 2025 Cook PVI D+4 (via Wikipedia)
     "ct02": {
@@ -509,18 +575,25 @@ DISTRICT_FUNDAMENTALS: dict = {
     "ct04": {
         "pvi_dem_margin_pts": 27.53,
         "house_elections": [
+            {"year": 2022, "dem_share": 59.41, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 62.05, "incumbent_party": 'Democratic'},
         ],
     },
     # Connecticut 5: 2025 Cook PVI D+3 (via Wikipedia)
     "ct05": {
         "pvi_dem_margin_pts": 7.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 50.39, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 53.41, "incumbent_party": 'Democratic'},
+        ],
     },
     # Delaware 1: 2025 Cook PVI D+8 (via Wikipedia)
     "de01": {
         "pvi_dem_margin_pts": 17.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 56.35, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 57.86, "incumbent_party": 'Democratic'},
+        ],
     },
     # Florida 1: 2025 Cook PVI R+18 (via Wikipedia)
     "fl01": {
@@ -763,12 +836,18 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Hawaii 1: 2025 Cook PVI D+13 (via Wikipedia)
     "hi01": {
         "pvi_dem_margin_pts": 27.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 73.7, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 71.84, "incumbent_party": 'Democratic'},
+        ],
     },
     # Hawaii 2: 2025 Cook PVI D+12 (via Wikipedia)
     "hi02": {
         "pvi_dem_margin_pts": 25.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 63.79, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 68.78, "incumbent_party": 'Democratic'},
+        ],
     },
     # Iowa 1: 2025 Cook PVI R+4 (via Wikipedia)
     "ia01": {
@@ -805,87 +884,137 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Idaho 1: 2025 Cook PVI R+22 (via Wikipedia)
     "id01": {
         "pvi_dem_margin_pts": -42.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 26.96, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 26.39, "incumbent_party": 'Republican'},
+        ],
     },
     # Idaho 2: 2025 Cook PVI R+13 (via Wikipedia)
     "id02": {
         "pvi_dem_margin_pts": -24.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 36.41, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 33.54, "incumbent_party": 'Republican'},
+        ],
     },
     # Illinois 1: 2025 Cook PVI D+18 (via Wikipedia)
     "il01": {
         "pvi_dem_margin_pts": 37.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 67.04, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 65.85, "incumbent_party": 'Democratic'},
+        ],
     },
     # Illinois 2: 2025 Cook PVI D+18 (via Wikipedia)
     "il02": {
         "pvi_dem_margin_pts": 37.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 67.13, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 67.56, "incumbent_party": 'Democratic'},
+        ],
     },
     # Illinois 3: 2025 Cook PVI D+17 (via Wikipedia)
     "il03": {
         "pvi_dem_margin_pts": 35.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 68.5, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 67.29, "incumbent_party": 'Democratic'},
+        ],
     },
     # Illinois 4: 2025 Cook PVI D+17 (via Wikipedia)
     "il04": {
         "pvi_dem_margin_pts": 35.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 70.91, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 71.21, "incumbent_party": 'Democratic'},
+        ],
     },
     # Illinois 5: 2025 Cook PVI D+19 (via Wikipedia)
     "il05": {
         "pvi_dem_margin_pts": 39.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 70.71, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 68.97, "incumbent_party": 'Democratic'},
+        ],
     },
     # Illinois 6: 2025 Cook PVI D+3 (via Wikipedia)
     "il06": {
         "pvi_dem_margin_pts": 7.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 54.36, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 54.21, "incumbent_party": 'Democratic'},
+        ],
     },
     # Illinois 7: 2025 Cook PVI D+34 (via Wikipedia)
     "il07": {
         "pvi_dem_margin_pts": 69.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2024, "dem_share": 83.3, "incumbent_party": 'Democratic'},
+        ],
     },
     # Illinois 8: 2025 Cook PVI D+5 (via Wikipedia)
     "il08": {
         "pvi_dem_margin_pts": 11.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 56.89, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 57.06, "incumbent_party": 'Democratic'},
+        ],
     },
     # Illinois 9: 2025 Cook PVI D+19 (via Wikipedia)
     "il09": {
         "pvi_dem_margin_pts": 39.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 71.69, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 68.39, "incumbent_party": 'Democratic'},
+        ],
     },
     # Illinois 10: 2025 Cook PVI D+12 (via Wikipedia)
     "il10": {
         "pvi_dem_margin_pts": 25.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 63.0, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 59.98, "incumbent_party": 'Democratic'},
+        ],
     },
     # Illinois 11: 2025 Cook PVI D+6 (via Wikipedia)
     "il11": {
         "pvi_dem_margin_pts": 13.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 56.45, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 55.59, "incumbent_party": 'Democratic'},
+        ],
     },
     # Illinois 12: 2025 Cook PVI R+22 (via Wikipedia)
     "il12": {
         "pvi_dem_margin_pts": -42.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 25.0, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 25.81, "incumbent_party": 'Republican'},
+        ],
     },
     # Illinois 13: 2025 Cook PVI D+5 (via Wikipedia)
     "il13": {
         "pvi_dem_margin_pts": 11.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 56.62, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 58.11, "incumbent_party": 'Democratic'},
+        ],
     },
     # Illinois 14: 2025 Cook PVI D+3 (via Wikipedia)
     "il14": {
         "pvi_dem_margin_pts": 7.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 54.16, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 55.1, "incumbent_party": 'Democratic'},
+        ],
     },
     # Illinois 15: 2025 Cook PVI R+20 (via Wikipedia)
     "il15": {
         "pvi_dem_margin_pts": -38.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 28.86, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 0.45, "incumbent_party": 'Republican'},
+        ],
     },
     # Illinois 16: 2025 Cook PVI R+11 (via Wikipedia)
     "il16": {
@@ -895,87 +1024,138 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Illinois 17: 2025 Cook PVI D+3 (via Wikipedia)
     "il17": {
         "pvi_dem_margin_pts": 7.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 51.99, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 54.43, "incumbent_party": 'Democratic'},
+        ],
     },
     # Indiana 1: 2025 Cook PVI D+1 (via Wikipedia)
     "in01": {
         "pvi_dem_margin_pts": 3.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 52.84, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 54.32, "incumbent_party": 'Democratic'},
+        ],
     },
     # Indiana 2: 2025 Cook PVI R+13 (via Wikipedia)
     "in02": {
         "pvi_dem_margin_pts": -24.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 33.42, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 35.55, "incumbent_party": 'Republican'},
+        ],
     },
     # Indiana 3: 2025 Cook PVI R+16 (via Wikipedia)
     "in03": {
         "pvi_dem_margin_pts": -30.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 31.52, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 32.57, "incumbent_party": 'Republican'},
+        ],
     },
     # Indiana 4: 2025 Cook PVI R+15 (via Wikipedia)
     "in04": {
         "pvi_dem_margin_pts": -28.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 31.78, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 32.3, "incumbent_party": 'Republican'},
+        ],
     },
     # Indiana 5: 2025 Cook PVI R+8 (via Wikipedia)
     "in05": {
         "pvi_dem_margin_pts": -14.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 38.93, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 40.18, "incumbent_party": 'Republican'},
+        ],
     },
     # Indiana 6: 2025 Cook PVI R+16 (via Wikipedia)
     "in06": {
         "pvi_dem_margin_pts": -30.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 32.47, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 33.15, "incumbent_party": 'Republican'},
+        ],
     },
     # Indiana 7: 2025 Cook PVI D+21 (via Wikipedia)
     "in07": {
         "pvi_dem_margin_pts": 43.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 68.63, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 70.24, "incumbent_party": 'Democratic'},
+        ],
     },
     # Indiana 8: 2025 Cook PVI R+18 (via Wikipedia)
     "in08": {
         "pvi_dem_margin_pts": -34.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 32.42, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 30.23, "incumbent_party": 'Republican'},
+        ],
     },
     # Indiana 9: 2025 Cook PVI R+15 (via Wikipedia)
     "in09": {
         "pvi_dem_margin_pts": -28.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 34.59, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 33.72, "incumbent_party": 'Republican'},
+        ],
     },
     # Kansas 1: 2025 Cook PVI R+16 (via Wikipedia)
     "ks01": {
         "pvi_dem_margin_pts": -30.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 32.33, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 30.86, "incumbent_party": 'Republican'},
+        ],
     },
     # Kansas 2: 2025 Cook PVI R+10 (via Wikipedia)
     "ks02": {
         "pvi_dem_margin_pts": -18.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 42.36, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 40.09, "incumbent_party": 'Republican'},
+        ],
     },
     # Kansas 3: 2025 Cook PVI D+2 (via Wikipedia)
     "ks03": {
         "pvi_dem_margin_pts": 5.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 56.23, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 55.6, "incumbent_party": 'Democratic'},
+        ],
     },
     # Kansas 4: 2025 Cook PVI R+12 (via Wikipedia)
     "ks04": {
         "pvi_dem_margin_pts": -22.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 36.66, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 34.95, "incumbent_party": 'Republican'},
+        ],
     },
     # Kentucky 1: 2025 Cook PVI R+23 (via Wikipedia)
     "ky01": {
         "pvi_dem_margin_pts": -44.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 25.1, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 25.28, "incumbent_party": 'Republican'},
+        ],
     },
     # Kentucky 2: 2025 Cook PVI R+20 (via Wikipedia)
     "ky02": {
         "pvi_dem_margin_pts": -38.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 28.14, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 26.9, "incumbent_party": 'Republican'},
+        ],
     },
     # Kentucky 3: 2025 Cook PVI D+10 (via Wikipedia)
     "ky03": {
         "pvi_dem_margin_pts": 21.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 62.0, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 61.96, "incumbent_party": 'Democratic'},
+        ],
     },
     # Kentucky 4: 2025 Cook PVI R+18 (via Wikipedia)
     "ky04": {
@@ -990,7 +1170,10 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Kentucky 6: 2025 Cook PVI R+7 (via Wikipedia)
     "ky06": {
         "pvi_dem_margin_pts": -12.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 34.91, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 36.96, "incumbent_party": 'Republican'},
+        ],
     },
     # Louisiana 1: 2025 Cook PVI R+20 (via Wikipedia)
     "la01": {
@@ -1060,62 +1243,97 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Massachusetts 8: 2025 Cook PVI D+15 (via Wikipedia)
     "ma08": {
         "pvi_dem_margin_pts": 31.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 69.82, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 70.58, "incumbent_party": 'Democratic'},
+        ],
     },
     # Massachusetts 9: 2025 Cook PVI D+6 (via Wikipedia)
     "ma09": {
         "pvi_dem_margin_pts": 13.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 59.2, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 56.52, "incumbent_party": 'Democratic'},
+        ],
     },
     # Maryland 1: 2025 Cook PVI R+8 (via Wikipedia)
     "md01": {
         "pvi_dem_margin_pts": -14.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 44.21, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 38.62, "incumbent_party": 'Republican'},
+        ],
     },
     # Maryland 2: 2025 Cook PVI D+10 (via Wikipedia)
     "md02": {
         "pvi_dem_margin_pts": 21.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 59.31, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 59.54, "incumbent_party": 'Democratic'},
+        ],
     },
     # Maryland 3: 2025 Cook PVI D+12 (via Wikipedia)
     "md03": {
         "pvi_dem_margin_pts": 25.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 60.25, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 61.02, "incumbent_party": 'Democratic'},
+        ],
     },
     # Maryland 4: 2025 Cook PVI D+39 (via Wikipedia)
     "md04": {
         "pvi_dem_margin_pts": 79.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 90.33, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 88.72, "incumbent_party": 'Democratic'},
+        ],
     },
     # Maryland 5: 2025 Cook PVI D+17 (via Wikipedia)
     "md05": {
         "pvi_dem_margin_pts": 35.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 66.0, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 67.92, "incumbent_party": 'Democratic'},
+        ],
     },
     # Maryland 6: 2025 Cook PVI D+3 (via Wikipedia)
     "md06": {
         "pvi_dem_margin_pts": 7.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 54.79, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 53.17, "incumbent_party": 'Democratic'},
+        ],
     },
     # Maryland 7: 2025 Cook PVI D+31 (via Wikipedia)
     "md07": {
         "pvi_dem_margin_pts": 63.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 82.24, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 82.38, "incumbent_party": 'Democratic'},
+        ],
     },
     # Maryland 8: 2025 Cook PVI D+30 (via Wikipedia)
     "md08": {
         "pvi_dem_margin_pts": 61.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 81.54, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 78.96, "incumbent_party": 'Democratic'},
+        ],
     },
     # Maine 1: 2025 Cook PVI D+11 (via Wikipedia)
     "me01": {
         "pvi_dem_margin_pts": 23.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 62.96, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 61.73, "incumbent_party": 'Democratic'},
+        ],
     },
     # Maine 2: 2025 Cook PVI R+4 (via Wikipedia)
     "me02": {
         "pvi_dem_margin_pts": -6.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2024, "dem_share": 50.35, "incumbent_party": 'Democratic'},
+        ],
     },
     # Michigan 1: 2025 Cook PVI R+11 (via Wikipedia)
     "mi01": {
@@ -1328,12 +1546,18 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Mississippi 1: 2025 Cook PVI R+18 (via Wikipedia)
     "ms01": {
         "pvi_dem_margin_pts": -34.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 27.03, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 30.19, "incumbent_party": 'Republican'},
+        ],
     },
     # Mississippi 2: 2025 Cook PVI D+11 (via Wikipedia)
     "ms02": {
         "pvi_dem_margin_pts": 23.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 60.1, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 62.02, "incumbent_party": 'Democratic'},
+        ],
     },
     # Mississippi 3: 2025 Cook PVI R+14 (via Wikipedia)
     "ms03": {
@@ -1343,17 +1567,26 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Mississippi 4: 2025 Cook PVI R+21 (via Wikipedia)
     "ms04": {
         "pvi_dem_margin_pts": -40.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 25.12, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 26.05, "incumbent_party": 'Republican'},
+        ],
     },
     # Montana 1: 2025 Cook PVI R+5 (via Wikipedia)
     "mt01": {
         "pvi_dem_margin_pts": -8.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 48.36, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 46.04, "incumbent_party": 'Republican'},
+        ],
     },
     # Montana 2: 2025 Cook PVI R+15 (via Wikipedia)
     "mt02": {
         "pvi_dem_margin_pts": -28.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 26.28, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 34.01, "incumbent_party": 'Republican'},
+        ],
     },
     # North Carolina 1: 2025 Cook PVI R+5 (via Wikipedia)
     "nc01": {
@@ -1428,92 +1661,145 @@ DISTRICT_FUNDAMENTALS: dict = {
     # North Dakota 1: 2025 Cook PVI R+18 (via Wikipedia)
     "nd01": {
         "pvi_dem_margin_pts": -34.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2024, "dem_share": 30.48, "incumbent_party": 'Republican'},
+        ],
     },
     # Nebraska 1: 2025 Cook PVI R+6 (via Wikipedia)
     "ne01": {
         "pvi_dem_margin_pts": -10.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 42.09, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 39.9, "incumbent_party": 'Republican'},
+        ],
     },
     # Nebraska 2: 2025 Cook PVI D+3 (via Wikipedia)
     "ne02": {
         "pvi_dem_margin_pts": 7.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 48.67, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 49.07, "incumbent_party": 'Republican'},
+        ],
     },
     # Nebraska 3: 2025 Cook PVI R+27 (via Wikipedia)
     "ne03": {
         "pvi_dem_margin_pts": -52.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 16.79, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 19.58, "incumbent_party": 'Republican'},
+        ],
     },
     # New Hampshire 1: 2025 Cook PVI D+2 (via Wikipedia)
     "nh01": {
         "pvi_dem_margin_pts": 5.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 54.06, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 54.03, "incumbent_party": 'Democratic'},
+        ],
     },
     # New Hampshire 2: 2025 Cook PVI D+2 (via Wikipedia)
     "nh02": {
         "pvi_dem_margin_pts": 5.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 55.87, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 52.98, "incumbent_party": 'Democratic'},
+        ],
     },
     # New Jersey 1: 2025 Cook PVI D+10 (via Wikipedia)
     "nj01": {
         "pvi_dem_margin_pts": 21.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 63.91, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 59.12, "incumbent_party": 'Democratic'},
+        ],
     },
     # New Jersey 2: 2025 Cook PVI R+5 (via Wikipedia)
     "nj02": {
         "pvi_dem_margin_pts": -8.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 40.44, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 41.49, "incumbent_party": 'Republican'},
+        ],
     },
     # New Jersey 3: 2025 Cook PVI D+5 (via Wikipedia)
     "nj03": {
         "pvi_dem_margin_pts": 11.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 55.97, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 54.39, "incumbent_party": 'Democratic'},
+        ],
     },
     # New Jersey 4: 2025 Cook PVI R+14 (via Wikipedia)
     "nj04": {
         "pvi_dem_margin_pts": -26.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 31.92, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 31.96, "incumbent_party": 'Republican'},
+        ],
     },
     # New Jersey 5: 2025 Cook PVI D+2 (via Wikipedia)
     "nj05": {
         "pvi_dem_margin_pts": 5.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 55.25, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 55.76, "incumbent_party": 'Democratic'},
+        ],
     },
     # New Jersey 6: 2025 Cook PVI D+5 (via Wikipedia)
     "nj06": {
         "pvi_dem_margin_pts": 11.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 58.35, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 58.16, "incumbent_party": 'Democratic'},
+        ],
     },
     # New Jersey 7: 2025 Cook PVI EVEN (via Wikipedia)
     "nj07": {
         "pvi_dem_margin_pts": 1.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 48.6, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 47.25, "incumbent_party": 'Republican'},
+        ],
     },
     # New Jersey 8: 2025 Cook PVI D+15 (via Wikipedia)
     "nj08": {
         "pvi_dem_margin_pts": 31.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 75.85, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 63.08, "incumbent_party": 'Democratic'},
+        ],
     },
     # New Jersey 9: 2025 Cook PVI D+2 (via Wikipedia)
     "nj09": {
         "pvi_dem_margin_pts": 5.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 55.78, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 52.53, "incumbent_party": 'Democratic'},
+        ],
     },
     # New Jersey 10: 2025 Cook PVI D+27 (via Wikipedia)
     "nj10": {
         "pvi_dem_margin_pts": 55.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 79.49, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 76.99, "incumbent_party": 'Democratic'},
+        ],
     },
     # New Jersey 11: 2025 Cook PVI D+5 (via Wikipedia)
     "nj11": {
         "pvi_dem_margin_pts": 11.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 59.49, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 57.49, "incumbent_party": 'Democratic'},
+        ],
     },
     # New Jersey 12: 2025 Cook PVI D+13 (via Wikipedia)
     "nj12": {
         "pvi_dem_margin_pts": 27.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 63.74, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 62.68, "incumbent_party": 'Democratic'},
+        ],
     },
     # New Mexico 1: 2025 Cook PVI D+7 (via Wikipedia)
     "nm01": {
@@ -1542,7 +1828,10 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Nevada 1: 2025 Cook PVI D+2 (via Wikipedia)
     "nv01": {
         "pvi_dem_margin_pts": 5.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 52.88, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 53.89, "incumbent_party": 'Democratic'},
+        ],
     },
     # Nevada 2: 2025 Cook PVI R+7 (via Wikipedia)
     "nv02": {
@@ -1552,12 +1841,18 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Nevada 3: 2025 Cook PVI D+1 (via Wikipedia)
     "nv03": {
         "pvi_dem_margin_pts": 3.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 51.98, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 51.37, "incumbent_party": 'Democratic'},
+        ],
     },
     # Nevada 4: 2025 Cook PVI D+2 (via Wikipedia)
     "nv04": {
         "pvi_dem_margin_pts": 5.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 52.42, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 54.16, "incumbent_party": 'Democratic'},
+        ],
     },
     # New York 1: 2025 Cook PVI R+4 (via Wikipedia)
     "ny01": {
@@ -1841,12 +2136,18 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Oklahoma 1: 2025 Cook PVI R+11 (via Wikipedia)
     "ok01": {
         "pvi_dem_margin_pts": -20.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 36.19, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 36.36, "incumbent_party": 'Republican'},
+        ],
     },
     # Oklahoma 2: 2025 Cook PVI R+28 (via Wikipedia)
     "ok02": {
         "pvi_dem_margin_pts": -54.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 24.41, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 22.43, "incumbent_party": 'Republican'},
+        ],
     },
     # Oklahoma 3: 2025 Cook PVI R+23 (via Wikipedia)
     "ok03": {
@@ -1856,42 +2157,66 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Oklahoma 4: 2025 Cook PVI R+17 (via Wikipedia)
     "ok04": {
         "pvi_dem_margin_pts": -32.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 33.25, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 30.23, "incumbent_party": 'Republican'},
+        ],
     },
     # Oklahoma 5: 2025 Cook PVI R+9 (via Wikipedia)
     "ok05": {
         "pvi_dem_margin_pts": -16.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 38.8, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 39.31, "incumbent_party": 'Republican'},
+        ],
     },
     # Oregon 1: 2025 Cook PVI D+20 (via Wikipedia)
     "or01": {
         "pvi_dem_margin_pts": 41.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 68.02, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 70.95, "incumbent_party": 'Democratic'},
+        ],
     },
     # Oregon 2: 2025 Cook PVI R+14 (via Wikipedia)
     "or02": {
         "pvi_dem_margin_pts": -26.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 32.4, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 33.93, "incumbent_party": 'Republican'},
+        ],
     },
     # Oregon 3: 2025 Cook PVI D+24 (via Wikipedia)
     "or03": {
         "pvi_dem_margin_pts": 49.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 72.67, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 72.86, "incumbent_party": 'Democratic'},
+        ],
     },
     # Oregon 4: 2025 Cook PVI D+6 (via Wikipedia)
     "or04": {
         "pvi_dem_margin_pts": 13.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 53.99, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 54.06, "incumbent_party": 'Democratic'},
+        ],
     },
     # Oregon 5: 2025 Cook PVI D+4 (via Wikipedia)
     "or05": {
         "pvi_dem_margin_pts": 9.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 48.96, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 51.47, "incumbent_party": 'Democratic'},
+        ],
     },
     # Oregon 6: 2025 Cook PVI D+6 (via Wikipedia)
     "or06": {
         "pvi_dem_margin_pts": 13.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 51.26, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 53.43, "incumbent_party": 'Democratic'},
+        ],
     },
     # Pennsylvania 1: 2025 Cook PVI D+1 (via Wikipedia)
     "pa01": {
@@ -2027,52 +2352,81 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Rhode Island 1: 2025 Cook PVI D+12 (via Wikipedia)
     "ri01": {
         "pvi_dem_margin_pts": 25.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 64.15, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 66.33, "incumbent_party": 'Democratic'},
+        ],
     },
     # Rhode Island 2: 2025 Cook PVI D+4 (via Wikipedia)
     "ri02": {
         "pvi_dem_margin_pts": 9.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 51.91, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 58.38, "incumbent_party": 'Democratic'},
+        ],
     },
     # South Carolina 1: 2025 Cook PVI R+6 (via Wikipedia)
     "sc01": {
         "pvi_dem_margin_pts": -10.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 42.96, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 41.68, "incumbent_party": 'Republican'},
+        ],
     },
     # South Carolina 2: 2025 Cook PVI R+7 (via Wikipedia)
     "sc02": {
         "pvi_dem_margin_pts": -12.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 39.91, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 40.33, "incumbent_party": 'Republican'},
+        ],
     },
     # South Carolina 3: 2025 Cook PVI R+21 (via Wikipedia)
     "sc03": {
         "pvi_dem_margin_pts": -40.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 0.0, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 26.1, "incumbent_party": 'Republican'},
+        ],
     },
     # South Carolina 4: 2025 Cook PVI R+11 (via Wikipedia)
     "sc04": {
         "pvi_dem_margin_pts": -20.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 0.0, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 38.4, "incumbent_party": 'Republican'},
+        ],
     },
     # South Carolina 5: 2025 Cook PVI R+11 (via Wikipedia)
     "sc05": {
         "pvi_dem_margin_pts": -20.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 35.0, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 36.39, "incumbent_party": 'Republican'},
+        ],
     },
     # South Carolina 6: 2025 Cook PVI D+13 (via Wikipedia)
     "sc06": {
         "pvi_dem_margin_pts": 27.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 62.11, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 61.84, "incumbent_party": 'Democratic'},
+        ],
     },
     # South Carolina 7: 2025 Cook PVI R+12 (via Wikipedia)
     "sc07": {
         "pvi_dem_margin_pts": -22.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 35.12, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 35.02, "incumbent_party": 'Republican'},
+        ],
     },
     # South Dakota 1: 2025 Cook PVI R+15 (via Wikipedia)
     "sd01": {
         "pvi_dem_margin_pts": -28.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2024, "dem_share": 27.96, "incumbent_party": 'Republican'},
+        ],
     },
     # Tennessee 1: 2025 Cook PVI R+29 (via Wikipedia)
     "tn01": {
@@ -2332,67 +2686,106 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Virginia 1: 2025 Cook PVI R+3 (via Wikipedia)
     "va01": {
         "pvi_dem_margin_pts": -4.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 43.42, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 43.6, "incumbent_party": 'Republican'},
+        ],
     },
     # Virginia 2: 2025 Cook PVI EVEN (via Wikipedia)
     "va02": {
         "pvi_dem_margin_pts": 1.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 48.3, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 48.03, "incumbent_party": 'Republican'},
+        ],
     },
     # Virginia 3: 2025 Cook PVI D+18 (via Wikipedia)
     "va03": {
         "pvi_dem_margin_pts": 37.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 67.36, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 70.1, "incumbent_party": 'Democratic'},
+        ],
     },
     # Virginia 4: 2025 Cook PVI D+17 (via Wikipedia)
     "va04": {
         "pvi_dem_margin_pts": 35.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 65.04, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 67.49, "incumbent_party": 'Democratic'},
+        ],
     },
     # Virginia 5: 2025 Cook PVI R+6 (via Wikipedia)
     "va05": {
         "pvi_dem_margin_pts": -10.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 42.32, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 42.47, "incumbent_party": 'Republican'},
+        ],
     },
     # Virginia 6: 2025 Cook PVI R+12 (via Wikipedia)
     "va06": {
         "pvi_dem_margin_pts": -22.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 35.5, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 35.53, "incumbent_party": 'Republican'},
+        ],
     },
     # Virginia 7: 2025 Cook PVI D+2 (via Wikipedia)
     "va07": {
         "pvi_dem_margin_pts": 5.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 52.33, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 51.32, "incumbent_party": 'Democratic'},
+        ],
     },
     # Virginia 8: 2025 Cook PVI D+26 (via Wikipedia)
     "va08": {
         "pvi_dem_margin_pts": 53.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 74.81, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 74.36, "incumbent_party": 'Democratic'},
+        ],
     },
     # Virginia 9: 2025 Cook PVI R+22 (via Wikipedia)
     "va09": {
         "pvi_dem_margin_pts": -42.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 26.6, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 27.38, "incumbent_party": 'Republican'},
+        ],
     },
     # Virginia 10: 2025 Cook PVI D+6 (via Wikipedia)
     "va10": {
         "pvi_dem_margin_pts": 13.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 53.26, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 52.28, "incumbent_party": 'Democratic'},
+        ],
     },
     # Virginia 11: 2025 Cook PVI D+18 (via Wikipedia)
     "va11": {
         "pvi_dem_margin_pts": 37.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 66.89, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 66.99, "incumbent_party": 'Democratic'},
+        ],
     },
     # Vermont 1: 2025 Cook PVI D+17 (via Wikipedia)
     "vt01": {
         "pvi_dem_margin_pts": 35.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 69.27, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 67.65, "incumbent_party": 'Democratic'},
+        ],
     },
     # Washington 1: 2025 Cook PVI D+15 (via Wikipedia)
     "wa01": {
         "pvi_dem_margin_pts": 31.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 63.56, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 63.16, "incumbent_party": 'Democratic'},
+        ],
     },
     # Washington 2: 2025 Cook PVI D+12 (via Wikipedia)
     "wa02": {
@@ -2402,7 +2795,10 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Washington 3: 2025 Cook PVI R+2 (via Wikipedia)
     "wa03": {
         "pvi_dem_margin_pts": -2.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 50.41, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 51.95, "incumbent_party": 'Democratic'},
+        ],
     },
     # Washington 4: 2025 Cook PVI R+10 (via Wikipedia)
     "wa04": {
@@ -2412,22 +2808,34 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Washington 5: 2025 Cook PVI R+5 (via Wikipedia)
     "wa05": {
         "pvi_dem_margin_pts": -8.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 40.35, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 39.34, "incumbent_party": 'Republican'},
+        ],
     },
     # Washington 6: 2025 Cook PVI D+10 (via Wikipedia)
     "wa06": {
         "pvi_dem_margin_pts": 21.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 60.07, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 56.82, "incumbent_party": 'Democratic'},
+        ],
     },
     # Washington 7: 2025 Cook PVI D+39 (via Wikipedia)
     "wa07": {
         "pvi_dem_margin_pts": 79.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 85.75, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 84.18, "incumbent_party": 'Democratic'},
+        ],
     },
     # Washington 8: 2025 Cook PVI D+3 (via Wikipedia)
     "wa08": {
         "pvi_dem_margin_pts": 7.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 53.44, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 54.09, "incumbent_party": 'Democratic'},
+        ],
     },
     # Washington 9: 2025 Cook PVI D+22 (via Wikipedia)
     "wa09": {
@@ -2437,61 +2845,97 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Washington 10: 2025 Cook PVI D+9 (via Wikipedia)
     "wa10": {
         "pvi_dem_margin_pts": 19.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 57.06, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 58.67, "incumbent_party": 'Democratic'},
+        ],
     },
     # Wisconsin 1: 2025 Cook PVI R+2 (via Wikipedia)
     "wi01": {
         "pvi_dem_margin_pts": -2.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 45.51, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 44.79, "incumbent_party": 'Republican'},
+        ],
     },
     # Wisconsin 2: 2025 Cook PVI D+21 (via Wikipedia)
     "wi02": {
         "pvi_dem_margin_pts": 43.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 72.51, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 70.14, "incumbent_party": 'Democratic'},
+        ],
     },
     # Wisconsin 3: 2025 Cook PVI R+3 (via Wikipedia)
     "wi03": {
         "pvi_dem_margin_pts": -4.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 48.15, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 48.64, "incumbent_party": 'Republican'},
+        ],
     },
     # Wisconsin 4: 2025 Cook PVI D+26 (via Wikipedia)
     "wi04": {
         "pvi_dem_margin_pts": 53.53,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 76.9, "incumbent_party": 'Democratic'},
+            {"year": 2024, "dem_share": 76.94, "incumbent_party": 'Democratic'},
+        ],
     },
     # Wisconsin 5: 2025 Cook PVI R+11 (via Wikipedia)
     "wi05": {
         "pvi_dem_margin_pts": -20.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 35.57, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 35.53, "incumbent_party": 'Republican'},
+        ],
     },
     # Wisconsin 6: 2025 Cook PVI R+8 (via Wikipedia)
     "wi06": {
         "pvi_dem_margin_pts": -14.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 0.0, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 38.7, "incumbent_party": 'Republican'},
+        ],
     },
     # Wisconsin 7: 2025 Cook PVI R+11 (via Wikipedia)
     "wi07": {
         "pvi_dem_margin_pts": -20.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 38.12, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 36.39, "incumbent_party": 'Republican'},
+        ],
     },
     # Wisconsin 8: 2025 Cook PVI R+8 (via Wikipedia)
     "wi08": {
         "pvi_dem_margin_pts": -14.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 0.0, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 42.67, "incumbent_party": 'Republican'},
+        ],
     },
     # West Virginia 1: 2025 Cook PVI R+22 (via Wikipedia)
     "wv01": {
         "pvi_dem_margin_pts": -42.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 30.16, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 28.27, "incumbent_party": 'Republican'},
+        ],
     },
     # West Virginia 2: 2025 Cook PVI R+20 (via Wikipedia)
     "wv02": {
         "pvi_dem_margin_pts": -38.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 34.43, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 29.23, "incumbent_party": 'Republican'},
+        ],
     },
     # Wyoming 1: 2025 Cook PVI R+23 (via Wikipedia)
     "wy01": {
         "pvi_dem_margin_pts": -44.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 26.33, "incumbent_party": 'Republican'},
+            {"year": 2024, "dem_share": 24.76, "incumbent_party": 'Republican'},
+        ],
     },
 }

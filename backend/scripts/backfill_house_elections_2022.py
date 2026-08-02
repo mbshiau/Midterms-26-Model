@@ -7,9 +7,26 @@ district lines and are excluded here for the same reason AL's 2022 data
 required individual per-district judgment rather than a blind bulk merge.
 
 Confirmed via each state's own 2024 Wikipedia elections page (no
-"redistrict" mention at all) to have used the same district lines
-continuously since the 2020 census cycle: Michigan, Minnesota, New Mexico,
-Connecticut, Pennsylvania, Iowa.
+"redistrict" mention at all, or only benign ones -- see below) to have
+used the same district lines continuously since the 2020 census cycle:
+Michigan, Minnesota, New Mexico, Connecticut, Pennsylvania, Iowa, plus 31
+more states added once fetch_state_house_results was extended to parse
+them (see scripts/backfill_house_elections.py's docstring for what
+changed): Arizona, Arkansas, Colorado, Delaware, Hawaii, Idaho, Illinois,
+Indiana, Kansas, Kentucky, Maine, Maryland, Massachusetts, Mississippi,
+Montana, Nebraska, Nevada, New Hampshire, New Jersey, North Dakota,
+Oklahoma, Oregon, Rhode Island, South Carolina, South Dakota, Vermont,
+Virginia, Washington, West Virginia, Wisconsin, Wyoming.
+
+Four of those 31 do have a "redistrict" mention on their page, individually
+checked by hand and confirmed benign (not an actual 2022-to-2024 map
+change): Arizona's and Indiana's are footnotes about renumbering from the
+2020 (Arizona) or even 1980/2000 (Indiana) redistricting cycles; Maryland's
+is a citation to the map bill actually enacted for 2022 (SB1012-2022,
+still in effect for 2024 -- Maryland is a "districts left in place" state
+per fetch_redistricting_changes, so this is the same map, not a new one);
+Nevada's is a general reference to how the post-2020-census map affected
+Democrats, not a mid-decade change.
 
 New York is a partial case rather than all-or-nothing: its own "2024 United
 States House of Representatives elections in New York" page states the
@@ -50,7 +67,14 @@ YEAR = 2022
 # Confirmed stable (no mid-decade redraw) -- see module docstring. Georgia
 # is deliberately NOT included here even though it got a 2024 entry from
 # the prior backfill, since its map changed between 2022 and 2024.
-ELIGIBLE_STATES = ["Michigan", "Minnesota", "New Mexico", "Connecticut", "New York", "Pennsylvania", "Iowa"]
+ELIGIBLE_STATES = [
+    "Michigan", "Minnesota", "New Mexico", "Connecticut", "New York", "Pennsylvania", "Iowa",
+    "Arizona", "Arkansas", "Colorado", "Delaware", "Hawaii", "Idaho", "Illinois", "Indiana",
+    "Kansas", "Kentucky", "Maine", "Maryland", "Massachusetts", "Mississippi", "Montana",
+    "Nebraska", "Nevada", "New Hampshire", "New Jersey", "North Dakota", "Oklahoma", "Oregon",
+    "Rhode Island", "South Carolina", "South Dakota", "Vermont", "Virginia", "Washington",
+    "West Virginia", "Wisconsin", "Wyoming",
+]
 
 # Per-state district numbers to skip even though the state itself is
 # otherwise eligible -- see New York's note in the module docstring.

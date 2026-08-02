@@ -235,19 +235,30 @@ def _parse_general_election_results_table(table: Tag) -> tuple[str, int] | None:
     header = [h.lower() for h in _row_cells(rows[0])]
     if not all(col in header for col in ("party", "candidate", "votes")):
         return None
+    header_party_idx = header.index("party")
+    header_candidate_idx = header.index("candidate")
+    header_votes_idx = header.index("votes")
 
     totals: dict[str, list] = {}  # candidate name -> [party, vote total]
     for row in rows[1:]:
         cells = _row_cells(row)
-        # Columns read from the right: a real candidate row is always
-        # Party/Candidate/Votes/% (in that order), but a leading color-swatch
-        # cell some rows have (and the header row doesn't) makes a fixed
-        # left-anchored index unreliable -- this also naturally skips the
-        # shorter "Total votes" footer row and the trailing "<Party> hold"
-        # result row, both of which have fewer than 4 cells.
-        if len(cells) < 4:
+        # Columns located relative to the header's own Party/Candidate/Votes
+        # positions, shifted by however many extra leading cells this row
+        # has vs. the header (a color-swatch cell some rows have and the
+        # header doesn't) -- NOT read from the right, since some states'
+        # tables add a trailing "±%" swing column after "%" that the
+        # original fixed-from-the-right offsets didn't account for (e.g.
+        # Maryland, California), silently misaligning every column by one.
+        # A row shorter than the header (the "Total votes" footer row and
+        # the trailing "<Party> hold" result row) is skipped by the bounds
+        # check below.
+        extra = len(cells) - len(header)
+        party_idx, candidate_idx, votes_idx = (
+            header_party_idx + extra, header_candidate_idx + extra, header_votes_idx + extra,
+        )
+        if extra < 0 or max(party_idx, candidate_idx, votes_idx) >= len(cells):
             continue
-        party, candidate, votes_text = cells[-4], cells[-3], cells[-2]
+        party, candidate, votes_text = cells[party_idx], cells[candidate_idx], cells[votes_idx]
         if party.strip().lower() == "total":
             continue  # Wikipedia's own redundant summary row for a fusion candidate -- every individual line is already being summed below
         if not re.match(r"^[\d,]+$", votes_text.strip()):
@@ -256,8 +267,15 @@ def _parse_general_election_results_table(table: Tag) -> tuple[str, int] | None:
         name = re.sub(r"\s*\(incumbent\)\s*$", "", candidate, flags=re.IGNORECASE).strip()
         if not name:
             continue
+        # North Dakota's state affiliate is officially named "Democratic-NPL"
+        # (Nonpartisan League) on its own ballot -- normalized the same way
+        # Minnesota's "DFL" is handled at the DB layer, so this state's
+        # results aren't silently dropped as "not a real two-party contest".
+        row_party = party.strip()
+        if row_party.replace("–", "-") == "Democratic-NPL":
+            row_party = "Democratic"
         if name not in totals:
-            totals[name] = [party.strip(), 0]
+            totals[name] = [row_party, 0]
         totals[name][1] += votes
 
     dem = next(((name, v[1]) for name, v in totals.items() if v[0] == "Democratic"), None)
@@ -265,6 +283,34 @@ def _parse_general_election_results_table(table: Tag) -> tuple[str, int] | None:
     if dem is None or rep is None or (dem[1] + rep[1]) == 0:
         return None  # not a real two-party contest here -- left out, not fabricated
     return ("Democratic" if dem[1] > rep[1] else "Republican"), dem[1], rep[1]
+
+
+def _parse_at_large_result(soup: BeautifulSoup) -> dict[int, StateDistrictResult] | None:
+    """Fallback for the 6 at-large states (a single statewide district, no
+    numbered "District N" subsections to anchor on): finds the page's own
+    "General election" heading directly and parses its results table into a
+    single district-1 entry. Alaska is deliberately excluded by the caller --
+    its results table is ranked-choice (multiple "Round N" vote columns
+    instead of a single Votes/% pair), a different enough shape that this
+    parser's column-position logic would silently misread it rather than
+    fail cleanly, so it's left for manual entry instead of guessed at."""
+    headings = [h for h in soup.find_all("h2") if h.get_text(strip=True) == "General election"]
+    if len(headings) != 1:
+        return None
+    table = _find_district_results_table(soup, headings[0])
+    if table is None:
+        return None
+    parsed = _parse_general_election_results_table(table)
+    if parsed is None:
+        return None
+    winner_party, dem_votes, rep_votes = parsed
+    return {
+        1: StateDistrictResult(
+            district=1,
+            dem_share=round(dem_votes / (dem_votes + rep_votes) * 100, 2),
+            winner_party=winner_party,
+        )
+    }
 
 
 def _parse_district_results_by_section(soup: BeautifulSoup) -> dict[int, StateDistrictResult] | None:
@@ -306,13 +352,33 @@ def fetch_state_house_results(state_name: str, year: int) -> dict[int, StateDist
     shape first (_parse_district_results_table), then falls back to the
     per-district-subsection shape (_parse_district_results_by_section) --
     only returns data when one of the two actually found a trustworthy
-    result, never a guess."""
-    title = f"{year}_United_States_House_of_Representatives_elections_in_{state_name.replace(' ', '_')}"
-    html = fetch_wikipedia_html(title)
-    if html is None:
-        return None
-    soup = BeautifulSoup(html, "html.parser")
-    return _parse_district_results_table(soup) or _parse_district_results_by_section(soup)
+    result, never a guess.
+
+    At-large states (a single district, no numbered seats) get their own
+    singular-"election" page title instead ("...election in Wyoming", not
+    "...elections in Wyoming"). Both titles are tried and parsed -- not just
+    checked for existence -- because the plural title isn't always a clean
+    404 for these states: Vermont's plural title resolves to a short stub
+    page with no results table at all, which would otherwise win the "first
+    title that exists" race and silently produce no data even though the
+    singular title has the real page. Alaska is excluded from the at-large
+    fallback (see its docstring: ranked-choice results table)."""
+    state_slug = state_name.replace(" ", "_")
+    for word in ("elections", "election"):
+        title = f"{year}_United_States_House_of_Representatives_{word}_in_{state_slug}"
+        html = fetch_wikipedia_html(title)
+        if html is None:
+            continue
+        soup = BeautifulSoup(html, "html.parser")
+        result = _parse_district_results_table(soup) or _parse_district_results_by_section(soup)
+        if result is None and state_name != "Alaska":
+            result = _parse_at_large_result(soup)
+        if result is not None:
+            return result
+    return None
+
+
+_TRAILING_ASTERISK_RE = re.compile(r"\s*\*+\s*$")
 
 
 def _clean_footnotes(text: str) -> str:
@@ -326,7 +392,16 @@ def _clean_footnotes(text: str) -> str:
     # read from the Member column or the Candidates cell, which breaks the
     # exact-string dedup check in _build_candidates and produces a phantom
     # duplicate candidate (see wi03, caught by hand -- 2026-07-27).
-    return _FOOTNOTE_RE.sub("", text).replace("\xad", "").replace("\xa0", " ").strip()
+    #
+    # Also strips a trailing bare "*" -- some states' district-summary
+    # tables (e.g. Connecticut's) attach a literal "*" straight after the
+    # vote count's closing </b>, outside of any [n]-style footnote link, as
+    # a citation marker. Left in, "208,649 *" fails the numeric-only regex
+    # in _parse_district_results_table and silently drops that whole
+    # district from the parsed results (found: Connecticut's districts 1, 3,
+    # and 5, the only ones using this marker, were missing entirely).
+    text = _FOOTNOTE_RE.sub("", text).replace("\xad", "").replace("\xa0", " ")
+    return _TRAILING_ASTERISK_RE.sub("", text).strip()
 
 
 def _wiki_page_title_for(name: str, cell: Tag) -> str | None:
