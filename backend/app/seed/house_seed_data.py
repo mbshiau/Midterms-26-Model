@@ -5461,7 +5461,40 @@ HOUSE_RACES: dict = {
             {"name": 'Monica De La Cruz', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/MDLC_Official_Portrait_2025.jpg/500px-MDLC_Official_Portrait_2025.jpg', "kalshi_ticker": None},
             {"name": 'Bobby Pulido', "party": 'Democratic', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Bobby_Pulido_%28CROPPED%29.jpg/500px-Bobby_Pulido_%28CROPPED%29.jpg', "kalshi_ticker": None},
         ],
-        "raw_polls": [],
+        "raw_polls": [
+            {
+                "pollster": "Applecart",
+                # Per the article's own footnote: "Poll commissioned by
+                # WelcomePAC, which supports Pulido".
+                "sponsor": "WelcomePAC",
+                "field_start_date": "2026-05-18",
+                "field_end_date": "2026-05-25",
+                "release_date": "2026-07-06",
+                "sample_size": 802,
+                "population": "LV",
+                "margin_of_error": 4.1,
+                "undecided_pct": 6.0,
+                "source_url": "https://welcome.team/press-releases/Blog%20Post%20Title%20One-3zaa9-zlxng-67tfc-2sf8d",
+                "results": {"Monica De La Cruz": 46.0, "Bobby Pulido": 48.0},
+            },
+            {
+                "pollster": "Public Policy Polling",
+                # Per the article's own footnote: "Poll sponsored by House
+                # Majority PAC, which is focused on electing Democrats to
+                # the U.S. House of Representatives" -- more specific than
+                # the table's generic "(D)" tag.
+                "sponsor": "House Majority PAC",
+                "field_start_date": "2025-09-10",
+                "field_end_date": "2025-09-11",
+                "release_date": "2025-11-09",
+                "sample_size": 533,
+                "population": "LV",
+                "margin_of_error": None,
+                "undecided_pct": 21.0,
+                "source_url": "https://www.documentcloud.org/documents/26100755-tx15results1/",
+                "results": {"Monica De La Cruz": 41.0, "Bobby Pulido": 38.0},
+            },
+        ],
     },
     # Texas enacted new district lines for 2026 (see Wikipedia's
     # "Mid-decade redistricting changes" table) -- some such maps remain under
@@ -5589,7 +5622,27 @@ HOUSE_RACES: dict = {
             {"name": 'Katy Padilla Stout', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-TX23-26-D'},
             {"name": 'Brandon Herrera', "party": 'Republican', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Brandon_Herrera_2025.png/500px-Brandon_Herrera_2025.png', "kalshi_ticker": 'KXHOUSERACE-TX23-26-R'},
         ],
-        "raw_polls": [],
+        "raw_polls": [
+            {
+                "pollster": "Public Policy Polling",
+                # Per the article's own footnote: same House Majority PAC
+                # sponsorship as the TX-15 PPP poll above.
+                "sponsor": "House Majority PAC",
+                "field_start_date": "2026-03-10",
+                "field_end_date": "2026-03-11",
+                "release_date": "2026-03-12",
+                "sample_size": 521,
+                # Wikipedia's own polling-table key defines "(V)" as
+                # "unclear" -- the source itself doesn't specify LV/RV/A for
+                # this poll, so it's stored as its own real value rather
+                # than guessed at.
+                "population": "V",
+                "margin_of_error": None,
+                "undecided_pct": 18.0,
+                "source_url": "https://www.texastribune.org/wp-content/uploads/2026/03/TX23-PPP-poll.pdf",
+                "results": {"Brandon Herrera": 42.0, "Katy Padilla Stout": 40.0},
+            },
+        ],
     },
     # Texas enacted new district lines for 2026 (see Wikipedia's
     # "Mid-decade redistricting changes" table) -- some such maps remain under
@@ -5669,7 +5722,26 @@ HOUSE_RACES: dict = {
             {"name": 'Henry Cuellar', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Henry_Cuellar%2C_official_portrait.jpg/500px-Henry_Cuellar%2C_official_portrait.jpg', "kalshi_ticker": None},
             {"name": 'Tano Tijerina', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
-        "raw_polls": [],
+        "raw_polls": [
+            {
+                "pollster": "Pulse Science Decision",
+                # Per the article's own footnote: "Poll sponsored by
+                # Tijerina's campaign". The table's row spans two lines (a
+                # head-to-head number and a second scenario including a
+                # third "Other" option); this uses the plain head-to-head
+                # row (Other: "–").
+                "sponsor": "Tijerina campaign",
+                "field_start_date": "2026-06-21",
+                "field_end_date": "2026-06-23",
+                "release_date": "2026-07-01",
+                "sample_size": 400,
+                "population": "LV",
+                "margin_of_error": 4.9,
+                "undecided_pct": 16.0,
+                "source_url": "https://x.com/juliegraceb/status/2072349824624603267",
+                "results": {"Henry Cuellar": 38.0, "Tano Tijerina": 46.0},
+            },
+        ],
     },
     # Texas enacted new district lines for 2026 (see Wikipedia's
     # "Mid-decade redistricting changes" table) -- some such maps remain under
@@ -5765,7 +5837,36 @@ HOUSE_RACES: dict = {
             {"name": 'Vicente Gonzalez', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Rep._Vicente_Gonzalez%2C_118th_Congress.jpg/500px-Rep._Vicente_Gonzalez%2C_118th_Congress.jpg', "kalshi_ticker": None},
             {"name": 'Eric Flores', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
-        "raw_polls": [],
+        "raw_polls": [
+            {
+                "pollster": "Ragnar Research Partners",
+                # Per the article's own footnote: "Poll sponsored by
+                # Flores's campaign".
+                "sponsor": "Flores campaign",
+                "field_start_date": "2026-06-14",
+                "field_end_date": "2026-06-16",
+                "release_date": "2026-07-03",
+                "sample_size": 400,
+                "population": "LV",
+                "margin_of_error": 5.0,
+                "undecided_pct": 15.0,
+                "source_url": "https://x.com/EricDFloress/status/2073053353924305365",
+                "results": {"Vicente Gonzalez": 41.0, "Eric Flores": 44.0},
+            },
+            {
+                "pollster": "co/efficient",
+                "sponsor": "National Republican Congressional Committee",
+                "field_start_date": "2026-04-25",
+                "field_end_date": "2026-04-29",
+                "release_date": "2026-05-08",
+                "sample_size": 777,
+                "population": "LV",
+                "margin_of_error": 3.5,
+                "undecided_pct": 19.0,
+                "source_url": "https://www.nrcc.org/wp-content/uploads/2026/05/NRCC-TX-34-Survey-Memo-1.pdf",
+                "results": {"Vicente Gonzalez": 40.0, "Eric Flores": 41.0},
+            },
+        ],
     },
     # Texas enacted new district lines for 2026 (see Wikipedia's
     # "Mid-decade redistricting changes" table) -- some such maps remain under

@@ -4,7 +4,11 @@ export interface Race {
   state_name: string;
   office: string;
   election_date: string;
-  current_holder_party: string;
+  // null means no real basis to name a holder (e.g. a scaffolded House
+  // district, or a redrawn-map state where the old district's history
+  // can't be attributed to the new lines) -- never treat this as a
+  // flip-able party of its own; see current_holder_party in the backend.
+  current_holder_party: string | null;
 }
 
 export interface Candidate {
@@ -29,7 +33,7 @@ export interface Poll {
   field_end_date: string;
   release_date: string;
   sample_size: number;
-  population: "LV" | "RV" | "A";
+  population: "LV" | "RV" | "A" | "V";
   margin_of_error: number | null;
   undecided_pct: number;
   source_url: string;

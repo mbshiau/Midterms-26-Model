@@ -117,14 +117,27 @@ def get_race_fundamentals(race: Race) -> dict:
     return RACE_FUNDAMENTALS[race.state_code]
 
 
-def current_holder_party(race: Race, candidates: list[Candidate]) -> str:
+def current_holder_party(race: Race, candidates: list[Candidate]) -> str | None:
     """Which party currently holds this seat -- used to detect a projected
     flip. For a race with a candidate running for reelection, that's simply
     their party. For an open seat (no candidate is the incumbent), it's
     derived from the winning party of the most recent real election on file
     for this race's own office (governor, Senate, or this specific House
     district), since that officeholder's term runs through this year's
-    election regardless of whether they're on the ballot again."""
+    election regardless of whether they're on the ballot again.
+
+    Returns None -- not the string "Independent" -- when there's genuinely
+    no basis to name a holder (no incumbent seeded and no election on file,
+    e.g. a scaffolded House district, or a redrawn-map state like Texas
+    where the old numbering's history can't safely be attributed to the new
+    district). "Independent" is a real party value real candidates have
+    elsewhere in this dataset, so overloading it as an "unknown" sentinel
+    made every such seat register as holder=Independent -- and then, since
+    no candidate's real party ever equals the literal string "Independent",
+    ANY projected winner (even a 95%+ favorite) showed up as a "flip",
+    regardless of whether the seat is contested at all. Callers must treat
+    None as "no flip signal available", not as a third party to compare
+    against."""
     for candidate in candidates:
         if candidate.incumbent:
             return candidate.party
@@ -132,9 +145,6 @@ def current_holder_party(race: Race, candidates: list[Candidate]) -> str:
     elections_key = _ELECTIONS_KEY_BY_OFFICE.get(race.office, "gubernatorial_elections")
     elections = get_race_fundamentals(race)[elections_key]
     if not elections:
-        # No historical election on file (e.g. a House district scaffolded
-        # with empty house_elections and no incumbent seeded yet) -- no
-        # real basis to call a holder party one way or the other.
-        return "Independent"
+        return None
     last_election = elections[-1]
     return "Democratic" if last_election["dem_share"] > 50 else "Republican"

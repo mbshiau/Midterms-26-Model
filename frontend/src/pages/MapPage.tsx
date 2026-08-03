@@ -6,7 +6,7 @@ import { GooeyText, type GooeyTextEntry } from "../components/GooeyText";
 import { SenateControlChart } from "../components/SenateControlChart";
 import { SenateControlHistoryChart } from "../components/SenateControlHistoryChart";
 import { UsMap } from "../components/UsMap";
-import { leadingCandidate } from "../lib/leadingCandidate";
+import { isProjectedFlip, leadingCandidate } from "../lib/leadingCandidate";
 import { partyAbbrev, partyColorVar, type ProbabilityTier } from "../lib/partyColor";
 
 // Lazy-loaded: see ElectionTypePage.tsx for why -- this keeps /senate and
@@ -314,7 +314,7 @@ export function MapPage({ office }: { office: Office }) {
                       {
                         party: winner.party,
                         winProbability: winner.win_probability,
-                        isFlip: winner.party !== entry.race.current_holder_party,
+                        isFlip: isProjectedFlip(winner.party, entry.race.current_holder_party),
                       },
                     ];
                   })
@@ -360,7 +360,7 @@ export function MapPage({ office }: { office: Office }) {
               return {
                 party: winner.party,
                 winProbability: winner.win_probability,
-                isFlip: winner.party !== entry.race.current_holder_party,
+                isFlip: isProjectedFlip(winner.party, entry.race.current_holder_party),
               };
             }}
             isClickable={(id) => id in racesByKey}

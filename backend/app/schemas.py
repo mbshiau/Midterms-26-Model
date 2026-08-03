@@ -26,7 +26,7 @@ class RaceOut(BaseModel):
     state_name: str
     office: str
     election_date: date
-    current_holder_party: str
+    current_holder_party: str | None
 
 
 class RaceSummaryCandidateOut(BaseModel):

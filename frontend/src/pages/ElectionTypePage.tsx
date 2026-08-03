@@ -4,7 +4,7 @@ import { api } from "../api/client";
 import type { ChamberControl, RaceSummary } from "../api/types";
 import { Orb } from "../components/Orb";
 import { UsMap, type StateVisual } from "../components/UsMap";
-import { leadingCandidate } from "../lib/leadingCandidate";
+import { isProjectedFlip, leadingCandidate } from "../lib/leadingCandidate";
 import { partyColorVar } from "../lib/partyColor";
 
 // Lazy-loaded: the House district shape data is ~900KB on its own and was
@@ -46,7 +46,7 @@ function visualFor(entries: RaceSummary[]): (stateId: string) => StateVisual | n
     return {
       party: winner.party,
       winProbability: winner.win_probability,
-      isFlip: winner.party !== entry.race.current_holder_party,
+      isFlip: isProjectedFlip(winner.party, entry.race.current_holder_party),
     };
   };
 }
@@ -61,7 +61,7 @@ function houseVisualsFor(entries: RaceSummary[]) {
         {
           party: winner.party,
           winProbability: winner.win_probability,
-          isFlip: winner.party !== r.race.current_holder_party,
+          isFlip: isProjectedFlip(winner.party, r.race.current_holder_party),
         },
       ])
   );

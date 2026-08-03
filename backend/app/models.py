@@ -12,6 +12,12 @@ class Population(str, enum.Enum):
     LV = "LV"  # likely voters
     RV = "RV"  # registered voters
     A = "A"  # all adults
+    # Some sources (e.g. Wikipedia's own polling-table legend) explicitly
+    # mark a poll's screen as unknown rather than guessing LV/RV/A -- kept
+    # as its own real value instead of forcing one of the other three,
+    # which would misrepresent a poll's methodology as more precise than
+    # the source itself claims.
+    V = "V"  # unclear/unspecified
 
 
 _OFFICE_SLUGS = {"Governor": "gov", "Senate": "sen", "House": "house"}

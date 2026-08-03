@@ -19,3 +19,15 @@ export function leadingCandidate<T extends { win_probability: number }>(
     undefined
   );
 }
+
+/** Whether the projected winner represents a change from the seat's
+ * current holder. `currentHolderParty` is null whenever the backend has no
+ * real basis to name a holder (a scaffolded race, or a redrawn-map state
+ * like Texas where the old district's history can't be attributed to the
+ * new lines) -- in that case there is no flip signal at all, so this
+ * always returns false rather than treating "unknown" as a flip-able
+ * party of its own (which previously showed every winner, even a 95%+
+ * favorite in an uncompetitive open seat, as a "flip"). */
+export function isProjectedFlip(winnerParty: string, currentHolderParty: string | null): boolean {
+  return currentHolderParty !== null && winnerParty !== currentHolderParty;
+}

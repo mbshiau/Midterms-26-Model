@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "../api/client";
 import type { ChamberControl } from "../api/types";
+import { isProjectedFlip } from "../lib/leadingCandidate";
 import { partyColorVar } from "../lib/partyColor";
 import { UsMap } from "./UsMap";
 
@@ -13,7 +14,7 @@ interface SenateControlChartProps {
   /** state_code -> party currently holding that seat, from the same
    * /races/summary data the main map already loaded -- lets the scenario
    * preview mark a state as a projected flip the same way the main map does. */
-  currentHolderByState: Record<string, string>;
+  currentHolderByState: Record<string, string | null>;
 }
 
 // UsMap shades a state by win-probability tier (50-60/60-75/75-95/95%+),
@@ -242,7 +243,7 @@ export function SenateControlChart({ currentHolderByState }: SenateControlChartP
                   return {
                     party: winner.party,
                     winProbability: marginToShadeValue(winner.margin),
-                    isFlip: winner.party !== currentHolderByState[id],
+                    isFlip: isProjectedFlip(winner.party, currentHolderByState[id] ?? null),
                   };
                 }}
                 isClickable={() => false}
