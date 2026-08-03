@@ -1332,6 +1332,7 @@ DISTRICT_FUNDAMENTALS: dict = {
     "me02": {
         "pvi_dem_margin_pts": -6.47,
         "house_elections": [
+            {"year": 2022, "dem_share": 53.05, "incumbent_party": 'Democratic'},
             {"year": 2024, "dem_share": 50.35, "incumbent_party": 'Democratic'},
         ],
     },

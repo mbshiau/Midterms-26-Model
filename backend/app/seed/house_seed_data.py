@@ -2048,7 +2048,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+15
         "candidates": [
             {"name": 'David Dawson', "party": 'Democratic', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Member_of_the_Iowa_House_of_Representatives_David_Alan_Dawson.jpg/500px-Member_of_the_Iowa_House_of_Representatives_David_Alan_Dawson.jpg', "kalshi_ticker": None},
-            {"name": 'Chris McGowan', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-IA04-26-R'},
+            {"name": 'Chris McGowan', "party": 'Republican', "incumbent": False, "photo_url": "https://www.localcandidates.org/_next/image?url=https%3A%2F%2Fjanrvuropqrnptyieksp.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fpolitician-images%2Fchris-mcgowan-1778327238684.jpg&w=3840&q=75", "kalshi_ticker": 'KXHOUSERACE-IA04-26-R'},
         ],
         "raw_polls": [],
     },
@@ -6040,6 +6040,8 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+17
         "candidates": [
             {"name": 'Becca Balint', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Rep._Becca_Balint_-_118th_Congress.jpg/500px-Rep._Becca_Balint_-_118th_Congress.jpg', "kalshi_ticker": None},
+            {"name": 'Gerald Malloy', "party": 'Republican', "incumbent": True, "photo_url": 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnxOOssxoC5LtLn4CE4ziLWgAicD_YQc-Eh247nYTYuQ&s=10', "kalshi_ticker": None},
+
         ],
         "raw_polls": [],
     },
