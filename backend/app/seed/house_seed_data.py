@@ -2854,11 +2854,11 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 1,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Maine',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+11
         "candidates": [
             {"name": 'Chellie Pingree', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/e/ee/CPingree_Portrait_202203_%28cropped%29_%28cropped%29.jpg', "kalshi_ticker": 'KXHOUSERACE-ME01-26-D'},
-            {"name": 'Ronald Russell', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-ME01-26-R'},
+            {"name": 'Ronald Russell', "party": 'Republican', "incumbent": False, "photo_url": "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/ronaldrussell.jpg", "kalshi_ticker": 'KXHOUSERACE-ME01-26-R'},
         ],
         "raw_polls": [],
     },
@@ -2867,10 +2867,10 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 2,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Maine',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+4
         "candidates": [
-            {"name": 'Matthew Dunlap', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Matthew Dunlap', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSplUhIvs57g9qrDDB2uqTYluJtuWyGDWBJmLnkaB0-VCrqCip6ThF29RLD0Rd5CHY7q340Ow2DX1y5kr9SQb6yuuzi3e9-XnBofno-hPou&s=10", "kalshi_ticker": None},
             {"name": 'Paul LePage', "party": 'Republican', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Paul_LePage_by_Gage_Skidmore.jpg/500px-Paul_LePage_by_Gage_Skidmore.jpg', "kalshi_ticker": None},
         ],
         "raw_polls": [],
