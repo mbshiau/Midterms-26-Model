@@ -4358,11 +4358,11 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 1,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Ohio',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+1
         "candidates": [
             {"name": 'Greg Landsman', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Greg_Landsman_Official_Portrait_118th_Congress.jpg/500px-Greg_Landsman_Official_Portrait_118th_Congress.jpg', "kalshi_ticker": None},
-            {"name": 'Eric Conroy', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Eric Conroy', "party": 'Republican', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGKnPBBIMDDaqKA5oDe6wnnRW1cuunInXPzqNunKDF-g&s=10", "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -4374,11 +4374,11 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 2,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Ohio',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+21
         "candidates": [
             {"name": 'David Taylor', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Rep._Dave_Taylor_Official_Portrait.jpg/500px-Rep._Dave_Taylor_Official_Portrait.jpg', "kalshi_ticker": 'KXHOUSERACE-OH02-26-R'},
-            {"name": 'Jennifer Mazzuckelli', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-OH02-26-D'},
+            {"name": 'Jennifer Mazzuckelli', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFHOQettHgxaxfREpn1DvCRWIcAOGL1iYwI-rdCfXS7w&s", "kalshi_ticker": 'KXHOUSERACE-OH02-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4390,11 +4390,11 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 3,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Ohio',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+21
         "candidates": [
             {"name": 'Joyce Beatty', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Joyce_Beatty_-_119th_Congress.jpg/500px-Joyce_Beatty_-_119th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-OH03-26-D'},
-            {"name": 'Cleophus Dulaney', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-OH03-26-R'},
+            {"name": 'Cleophus Dulaney', "party": 'Republican', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgG9WU4VkmXxu2Q73SlnEjrJHiMa88uBxFXk7QCqiKRQ&s", "kalshi_ticker": 'KXHOUSERACE-OH03-26-R'},
         ],
         "raw_polls": [],
     },
@@ -4406,11 +4406,11 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 4,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Ohio',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+21
         "candidates": [
             {"name": 'Jim Jordan', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Jim_Jordan.jpg', "kalshi_ticker": 'KXHOUSERACE-OH04-26-R'},
-            {"name": 'Joshua Kolasinski', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-OH04-26-D'},
+            {"name": 'Joshua Kolasinski', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRF5Egjl3Fo93x00-Y-X3Lm3HoX9QL15oevGPTh5_Y3sg&s", "kalshi_ticker": 'KXHOUSERACE-OH04-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4422,11 +4422,11 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 5,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Ohio',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+12
         "candidates": [
             {"name": 'Bob Latta', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Bob_Latta_portrait_118th_Congress.jpeg/500px-Bob_Latta_portrait_118th_Congress.jpeg', "kalshi_ticker": 'KXHOUSERACE-OH05-26-R'},
-            {"name": 'Brian Shaver', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-OH05-26-D'},
+            {"name": 'Brian Shaver', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmC7ww_ZSn3OHmKud08XtJGj89GinKPdsAPNrLU85tbw&s=10", "kalshi_ticker": 'KXHOUSERACE-OH05-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4438,11 +4438,11 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 6,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Ohio',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+17
         "candidates": [
             {"name": 'Michael Rulli', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Michael_Rulli_118th_Congress.jpg/500px-Michael_Rulli_118th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-OH06-26-R'},
-            {"name": 'Elizabeth Kirtley', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-OH06-26-D'},
+            {"name": 'Elizabeth Kirtley', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQG4sfq_sPlgW9TZ6bhHMzQO4ZSAvIoLPCrsk3f1F1aAg&s=10", "kalshi_ticker": 'KXHOUSERACE-OH06-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4454,11 +4454,11 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 7,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Ohio',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+5
         "candidates": [
             {"name": 'Max Miller', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Max_Miller%2C_official_portrait_%28119th_Congress%29.jpg/500px-Max_Miller%2C_official_portrait_%28119th_Congress%29.jpg', "kalshi_ticker": 'KXHOUSERACE-OH07-26-R'},
-            {"name": 'Brian Poindexter', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-OH07-26-D'},
+            {"name": 'Brian Poindexter', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTU7anlMGEdZK2snjQfcCnH_q4ntXvvJIJMXlsQmdBESg&s=10", "kalshi_ticker": 'KXHOUSERACE-OH07-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4470,11 +4470,11 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 8,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Ohio',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+8
         "candidates": [
             {"name": 'Warren Davidson', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Warren_Davidson_118th_Congress_%28cropped%29.jpg/500px-Warren_Davidson_118th_Congress_%28cropped%29.jpg', "kalshi_ticker": 'KXHOUSERACE-OH08-26-R'},
-            {"name": 'Vanessa Enoch', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-OH08-26-D'},
+            {"name": 'Vanessa Enoch', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2SQANqB8_Wrce0puvxSfaahBa0AEyccAU2cGmb_iw2A&s=10", "kalshi_ticker": 'KXHOUSERACE-OH08-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4486,11 +4486,11 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 9,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Ohio',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+5
         "candidates": [
             {"name": 'Marcy Kaptur', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Marcy_Kaptur_Wikipedia.jpg/500px-Marcy_Kaptur_Wikipedia.jpg', "kalshi_ticker": None},
-            {"name": 'Derek Merrin', "party": 'Republican', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/d/dd/Derek_Merrin_-_55409609559.jpg', "kalshi_ticker": None},
+            {"name": 'Derek Merrin', "party": 'Republican', "incumbent": False, "photo_url": 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ2A6f4hLRtQekOWO5AAZ18s8APnWsZIYbDjIO2OunXg&s=10', "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -4502,11 +4502,11 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 10,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Ohio',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+4
         "candidates": [
             {"name": 'Mike Turner', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Mike_Turner_118th_Congress.jpeg/500px-Mike_Turner_118th_Congress.jpeg', "kalshi_ticker": 'KXHOUSERACE-OH10-26-R'},
-            {"name": 'Kristina Knickerbocker', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-OH10-26-D'},
+            {"name": 'Kristina Knickerbocker', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT60i8tB9N2cxVIRGRrw7ewc2rh0NGWpEbiXGqwuqMaY0Mpgdb9St9HapoCnObwbs3mt1t0elCK432nEfCbqmwDOA2orlx8lZicEePsd3LKbw&s=10", "kalshi_ticker": 'KXHOUSERACE-OH10-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4518,11 +4518,11 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 11,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Ohio',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+28
         "candidates": [
             {"name": 'Shontel Brown', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Shontel_Brown%2C_official_portrait_%28119th_Congress%29.jpg/500px-Shontel_Brown%2C_official_portrait_%28119th_Congress%29.jpg', "kalshi_ticker": 'KXHOUSERACE-OH11-26-D'},
-            {"name": 'Mike Kirchner', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-OH11-26-R'},
+            {"name": 'Mike Kirchner', "party": 'Republican', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREzYoVdJ3BTGOEH7_RtjX7zM_4JPDk81QKolNNHzT8Qw&s=10", "kalshi_ticker": 'KXHOUSERACE-OH11-26-R'},
         ],
         "raw_polls": [],
     },
@@ -4534,11 +4534,11 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 12,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Ohio',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+15
         "candidates": [
             {"name": 'Troy Balderson', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Troy_Balderson%2C_official_portrait%2C_116th_Congress.jpg/500px-Troy_Balderson%2C_official_portrait%2C_116th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-OH12-26-R'},
-            {"name": 'Jerrad Christian', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-OH12-26-D'},
+            {"name": 'Jerrad Christian', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTI_U8e-nBlyawH0cQHSox5zAixdXX00SUKezdLV4-Iyg&s", "kalshi_ticker": 'KXHOUSERACE-OH12-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4550,11 +4550,11 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 13,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Ohio',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+2
         "candidates": [
             {"name": 'Emilia Sykes', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Rep._Emilia_Sykes_-_118th_Congress_%281.jpg/500px-Rep._Emilia_Sykes_-_118th_Congress_%281.jpg', "kalshi_ticker": None},
-            {"name": 'Carey Coleman', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Carey Coleman', "party": 'Republican', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9izmrhDiduTXhiUPJ_ewwEJJhJgQ79TxYuiOCLgBMZA&s", "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -4566,11 +4566,11 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 14,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Ohio',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+10
         "candidates": [
             {"name": 'David Joyce', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/David_Joyce.jpg/500px-David_Joyce.jpg', "kalshi_ticker": 'KXHOUSERACE-OH14-26-R'},
-            {"name": 'Maria Jukic', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-OH14-26-D'},
+            {"name": 'Maria Jukic', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUAYJOtyP-19gnQwbziBxWQz7-euI1gsMObHglMJEWWw&s=10", "kalshi_ticker": 'KXHOUSERACE-OH14-26-D'},
         ],
         "raw_polls": [],
     },
@@ -4582,11 +4582,11 @@ HOUSE_RACES: dict = {
         "office": "House",
         "district": 15,
         "election_date": "2026-11-03",
-        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections',
+        "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Ohio',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+5
         "candidates": [
             {"name": 'Mike Carey', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/5/5d/Mike_Carey_2025.jpg', "kalshi_ticker": 'KXHOUSERACE-OH15-26-R'},
-            {"name": 'Don Leonard', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-OH15-26-D'},
+            {"name": 'Don Leonard', "party": 'Democratic', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrynUJBdrrKSBdDB1IX9tL4kr4sW1I-QI2zhbtrQJFEumlPeGG55BWI3RMXxcFJr2WI8GP3clSd1Rouwh-oKgWIN0VupLpeTv_txSs0cw8&s=10", "kalshi_ticker": 'KXHOUSERACE-OH15-26-D'},
         ],
         "raw_polls": [],
     },
