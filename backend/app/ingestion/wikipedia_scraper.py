@@ -129,7 +129,15 @@ def _header_texts(table: Tag) -> list[str]:
     header_row = table.find("tr")
     if header_row is None:
         return []
-    return [th.get_text(strip=True).lower() for th in header_row.find_all(["th"])]
+    # get_text(" ", ...) -- NOT the bare/no-separator get_text() -- because a
+    # <br/> between two words in a header (e.g. Wikipedia wrapping a two-word
+    # surname mid-name: "Monica De<br/>La Cruz (R)") otherwise collapses to
+    # "monica dela cruz (r)" with no separator at all, merging "de" and "la"
+    # into one word. The surname-matching in _find_polling_table then does a
+    # plain substring check for "de la cruz", which never matches "dela
+    # cruz" -- silently and permanently missing that candidate's real
+    # polling table on every scheduled refresh, not just once.
+    return [th.get_text(" ", strip=True).lower() for th in header_row.find_all(["th"])]
 
 
 def _extra_candidate_column_count(headers: list[str], surnames_lower: list[str]) -> int:

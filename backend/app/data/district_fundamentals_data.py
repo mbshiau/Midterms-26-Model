@@ -1837,7 +1837,9 @@ DISTRICT_FUNDAMENTALS: dict = {
     # Nevada 2: 2025 Cook PVI R+7 (via Wikipedia)
     "nv02": {
         "pvi_dem_margin_pts": -12.47,
-        "house_elections": [],
+        "house_elections": [
+            {"year": 2022, "dem_share": 38.76, "incumbent_party": 'Republican'},
+        ],
     },
     # Nevada 3: 2025 Cook PVI D+1 (via Wikipedia)
     "nv03": {
