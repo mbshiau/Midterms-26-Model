@@ -84,12 +84,12 @@ def blend_with_fundamentals(
         if office == "House":
             fundamentals_share = fundamentals.district_fundamentals_vote_share(
                 race_fundamentals, candidate.party, incumbent_party, approval_pct, president_party, as_of,
-                generic_ballot_margin,
+                generic_ballot_margin, is_incumbent=candidate.incumbent,
             )
         else:
             fundamentals_share = fundamentals.fundamentals_vote_share(
                 race_fundamentals, candidate.party, incumbent_party, approval_pct, president_party, as_of,
-                generic_ballot_margin, office,
+                generic_ballot_margin, office, is_incumbent=candidate.incumbent,
             )
         fundamentals_shares[candidate.id] = fundamentals_share
 

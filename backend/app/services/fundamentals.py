@@ -364,6 +364,35 @@ def fundamentals_breakdown(
     )
 
 
+def _personal_incumbency_term(
+    incumbent_party: str | None, party: str, is_incumbent: bool | None, bonus: float
+) -> float:
+    """Signed points added to this specific candidate's own vote share for
+    holding the seat -- distinct from `incumbency_adjustment`, which only
+    knows the incumbent *party*, not which specific candidate that is. The
+    two always agree in a standard Democratic-vs-Republican race (at most
+    one candidate can share the incumbent party), which is why
+    `is_incumbent=None` (the default -- no caller has bothered to say) falls
+    back to inferring it the old way, from `party == incumbent_party`,
+    preserving every existing caller's behavior exactly.
+
+    It stops being inferable once two candidates share the incumbent's
+    party -- a same-party general-election matchup, e.g. California's
+    jungle primary (see app.ingestion.house_scraper._JUNGLE_PRIMARY_STATES)
+    -- where `party == incumbent_party` is true for both candidates at once
+    and would otherwise hand each of them the identical bonus, erasing the
+    real edge the actual sitting incumbent has over a same-party challenger.
+    Callers with real per-candidate data (app.services.forecasting.
+    blend_with_fundamentals, which loops over actual Candidate rows) pass an
+    explicit True/False instead. See CA-40, Young Kim vs. Ken Calvert,
+    caught by hand -- 2026-08-04."""
+    if incumbent_party is None:
+        return 0.0
+    if is_incumbent is None:
+        is_incumbent = party == incumbent_party
+    return bonus if is_incumbent else -bonus
+
+
 def fundamentals_vote_share(
     race_fundamentals: dict,
     party: str,
@@ -373,6 +402,7 @@ def fundamentals_vote_share(
     as_of: date | None = None,
     generic_ballot_margin: float | None = None,
     office: str = "Governor",
+    is_incumbent: bool | None = None,
 ) -> float:
     """Projected two-party vote share for a candidate of the given party.
 
@@ -389,13 +419,21 @@ def fundamentals_vote_share(
     normalizing to a nonsensical ~65/35). This only matters when there's
     little or no real polling to outweigh it (see poll_weight_for_election);
     once real per-candidate polls exist, they dominate the blend regardless.
+
+    `is_incumbent` -- see _personal_incumbency_term -- lets a caller with
+    real per-candidate data correctly split incumbency's bonus even when
+    two candidates share a party; every existing caller that omits it gets
+    the exact prior behavior.
     """
-    margin = fundamentals_breakdown(
+    breakdown = fundamentals_breakdown(
         race_fundamentals, incumbent_party, approval_pct, president_party, as_of, generic_ballot_margin, office
-    ).total_dem_margin_pts
-    if party == "Democratic":
-        return 50 + margin / 2
-    return 50 - margin / 2
+    )
+    non_incumbency_margin = breakdown.total_dem_margin_pts - breakdown.incumbency_pts
+    personal_term = _personal_incumbency_term(
+        incumbent_party, party, is_incumbent, settings.incumbency_bonus_pts
+    )
+    base = 50 + non_incumbency_margin / 2 if party == "Democratic" else 50 - non_incumbency_margin / 2
+    return base + personal_term / 2
 
 
 def district_fundamentals_breakdown(
@@ -451,17 +489,23 @@ def district_fundamentals_vote_share(
     president_party: str,
     as_of: date | None = None,
     generic_ballot_margin: float | None = None,
+    is_incumbent: bool | None = None,
 ) -> float:
     """Projected two-party vote share for a House candidate of the given
     party. See fundamentals_vote_share's docstring for why any non-Democratic
     party shares the same `50 - margin/2` baseline rather than a flat,
-    PVI-agnostic 50%."""
-    margin = district_fundamentals_breakdown(
+    PVI-agnostic 50%, and _personal_incumbency_term's docstring for why
+    `is_incumbent` matters specifically for a same-party general-election
+    matchup (California/Washington's jungle primary)."""
+    breakdown = district_fundamentals_breakdown(
         district_fundamentals, incumbent_party, approval_pct, president_party, as_of, generic_ballot_margin
-    ).total_dem_margin_pts
-    if party == "Democratic":
-        return 50 + margin / 2
-    return 50 - margin / 2
+    )
+    non_incumbency_margin = breakdown.total_dem_margin_pts - breakdown.incumbency_pts
+    personal_term = _personal_incumbency_term(
+        incumbent_party, party, is_incumbent, settings.house_incumbency_bonus_pts
+    )
+    base = 50 + non_incumbency_margin / 2 if party == "Democratic" else 50 - non_incumbency_margin / 2
+    return base + personal_term / 2
 
 
 def poll_weight_for_election(
