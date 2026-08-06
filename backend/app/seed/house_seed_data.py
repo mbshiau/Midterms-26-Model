@@ -3259,6 +3259,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+29
         "candidates": [
             {"name": 'Wesley Bell', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Wesley_Bell%2C_official_portrait_%28119th_Congress%29.jpg/500px-Wesley_Bell%2C_official_portrait_%28119th_Congress%29.jpg', "kalshi_ticker": 'KXHOUSERACE-MO01-26-D'},
+            {"name": 'Paul Berry', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -3274,6 +3275,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+6
         "candidates": [
             {"name": 'Ann Wagner', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Ann_Wagner_Headshot_%28002%29_%28cropped%29.jpg/500px-Ann_Wagner_Headshot_%28002%29_%28cropped%29.jpg', "kalshi_ticker": 'KXHOUSERACE-MO02-26-R'},
+            {"name": 'Fred Wellman', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -3289,6 +3291,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+10
         "candidates": [
             {"name": 'Bob Onder', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Onder_Bob_119th_Congress.jpg/500px-Onder_Bob_119th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-MO03-26-R'},
+            {"name": 'Bethany Mann', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -3304,6 +3307,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+10
         "candidates": [
             {"name": 'Mark Alford', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Rep._Mark_Alford_official_photo%2C_118th_Congress.jpg/500px-Rep._Mark_Alford_official_photo%2C_118th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-MO04-26-R'},
+            {"name": 'Jordan Herrera', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -3319,6 +3323,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+9
         "candidates": [
             {"name": 'Emanuel Cleaver', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Emanuel_Cleaver_official_photo.jpg/500px-Emanuel_Cleaver_official_photo.jpg', "kalshi_ticker": None},
+            {"name": 'Rick Brattin', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -3333,6 +3338,8 @@ HOUSE_RACES: dict = {
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Missouri',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+13
         "candidates": [
+            {"name": 'Chris Stigall', "party": 'Republican', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Chris_Stigall_2017_%28cropped%29.jpg/500px-Chris_Stigall_2017_%28cropped%29.jpg', "kalshi_ticker": None},
+            {"name": 'Josh Smead', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -3364,6 +3371,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+27
         "candidates": [
             {"name": 'Jason Smith', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Rep_Jason_Smith_-_2024.jpeg/500px-Rep_Jason_Smith_-_2024.jpeg', "kalshi_ticker": 'KXHOUSERACE-MO08-26-R'},
+            {"name": 'Chris Reichard', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
