@@ -6186,6 +6186,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+12
         "candidates": [
             {"name": 'Rick Larsen', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Rick_Larsen_116th_Congress_official_photo.jpg/500px-Rick_Larsen_116th_Congress_official_photo.jpg', "kalshi_ticker": 'KXHOUSERACE-WA02-26-D'},
+            {"name": 'Edwin Feller', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -6198,6 +6199,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+2
         "candidates": [
             {"name": 'Marie Gluesenkamp Perez', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Rep._Marie_Gluesenkamp_Perez_-_118th_Congress.jpg/500px-Rep._Marie_Gluesenkamp_Perez_-_118th_Congress.jpg', "kalshi_ticker": None},
+            {"name": 'John Braun', "party": 'Republican', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/f/fd/JohnBraun.png', "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -6210,6 +6212,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+10
         "candidates": [
             {"name": 'John Duresky', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-WA04-26-D'},
+            {"name": 'Amanda McKinney', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -6222,6 +6225,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+5
         "candidates": [
             {"name": 'Michael Baumgartner', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Congressman_Michael_Baumgartner_%28cropped%29.png/500px-Congressman_Michael_Baumgartner_%28cropped%29.png', "kalshi_ticker": 'KXHOUSERACE-WA05-26-R'},
+            {"name": 'Carmela Conroy', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
