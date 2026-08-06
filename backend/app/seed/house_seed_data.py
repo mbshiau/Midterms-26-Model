@@ -2898,7 +2898,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+15
         "candidates": [
             {"name": 'John Moolenaar', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/a/ae/John_Moolenaar_portrait_%28118th_Congress%29.jpg', "kalshi_ticker": 'KXHOUSERACE-MI02-26-R'},
-            {"name": 'Democratic Nominee (TBD)', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-MI02-26-D'},
+            {"name": 'Ben Ambrose', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-MI02-26-D'},
            
         ],
         "raw_polls": [],
@@ -3008,7 +3008,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): EVEN
         "candidates": [
             {"name": 'Tom Barrett', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Tom_Barrett%2C_official_portrait_%28119th_Congress%29.webp/500px-Tom_Barrett%2C_official_portrait_%28119th_Congress%29.webp.png', "kalshi_ticker": None},
-            {"name": 'Democratic Nominee (TBD)', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'William Lawrence', "party": 'Democratic', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/William_Lawrence_2026.jpg/500px-William_Lawrence_2026.jpg', "kalshi_ticker": None},
 
         ],
         "raw_polls": [],
@@ -3022,7 +3022,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+1
         "candidates": [
             {"name": 'Kristen McDonald Rivet', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/McDonald_Rivet_Kristen_119th_Congress%28crop2%29.jpeg/500px-McDonald_Rivet_Kristen_119th_Congress%28crop2%29.jpeg', "kalshi_ticker": None},
-            {"name": 'Republican Nominee (TBD)', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Thomas Smith', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
 
         ],
         "raw_polls": [],
@@ -3062,7 +3062,7 @@ HOUSE_RACES: dict = {
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Michigan',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+9
         "candidates": [
-            {"name": 'Democratic Nominee (TBD)', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-MI11-26-D'},
+            {"name": 'Jeremy Moss', "party": 'Democratic', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Michigan_Senator_Jeremy_Moss_2019.jpg/500px-Michigan_Senator_Jeremy_Moss_2019.jpg', "kalshi_ticker": 'KXHOUSERACE-MI11-26-D'},
             {"name": 'Ethan Baker', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-MI11-26-R'},
         ],
         "raw_polls": [],
@@ -3088,8 +3088,8 @@ HOUSE_RACES: dict = {
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Michigan',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+22
         "candidates": [
-            {"name": 'Democratic Nominee (TBD)', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-MI13-26-D'},
-            {"name": 'Republican Nominee (TBD)', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-MI13-26-R'},
+            {"name": 'Donavan McKinney', "party": 'Democratic', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/State_Rep_Donavan_McKinney_Swearing_In_12.12.22_%2852565631658%29_%28cropped%29.jpg/500px-State_Rep_Donavan_McKinney_Swearing_In_12.12.22_%2852565631658%29_%28cropped%29.jpg', "kalshi_ticker": 'KXHOUSERACE-MI13-26-D'},
+            {"name": 'T.P. Nykoriak', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-MI13-26-R'},
         ],
         "raw_polls": [],
     },

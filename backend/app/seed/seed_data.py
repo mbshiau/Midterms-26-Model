@@ -3739,7 +3739,7 @@ SENATE_RACES: dict = {
 
         "candidates": [
             {"name": "Mike Rogers", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Mike-Rogers-Head-Shot-2_%28cropped%29.jpg/250px-Mike-Rogers-Head-Shot-2_%28cropped%29.jpg", "kalshi_ticker": "SENATEMI-26-R"},
-            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "SENATEMI-26-D"},
+            {"name": "Abdul El-Sayed", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Abdul_El-Sayed_meet-and-greet_by_Conlan_Houston_5_%28cropped%29.jpg/500px-Abdul_El-Sayed_meet-and-greet_by_Conlan_Houston_5_%28cropped%29.jpg", "kalshi_ticker": "SENATEMI-26-D"},
         ],
 
         # Democratic primary (Haley Stevens vs. Abdul El-Sayed, plus Mallory
