@@ -6005,6 +6005,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+3
         "candidates": [
             {"name": 'Rob Wittman', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Rob_Wittman_official_portrait%2C_118th_Congress_%28cropped%29.jpg/500px-Rob_Wittman_official_portrait%2C_118th_Congress_%28cropped%29.jpg', "kalshi_ticker": None},
+            {"name": 'Shannon Taylor', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -6017,6 +6018,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): EVEN
         "candidates": [
             {"name": 'Jen Kiggans', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Kiggans_Jen_118th_Congress.jpg/500px-Kiggans_Jen_118th_Congress.jpg', "kalshi_ticker": None},
+            {"name": 'Elaine Luria', "party": 'Democratic', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Rep._Elaine_Luria_official_photo%2C_117th_Congress.jpg/500px-Rep._Elaine_Luria_official_photo%2C_117th_Congress.jpg', "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -6042,6 +6044,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+17
         "candidates": [
             {"name": 'Jennifer McClellan', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/U.S._Rep._Jennifer_McClellan_-_118th_Congress.jpg/500px-U.S._Rep._Jennifer_McClellan_-_118th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-VA04-26-D'},
+            {"name": 'Robert Murray', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -6054,6 +6057,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+6
         "candidates": [
             {"name": 'John McGuire', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/John_McGuire_119th_Congress.jpg/500px-John_McGuire_119th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-VA05-26-R'},
+            {"name": 'Tom Perriello', "party": 'Democratic', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/1/1d/Official_portrait_of_Thomas_Perriello%2C_U.S._Special_Envoy_for_Sudan.jpg', "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -6079,6 +6083,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+2
         "candidates": [
             {"name": 'Eugene Vindman', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Representative_Eugene_Vindman_Official_Portrait.jpg/500px-Representative_Eugene_Vindman_Official_Portrait.jpg', "kalshi_ticker": None},
+            {"name": 'Doug Ollivant', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -6104,6 +6109,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+22
         "candidates": [
             {"name": 'Morgan Griffith', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/H._Morgan_Griffith_119th_Congress.jpg/500px-H._Morgan_Griffith_119th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-VA09-26-R'},
+            {"name": 'Joy Powers', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -6116,6 +6122,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+6
         "candidates": [
             {"name": 'Suhas Subramanyam', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Subramayam_Suhas_119th_Congress_2.jpg/500px-Subramayam_Suhas_119th_Congress_2.jpg', "kalshi_ticker": None},
+            {"name": 'Dave Beckwith', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },

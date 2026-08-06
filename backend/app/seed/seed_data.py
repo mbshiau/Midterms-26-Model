@@ -4166,7 +4166,7 @@ SENATE_RACES: dict = {
         "wikipedia_page_title": "2026_United_States_Senate_election_in_Virginia",
     
         "candidates": [
-            {"name": "Republican Nominee (TBD)", "party": "Republican", "incumbent": False, "photo_url": None, "kalshi_ticker": "SENATEVA-26-R"},
+            {"name": "Bert Mizusawa", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/110311160930_MG_Mizusawa%2C_Bert.jpg/500px-110311160930_MG_Mizusawa%2C_Bert.jpg", "kalshi_ticker": "SENATEVA-26-R"},
             {"name": "Mark Warner", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Senator_Mark_Warner_Portrait_%28cut_cropped%29.png/250px-Senator_Mark_Warner_Portrait_%28cut_cropped%29.png", "kalshi_ticker": "SENATEVA-26-D"},
         ],
 
