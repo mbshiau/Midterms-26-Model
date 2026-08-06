@@ -94,10 +94,11 @@ def test_candidates_expose_a_photo_url_when_a_real_wikipedia_photo_exists(client
 
 
 def test_candidates_with_no_wikipedia_photo_expose_a_null_photo_url(client):
-    # KS's generic TBD placeholders have no real person to photograph.
+    # Ty Masterson (KS-Gov's GOP nominee) has no infobox photo on his own
+    # Wikipedia article -- real person, just no photo to source.
     forecast = client.get("/races/ks-gov/forecast").json()
-    for r in forecast["results"]:
-        assert r["candidate"]["photo_url"] is None
+    masterson = next(r for r in forecast["results"] if r["candidate"]["name"] == "Ty Masterson")
+    assert masterson["candidate"]["photo_url"] is None
 
     # Cinde Warmington has a real Wikipedia article but no photo on it.
     forecast = client.get("/races/nh-gov/forecast").json()
@@ -452,13 +453,16 @@ def test_nebraska_race_is_independently_seeded_and_forecast(client):
     assert pillen["fundamentals_vote_share"] > 50
 
 
-def test_kansas_race_is_fundamentals_only_with_generic_nominees(client):
+def test_kansas_race_is_fundamentals_only_with_named_nominees(client):
+    # The Aug 4, 2026 primary settled both nominations (Masterson/Holscher),
+    # but no named-candidate general-election poll exists yet -- still
+    # fundamentals-only, same as before the primary, just with real names.
     polls = client.get("/races/ks-gov/polls").json()
     assert polls == []
 
     forecast = client.get("/races/ks-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
-    assert names == {"Republican Nominee", "Democratic Nominee"}
+    assert names == {"Ty Masterson", "Cindy Holscher"}
     assert forecast["n_polls_used"] == 0
     assert forecast["poll_weight_alpha"] == 0.0
 

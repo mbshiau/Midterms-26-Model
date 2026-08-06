@@ -1339,26 +1339,22 @@ RACES = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": "2026_Kansas_gubernatorial_election",
         # Gov. Laura Kelly (D) is term-limited (2-consecutive-term max) and
-        # cannot run again -- this is an open seat. Neither party's Aug 4,
-        # 2026 primary is decided: GOP frontrunner is state Senate President
-        # Ty Masterson, with Secretary of State Scott Schwab and Insurance
-        # Commissioner Vicki Schmidt also running; Democrats have a real
-        # primary between state Sens. Cindy Holscher and Ethan Corson and
-        # Overland Park Mayor Curt Skoog. Per explicit direction, no
-        # presumptive nominee is named here -- this race uses generic party
-        # placeholders and is fundamentals-only. No true generic-ballot
-        # ("generic Republican" vs. "generic Democrat") general-election poll
-        # was found. The only public poll located (Change Research/Capitol
-        # Bee, June 2026) tested named candidates within the Democratic
-        # primary only, which isn't usable for a general-election forecast.
+        # cannot run again -- this is an open seat. The Aug 4, 2026 primary
+        # settled both nominations: Ty Masterson (R, president of the Kansas
+        # Senate, beating Scott Schwab and Vicki Schmidt) vs. Cindy Holscher
+        # (D, state senator, beating Ethan Corson and Curt Skoog). No true
+        # named-candidate general-election poll was found as of this writing
+        # -- the only public poll located (Change Research/Capitol Bee, June
+        # 2026) tested named candidates within the Democratic primary only,
+        # which isn't usable for a general-election forecast.
         "candidates": [
             # Kalshi's ticker suffix for this series is "-27-" (likely an
             # inauguration-year/contract-sequence convention), not "-26-"
             # like every other state -- confirmed via the market's own
             # rules_primary text, which explicitly resolves "pursuant to
             # the 2026 election".
-            {"name": "Republican Nominee", "party": "Republican", "incumbent": False, "photo_url": None, "kalshi_ticker": "GOVPARTYKS-27-R"},
-            {"name": "Democratic Nominee", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "GOVPARTYKS-27-D"},
+            {"name": "Ty Masterson", "party": "Republican", "incumbent": False, "photo_url": None, "kalshi_ticker": "GOVPARTYKS-27-R"},
+            {"name": "Cindy Holscher", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Kansas_State_Senator_Cindy_Holscher.jpg/500px-Kansas_State_Senator_Cindy_Holscher.jpg", "kalshi_ticker": "GOVPARTYKS-27-D"},
         ],
         "raw_polls": [],
     },
@@ -3210,7 +3206,7 @@ SENATE_RACES: dict = {
         "wikipedia_page_title": "2026_United_States_Senate_election_in_Kansas",
         "candidates": [
             {"name": "Roger Marshall", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/b/b6/Roger_Marshall_117th_Congress_portrait.jpg", "kalshi_ticker": "SENATEKS-26-R"},
-            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "SENATEKS-26-D"},
+            {"name": "Adam Hamilton", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "SENATEKS-26-D"},
         ],
         "raw_polls": []
     },

@@ -2425,6 +2425,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+16
         "candidates": [
             {"name": 'Tracey Mann', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Tracey_Mann_117th_U.S_Congress.jpg/500px-Tracey_Mann_117th_U.S_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-KS01-26-R'},
+            {"name": 'Lauren Reinhold', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -2450,6 +2451,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+2
         "candidates": [
             {"name": 'Sharice Davids', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Sharice_Davids.jpg/500px-Sharice_Davids.jpg', "kalshi_ticker": 'KXHOUSERACE-KS03-26-D'},
+            {"name": 'Eric Jenkins', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -2462,6 +2464,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+12
         "candidates": [
             {"name": 'Ron Estes', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Ron_Estes%2C_115th_official_photo.jpg/500px-Ron_Estes%2C_115th_official_photo.jpg', "kalshi_ticker": 'KXHOUSERACE-KS04-26-R'},
+            {"name": 'Katy Tyndell', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
