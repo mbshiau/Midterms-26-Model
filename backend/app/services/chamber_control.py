@@ -13,9 +13,13 @@ drift to different `as_of` dates -- which would silently decorrelate them
 (see generate_national_shock's date-seeded determinism) and understate the
 real joint uncertainty. Instead this recomputes a fresh, mutually consistent
 batch of per-race simulations sharing one national_shock array and
-n_simulations count, live per request -- 33 races x 10k draws of vectorized
-numpy is on the order of milliseconds, cheap enough to skip persisting a
-dedicated snapshot table for it.
+n_simulations count -- the numpy simulation itself is on the order of
+milliseconds, but the per-race DB fetches (33 races' worth of Poll +
+fundamentals lookups) add up to roughly a second in practice, so
+simulate_chamber_control caches its result for a couple minutes rather than
+persisting a dedicated snapshot table (see _CACHE_TTL_SECONDS below) -- not
+full-day storage, just enough to collapse several page loads seconds apart
+into one real computation.
 
 Independent candidates who have publicly declined to commit to caucusing
 with either party (Bodnar/mt-sen, Bengs/sd-sen, Osborn/ne-sen -- unlike
@@ -30,6 +34,7 @@ party" rule rather than a separate "independents hold the balance" outcome.
 
 import bisect
 import hashlib
+import time
 from dataclasses import dataclass
 from datetime import date
 
@@ -106,6 +111,27 @@ class ChamberControlResult:
     seat_distribution: list[SeatScenario]
 
 
+# Both call sites (the /chamber-control/senate route, and
+# chamber_control_history's "pin today's point to the live number" below)
+# hit this with default n_simulations/error_stdev/half_life -- every real
+# request for a given (office, as_of) is computing the exact same numbers as
+# _race_simulation_seed already guarantees (deterministic per calendar day),
+# so redoing the full per-race DB fetch + 10k-draw Monte Carlo on every
+# single page load is pure waste, not fresher data. Measured at ~1s per call
+# in practice (33 Senate races' worth of poll queries + fundamentals lookups
+# dominates, not the numpy simulation itself the module docstring assumed
+# was "cheap enough") -- and it was one of only three things gating the home
+# page's initial render. A short TTL (not the full day, unlike the
+# same-day-deterministic seed) keeps a manual mid-day refresh's new polls
+# showing up within a couple minutes rather than only at the next calendar
+# day, while collapsing the common case -- several page loads seconds apart
+# -- to one real computation. Bypassed entirely when a caller passes
+# explicit simulation parameters (only tests would ever do this), so it
+# can't mask a deliberately-different scenario.
+_CACHE_TTL_SECONDS = 120
+_result_cache: dict[str, tuple[float, "ChamberControlResult"]] = {}
+
+
 def simulate_chamber_control(
     db: Session,
     office: str = "Senate",
@@ -115,6 +141,32 @@ def simulate_chamber_control(
     recency_half_life_days: float | None = None,
 ) -> ChamberControlResult:
     as_of = as_of or date.today()
+    uses_default_params = (
+        n_simulations is None and historical_error_stdev is None and recency_half_life_days is None
+    )
+    cache_key = f"{office}:{as_of.isoformat()}"
+    if uses_default_params:
+        cached = _result_cache.get(cache_key)
+        if cached is not None and time.monotonic() - cached[0] < _CACHE_TTL_SECONDS:
+            return cached[1]
+
+    result = _compute_chamber_control(
+        db, office, as_of, n_simulations, historical_error_stdev, recency_half_life_days
+    )
+
+    if uses_default_params:
+        _result_cache[cache_key] = (time.monotonic(), result)
+    return result
+
+
+def _compute_chamber_control(
+    db: Session,
+    office: str,
+    as_of: date,
+    n_simulations: int | None,
+    historical_error_stdev: float | None,
+    recency_half_life_days: float | None,
+) -> ChamberControlResult:
     n_simulations = n_simulations or settings.default_n_simulations
     half_life_days = recency_half_life_days or settings.recency_half_life_days
     error_stdev = historical_error_stdev or settings.historical_error_stdev

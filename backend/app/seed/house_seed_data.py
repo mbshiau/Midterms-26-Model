@@ -5112,6 +5112,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+29
         "candidates": [
             {"name": 'Diana Harshbarger', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Diana_Harshbarger_116th_Congress.jpeg/500px-Diana_Harshbarger_116th_Congress.jpeg', "kalshi_ticker": 'KXHOUSERACE-TN01-26-R'},
+            {"name": 'Kristi Burke', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -5143,6 +5144,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+18
         "candidates": [
             {"name": 'Chuck Fleischmann', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Chuck_Fleischmann_119th_Congress.jpg/500px-Chuck_Fleischmann_119th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-TN03-26-R'},
+            {"name": 'Anna Golladay', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -5158,6 +5160,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+11
         "candidates": [
             {"name": 'Scott DesJarlais', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/1/17/Scott_DesJarlais_118th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-TN04-26-R'},
+            {"name": 'Victoria Broderick', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -5172,7 +5175,8 @@ HOUSE_RACES: dict = {
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Tennessee',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+10
         "candidates": [
-            {"name": 'Andy Ogles', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Congressman_Andy_Ogles_2022.jpg/500px-Congressman_Andy_Ogles_2022.jpg', "kalshi_ticker": 'KXHOUSERACE-TN05-26-R'},
+            {"name": 'Charlie Hatcher', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-TN05-26-R'},
+            {"name": 'Chaz Molder', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -5187,6 +5191,8 @@ HOUSE_RACES: dict = {
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Tennessee',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+13
         "candidates": [
+            {"name": 'Johnny Garrett', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Mike Croley', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -5202,6 +5208,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+11
         "candidates": [
             {"name": 'Matt Van Epps', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Rep._Matt_Van_Epps_official_portrait%2C_119th_Congress.jpg/500px-Rep._Matt_Van_Epps_official_portrait%2C_119th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-TN07-26-R'},
+            {"name": 'Darden Copeland', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -5217,6 +5224,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+10
         "candidates": [
             {"name": 'David Kustoff', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Rep._David_Kustoff%2C_official_portrait%2C_2023.jpg/500px-Rep._David_Kustoff%2C_official_portrait%2C_2023.jpg', "kalshi_ticker": 'KXHOUSERACE-TN08-26-R'},
+            {"name": 'Heidi Kuhn', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -5231,6 +5239,8 @@ HOUSE_RACES: dict = {
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Tennessee',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+9
         "candidates": [
+            {"name": 'Justin Pearson', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Brent Taylor', "party": 'Republican', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Brent_Taylor_%28Tennessee_politician%29.jpg/500px-Brent_Taylor_%28Tennessee_politician%29.jpg', "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },

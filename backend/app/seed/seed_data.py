@@ -2001,8 +2001,8 @@ RACES = {
         "wikipedia_page_title": "2026_Tennessee_gubernatorial_election",
 
         "candidates": [
-            {"name": "Republican Nominee (TBD)", "party": "Republican", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYTN-26-R"},
-            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYTN-26-D"}
+            {"name": "Marsha Blackburn", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Sen._Marsha_Blackburn_%28R-TN%29_official_headshot_-_116th_Congress.jpg/500px-Sen._Marsha_Blackburn_%28R-TN%29_official_headshot_-_116th_Congress.jpg", "kalshi_ticker": "GOVPARTYTN-26-R"},
+            {"name": "Jerri Green", "party": "Democratic", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYTN-26-D"}
             ],
         "raw_polls": []
     },
@@ -3967,7 +3967,7 @@ SENATE_RACES: dict = {
        
         "candidates": [
             {"name": "Bill Hagerty", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Sen._Bill_Hagerty_official_Senate_portrait%2C_117th_Congress_%28cropped%29.jpg/250px-Sen._Bill_Hagerty_official_Senate_portrait%2C_117th_Congress_%28cropped%29.jpg", "kalshi_ticker": "SENATETN-26-R"},
-            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "SENATETN-26-D"},
+            {"name": "Marquita Bradshaw", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Marquita_Bradshaw_at_Morristown_%28cropped%29.jpg/500px-Marquita_Bradshaw_at_Morristown_%28cropped%29.jpg", "kalshi_ticker": "SENATETN-26-D"},
         ],
 
         "raw_polls": []
