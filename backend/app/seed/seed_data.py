@@ -2013,8 +2013,8 @@ RACES = {
         "wikipedia_page_title": "2026_Hawaii_gubernatorial_election",
 
         "candidates": [
-            {"name": "Republican Nominee (TBD)", "party": "Republican", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYHI-26-R"},
-            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYHI-26-D"}
+            {"name": "Gary Cordery", "party": "Republican", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYHI-26-R"},
+            {"name": "Josh Green", "party": "Democratic", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Josh_Green_Official_Photo_2022_%28cropped%29_1cropped%29.jpg/500px-Josh_Green_Official_Photo_2022_%28cropped%29_1cropped%29.jpg",  "kalshi_ticker": "GOVPARTYHI-26-D"}
             ],
         "raw_polls": []
     },
