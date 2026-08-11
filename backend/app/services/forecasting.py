@@ -49,6 +49,19 @@ from app.services.races import get_race_fundamentals
 from app.services.simulation import generate_national_shock, run_monte_carlo
 from app.services.weighting import CandidateAverage, two_party_normalize, weighted_polling_averages
 
+# ForecastResult.draws_sample only ever feeds GET /races/{slug}/simulations'
+# histogram (app.routers.simulations, 30 bins over 0-100) -- a few hundred
+# draws produce a visually identical bucketed histogram to the full
+# n_simulations (10,000 by default), so storing all of them was pure
+# storage bloat, not extra fidelity. Confirmed: forecast_results alone was
+# 3.5GB (essentially the entire database) after this project scaled to 435
+# House districts, each accumulating forecast history -- enough to OOM a
+# 512MB-limited host well before any request-level memory pressure. The
+# draws array itself is unordered/IID (see run_monte_carlo -- never sorted),
+# so a plain prefix slice is already a valid random subsample; no need to
+# reshuffle before trimming.
+DRAWS_SAMPLE_SIZE = 500
+
 
 def _incumbent_party(candidates: list[Candidate]) -> str | None:
     for c in candidates:
@@ -245,7 +258,7 @@ def generate_forecast(
                 win_probability=result.win_probability,
                 ci_low=result.ci_low,
                 ci_high=result.ci_high,
-                draws_sample=result.draws.tolist(),
+                draws_sample=result.draws[:DRAWS_SAMPLE_SIZE].tolist(),
                 # No polling-only figure exists when the race has zero real
                 # polls yet -- fall back to the fundamentals share so the
                 # (non-nullable) column still holds a real, non-fabricated

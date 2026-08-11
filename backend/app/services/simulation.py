@@ -112,6 +112,39 @@ def run_monte_carlo(
     return results
 
 
-def histogram(draws: np.ndarray, n_bins: int = 30) -> tuple[list[float], list[int]]:
+def _scale_counts(counts: list[int], target_total: int) -> list[int]:
+    """Rescales bucket counts to sum to exactly `target_total`, preserving
+    the distribution's shape. Needed because `histogram` below only ever
+    sees ForecastResult.draws_sample -- a capped random subsample (500 by
+    default, see forecasting.DRAWS_SAMPLE_SIZE), not the full
+    n_simulations draws it's a stand-in for -- so a plain bin count sums to
+    the sample size, not the number of simulations actually run. A naive
+    per-bin round (`count * scale`) would leave the total off by a few from
+    accumulated rounding error; distributing the shortfall to the bins with
+    the largest fractional remainder first (the standard "largest remainder"
+    apportionment method) guarantees an exact match instead."""
+    sample_total = sum(counts)
+    if sample_total == 0 or sample_total == target_total:
+        return counts
+    scale = target_total / sample_total
+    scaled = [c * scale for c in counts]
+    floors = [int(x) for x in scaled]
+    remainder = target_total - sum(floors)
+    by_fractional_part_desc = sorted(range(len(scaled)), key=lambda i: scaled[i] - floors[i], reverse=True)
+    for i in by_fractional_part_desc[:remainder]:
+        floors[i] += 1
+    return floors
+
+
+def histogram(draws: np.ndarray, n_bins: int = 30, scale_to: int | None = None) -> tuple[list[float], list[int]]:
+    """`scale_to` -- when given, rescales the bucket counts (see
+    _scale_counts) so they sum to that total instead of len(draws); pass the
+    snapshot's real n_simulations when `draws` is a capped sample rather
+    than the full simulation output, so the histogram still reads as "out
+    of n_simulations runs" rather than "out of however many happened to be
+    stored"."""
     counts, bin_edges = np.histogram(draws, bins=n_bins, range=(0, 100))
-    return bin_edges.tolist(), counts.tolist()
+    counts_list = counts.tolist()
+    if scale_to is not None:
+        counts_list = _scale_counts(counts_list, scale_to)
+    return bin_edges.tolist(), counts_list

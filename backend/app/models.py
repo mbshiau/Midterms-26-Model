@@ -163,7 +163,10 @@ class ForecastResult(Base):
     win_probability: Mapped[float] = mapped_column(Float, nullable=False)
     ci_low: Mapped[float] = mapped_column(Float, nullable=False)
     ci_high: Mapped[float] = mapped_column(Float, nullable=False)
-    # capped sample of Monte Carlo draws for this candidate, used to render histograms
+    # Capped sample of Monte Carlo draws for this candidate (see
+    # app.services.forecasting.DRAWS_SAMPLE_SIZE), used to render the
+    # /simulations histogram -- deliberately NOT the full n_simulations
+    # draws, which bloated this table to several GB for no visible benefit.
     draws_sample: Mapped[list] = mapped_column(JSON, default=list)
     # pre-blend components, kept for transparency in the "model composition" UI
     polling_vote_share: Mapped[float] = mapped_column(Float, nullable=False)

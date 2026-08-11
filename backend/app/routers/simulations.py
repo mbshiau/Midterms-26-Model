@@ -46,7 +46,7 @@ def get_simulations(race: Race = Depends(get_race_or_404), db: Session = Depends
     histograms = []
     for result in snapshot.results:
         draws = np.array(result.draws_sample)
-        bin_edges, counts = histogram(draws)
+        bin_edges, counts = histogram(draws, scale_to=snapshot.n_simulations)
         histograms.append(
             SimulationHistogramOut(
                 candidate=result.candidate,
