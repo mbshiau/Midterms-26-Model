@@ -638,20 +638,20 @@ def test_arkansas_race_is_fundamentals_only_with_zero_polls(client):
         assert abs(r["mean_vote_share"] - r["fundamentals_vote_share"]) < 1.0
 
 
-def test_wisconsin_race_aggregates_polls_across_named_democratic_contenders(client):
+def test_wisconsin_race_is_fundamentals_and_polls_with_named_nominees(client):
     polls = client.get("/races/wi-gov/polls").json()
-    assert len(polls) == 4
+    assert len(polls) == 3
     pollster_names = {p["pollster"] for p in polls}
-    assert pollster_names == {"Wedgewood Polls", "Impact Research", "Patriot Polling"}
+    assert pollster_names == {"GBAO", "RMG Research", "TIPP Insights"}
 
     forecast = client.get("/races/wi-gov/forecast").json()
     names = {r["candidate"]["name"] for r in forecast["results"]}
-    assert names == {"Tom Tiffany", "Democratic Nominee (TBD)"}
-    assert forecast["n_polls_used"] == 4
+    assert names == {"Tom Tiffany", "David Crowley"}
+    assert forecast["n_polls_used"] == 3
 
-    # Every real matchup polled (Barnes or Hong vs. Tiffany) is close, and
-    # WI's fundamentals are a near-even toss-up too -- neither candidate
-    # should be a lock either way.
+    # Every real Crowley-vs-Tiffany matchup polled is close, and WI's
+    # fundamentals are a near-even toss-up too -- neither candidate should
+    # be a lock either way.
     for r in forecast["results"]:
         assert 0.1 < r["win_probability"] < 0.9
 

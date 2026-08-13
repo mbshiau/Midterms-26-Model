@@ -6312,6 +6312,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+2
         "candidates": [
             {"name": 'Bryan Steil', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Steil_Headshot.jpg/500px-Steil_Headshot.jpg', "kalshi_ticker": None},
+            {"name": 'Mitchell Berman', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -6336,6 +6337,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+3
         "candidates": [
             {"name": 'Derrick Van Orden', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Congressman_dvo_%281%29.jpg/500px-Congressman_dvo_%281%29.jpg', "kalshi_ticker": None},
+            {"name": 'Rebecca Cooke', "party": 'Democratic', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Rebecca_Cooke_on_UpNorthNews_March_2025_%28cropped%29.jpg/500px-Rebecca_Cooke_on_UpNorthNews_March_2025_%28cropped%29.jpg', "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -6348,6 +6350,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+26
         "candidates": [
             {"name": 'Gwen Moore', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Gwen_Moore%2C_official_portrait%2C_116th_Congress.jpg/500px-Gwen_Moore%2C_official_portrait%2C_116th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-WI04-26-D'},
+            {"name": 'Tim Rogers', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -6373,6 +6376,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+8
         "candidates": [
             {"name": 'Glenn Grothman', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Glenn_Grothman_117th_Congress_portrait.jpg/500px-Glenn_Grothman_117th_Congress_portrait.jpg', "kalshi_ticker": 'KXHOUSERACE-WI06-26-R'},
+            {"name": 'Brad Smith', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -6383,7 +6387,10 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Wisconsin',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+11
+        # Open seat -- incumbent Tom Tiffany left to run for Governor.
         "candidates": [
+            {"name": 'Michael Alfonso', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Fred Clark', "party": 'Democratic', "incumbent": False, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Fred_Clark_in_Bayfield_%28cropped%29.jpg/500px-Fred_Clark_in_Bayfield_%28cropped%29.jpg', "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -6396,6 +6403,7 @@ HOUSE_RACES: dict = {
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+8
         "candidates": [
             {"name": 'Tony Wied', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Representative_Tony_Wied_Official_Portrait.jpg/500px-Representative_Tony_Wied_Official_Portrait.jpg', "kalshi_ticker": 'KXHOUSERACE-WI08-26-R'},
+            {"name": 'Rick Crosson', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },

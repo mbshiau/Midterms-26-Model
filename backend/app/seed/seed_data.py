@@ -1817,79 +1817,58 @@ RACES = {
         "office": "Governor",
         "election_date": "2026-11-03",
         "wikipedia_page_title": "2026_Wisconsin_gubernatorial_election",
-        # Tom Tiffany (R) is treated as the presumptive Republican nominee.
-        # The Democratic primary is NOT settled (tight race between Francesca
-        # Hong and Mandela Barnes) -- per explicit direction, a generic
-        # "Democratic Nominee (TBD)" placeholder is used, and every poll that
-        # tested Tiffany against both named Democratic contenders in the same
-        # release (same pollster + field-date window) is averaged into one
-        # poll record, matching the AZ/CO/VT convention: the pipeline dedupes
-        # on pollster + field dates, so two separate rows with identical
-        # values there would just silently drop one.
+        # Both primaries resolved Aug 11, 2026: Tom Tiffany (R) won the
+        # Republican primary as expected, and David Crowley (D) pulled off an
+        # upset over Francesca Hong for the Democratic nod (Mandela Barnes
+        # had already dropped out before the primary). The polls below are
+        # real named Crowley-vs-Tiffany trial heats (pulled from this page's
+        # general-election polling table, which lists them by name even for
+        # dates before the primary) -- not the same as the pre-primary
+        # Hong/Barnes-averaged figures this entry used to carry, which are
+        # dropped now that they no longer describe the actual nominee.
         "candidates": [
-            {"name": "Tom Tiffany", "party": "Republican", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYWI-26-R"},
-            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYWI-26-D"},
+            {"name": "Tom Tiffany", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Tom_Tiffany.jpg/500px-Tom_Tiffany.jpg",  "kalshi_ticker": "GOVPARTYWI-26-R"},
+            {"name": "David Crowley", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Milwaukee_County_Executive_David_Crowley_during_Democratic_Primary_debate_on_July_28%2C_2026.jpg/500px-Milwaukee_County_Executive_David_Crowley_during_Democratic_Primary_debate_on_July_28%2C_2026.jpg",  "kalshi_ticker": "GOVPARTYWI-26-D"},
         ],
         "raw_polls": [
             {
-                "pollster": "Wedgewood Polls",
+                "pollster": "GBAO",
                 "sponsor": None,
-                "field_start_date": "2026-07-02",
-                "field_end_date": "2026-07-04",
-                "release_date": "2026-07-04",
-                "sample_size": 707,
+                "field_start_date": "2026-07-30",
+                "field_end_date": "2026-08-03",
+                "release_date": "2026-08-06",
+                "sample_size": 800,
                 "population": "LV",
-                "margin_of_error": 4.4,
-                "undecided_pct": 8.5,
-                "source_url": "https://www.newsweek.com/socialist-francesca-hongs-chances-of-beating-gop-in-wisconsin-polls-12163160",
-                # Average of 2 named matchups: Barnes 48/Tiffany 44 (8% undec.),
-                # Hong 47/Tiffany 44 (8% undec.).
-                "results": {"Democratic Nominee (TBD)": 47.5, "Tom Tiffany": 44.0},
+                "margin_of_error": 3.5,
+                "undecided_pct": 5.0,
+                "source_url": "https://en.wikipedia.org/wiki/2026_Wisconsin_gubernatorial_election",
+                "results": {"David Crowley": 47.0, "Tom Tiffany": 44.0},
             },
             {
-                "pollster": "Wedgewood Polls",
+                "pollster": "RMG Research",
+                "sponsor": None,
+                "field_start_date": "2026-07-20",
+                "field_end_date": "2026-07-24",
+                "release_date": "2026-07-27",
+                "sample_size": 800,
+                "population": "RV",
+                "margin_of_error": 3.5,
+                "undecided_pct": 11.0,
+                "source_url": "https://en.wikipedia.org/wiki/2026_Wisconsin_gubernatorial_election",
+                "results": {"David Crowley": 46.0, "Tom Tiffany": 43.0},
+            },
+            {
+                "pollster": "TIPP Insights",
                 "sponsor": None,
                 "field_start_date": "2026-03-13",
                 "field_end_date": "2026-03-19",
-                "release_date": "2026-03-23",
+                "release_date": "2026-03-22",
                 "sample_size": 1175,
                 "population": "LV",
                 "margin_of_error": 2.9,
-                "undecided_pct": 16.5,
-                "source_url": "https://tippinsights.com/league-of-american-workers-survey-wisconsin-3/",
-                # Average of 2 named matchups: Barnes 43/Tiffany 41 (10% undec.),
-                # Hong 40/Tiffany 43 (12% undec.).
-                "results": {"Democratic Nominee (TBD)": 41.5, "Tom Tiffany": 42.0},
-            },
-            {
-                "pollster": "Impact Research",
-                "sponsor": None,
-                "field_start_date": "2025-10-02",
-                "field_end_date": "2025-10-08",
-                "release_date": "2025-10-26",
-                "sample_size": 500,
-                "population": "LV",
-                "margin_of_error": 4.4,
-                "undecided_pct": 7.0,
-                "source_url": "https://www.documentcloud.org/documents/26204970-wi-gov-impact-research-for-long-run-pac-oct-2025/",
-                # Only tested Barnes vs. Tiffany -- no Hong matchup in this
-                # release, so it's used as-is rather than averaged.
-                "results": {"Democratic Nominee (TBD)": 50.0, "Tom Tiffany": 44.0},
-            },
-            {
-                "pollster": "Patriot Polling",
-                "sponsor": None,
-                "field_start_date": "2026-03-10",
-                "field_end_date": "2026-03-16",
-                "release_date": "2026-03-25",
-                "sample_size": 500,
-                "population": "LV",
-                "margin_of_error": 3.5,
-                "undecided_pct": 12.0,
-                "source_url": "https://drive.google.com/file/d/1RPTJ7lVbPnf35orAIGiwW9TRZthViZY5/view",
-                # Only tested Hong vs. Tiffany -- no Barnes matchup in this
-                # release, so it's used as-is rather than averaged.
-                "results": {"Democratic Nominee (TBD)": 42.0, "Tom Tiffany": 46.0},
+                "undecided_pct": 17.0,
+                "source_url": "https://en.wikipedia.org/wiki/2026_Wisconsin_gubernatorial_election",
+                "results": {"David Crowley": 42.0, "Tom Tiffany": 41.0},
             },
         ]
     },
@@ -1936,7 +1915,7 @@ RACES = {
         "wikipedia_page_title": "2026_Minnesota_gubernatorial_election",
         
         "candidates": [
-            {"name": "Republican Nominee (TBD)", "party": "Republican", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYMN-26-R"},
+            {"name": "Lisa Demuth", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Lisa_Demuth%2C_2026_%28cropped%29.jpg/500px-Lisa_Demuth%2C_2026_%28cropped%29.jpg",  "kalshi_ticker": "GOVPARTYMN-26-R"},
             {"name": "Amy Klobuchar", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Amy_Klobuchar%2C_official_portrait%2C_113th_Congress.jpg",  "kalshi_ticker": "GOVPARTYMN-26-D"},
         ],
         "raw_polls": []  
@@ -3980,15 +3959,18 @@ SENATE_RACES: dict = {
        
         "candidates": [
             {"name": "Michele Tafoya", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/MicheleTafoya2023.jpg/500px-MicheleTafoya2023.jpg", "kalshi_ticker": "SENATEMN-26-R"},
-            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "SENATEMN-26-D"},
+            {"name": "Peggy Flanagan", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/2026PeggyFlanagan_%28newcropped%29.jpg/500px-2026PeggyFlanagan_%28newcropped%29.jpg", "kalshi_ticker": "SENATEMN-26-D"},
         ],
 
-        # DFL primary (Angie Craig vs. Peggy Flanagan) is unsettled. Same
-        # convention as mi-sen: every wave that tested both DFL contenders
-        # against Tafoya has their two vote shares averaged into a single
-        # "Democratic Nominee (TBD)" figure. The Sept 2025 Craig/Flanagan-
-        # vs-"Generic Republican" wave is excluded -- Tafoya is the real
-        # nominee, not a generic placeholder, so it's not the same matchup.
+        # DFL primary (Angie Craig vs. Peggy Flanagan) has since resolved --
+        # Flanagan won the nomination. Every wave below was polled before
+        # that, testing both DFL contenders against Tafoya with their two
+        # vote shares averaged into a single figure at the time; kept as-is
+        # (now attributed to Flanagan by name) rather than discarded, since
+        # it's the closest real polling data available for these dates. The
+        # Sept 2025 Craig/Flanagan-vs-"Generic Republican" wave is excluded
+        # -- Tafoya is the real nominee, not a generic placeholder, so it's
+        # not the same matchup.
         "raw_polls": [
             {
                 "pollster": "Impact Research",
@@ -4001,7 +3983,7 @@ SENATE_RACES: dict = {
                 "margin_of_error": 4.0,
                 "undecided_pct": 6.5,
                 "source_url": "https://www.scribd.com/document/967381321/MEMO-Poll-Memo-MN-Senate-Dec-2025",
-                "results": {"Michele Tafoya": 45.0, "Democratic Nominee (TBD)": 48.5},
+                "results": {"Michele Tafoya": 45.0, "Peggy Flanagan": 48.5},
             },
             {
                 "pollster": "Emerson College",
@@ -4014,7 +3996,7 @@ SENATE_RACES: dict = {
                 "margin_of_error": 3.0,
                 "undecided_pct": 12.5,
                 "source_url": "https://emersoncollegepolling.com/minnesota-2026-poll-democrats-lead-gop-as-voters-cite-threats-to-democracy/",
-                "results": {"Michele Tafoya": 40.5, "Democratic Nominee (TBD)": 47.0},
+                "results": {"Michele Tafoya": 40.5, "Peggy Flanagan": 47.0},
             },
             {
                 "pollster": "Impact Research",
@@ -4027,7 +4009,7 @@ SENATE_RACES: dict = {
                 "margin_of_error": 3.5,
                 "undecided_pct": 5.0,
                 "source_url": "https://x.com/PollTracker2024/status/2062578118523551799",
-                "results": {"Michele Tafoya": 44.0, "Democratic Nominee (TBD)": 51.0},
+                "results": {"Michele Tafoya": 44.0, "Peggy Flanagan": 51.0},
             },
         ]
     },
