@@ -20,7 +20,7 @@ A standalone section surfaces Kalshi prediction-market odds for comparison — d
 - **Backend**: FastAPI, SQLAlchemy, PostgreSQL, NumPy/pandas for simulation, APScheduler for the twice-daily refresh job
 - **Frontend**: React 19, TypeScript, Vite, Tailwind CSS, Recharts
 - **Data ingestion**: BeautifulSoup scrapers against Wikipedia's MediaWiki API (polls, candidates, PVI, redistricting status) and Kalshi's market API
-- **Deployment**: Render (backend + Postgres), Vercel (frontend), with a GitHub Actions cron job keeping Render's free-tier instance from sleeping through a scheduled refresh
+- **Deployment**: local only, via Docker Compose (see below) — not currently deployed to a public host
 
 ## Running locally
 
