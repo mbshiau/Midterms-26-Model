@@ -6272,8 +6272,11 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Washington',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+3
+        # Aug 4 2026 top-two primary: Schrier 54.0%, Spencer Meline (R) 15.67%
+        # (narrowly edged fellow Republican Trinh Ha by ~619 votes for 2nd place).
         "candidates": [
             {"name": 'Kim Schrier', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Kim_Schrier_Official_Portrait_116th_Congress.jpg/500px-Kim_Schrier_Official_Portrait_116th_Congress.jpg', "kalshi_ticker": None},
+            {"name": 'Spencer Meline', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
