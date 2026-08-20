@@ -22,6 +22,19 @@ import { NewsHeadlinesCard } from "../components/NewsHeadlinesCard";
 
 const NAV_HEIGHT_PX = 52;
 
+// RaceOut has no `district` field of its own (see backend's RaceOut schema)
+// -- the district number only exists encoded in the slug's zero-padded
+// final segment (e.g. "wa-house-08"), the same place MapPage's tooltip
+// title pulls it from. Governor/Senate slugs have no numeric segment at
+// all ("wa-gov"), so this only fires for office === "House".
+function raceLabel(race: Race): string {
+  if (race.office === "House") {
+    const district = Number(race.slug.split("-").pop());
+    return `${race.state_name} — District ${district}`;
+  }
+  return `${race.state_name} ${race.office}`;
+}
+
 function Card({
   id,
   title,
@@ -195,7 +208,7 @@ export function StateForecastPage() {
             style={{ color: "var(--text-primary)" }}
           >
             {race
-              ? `${new Date(race.election_date + "T00:00:00").getFullYear()} ${race.state_name} ${race.office} Forecast`
+              ? `${new Date(race.election_date + "T00:00:00").getFullYear()} ${raceLabel(race)} Forecast`
               : "Loading forecast…"}
           </h1>
         </header>
