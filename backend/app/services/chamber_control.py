@@ -391,15 +391,25 @@ def chamber_control_history(db: Session, office: str = "Senate") -> list[Chamber
     probability is the independence approximation described on
     _independence_control_probabilities.
 
-    Only dates on/after every race's *own* first snapshot are included --
-    an earlier date would silently omit whichever races hadn't been seeded
-    yet, understating both sides rather than reflecting a real day-over-day
-    change."""
+    Every date any modeled race has a snapshot is included, even dates
+    before some *other* race's own first snapshot -- a race with no
+    forecast yet as of a given date falls back to full certainty for
+    whichever party currently holds that seat (see the per-race loop
+    below), the same treatment a not-yet-modeled seat already gets via
+    safe_dem_seats/safe_rep_seats. This used to instead require every
+    race to share one common start date (the max of each race's own first
+    snapshot), which meant a single race losing its history -- e.g. a
+    placeholder candidate deleted and replaced outright instead of renamed
+    in place, wiping that race's whole snapshot history -- would silently
+    truncate this entire chart down to just that race's first new date.
+    Falling back per-race instead means one gap only shortens that race's
+    own contribution, not everyone else's."""
     races = db.query(Race).filter(Race.office == office).order_by(Race.state_name).all()
 
     modeled_dem_current = 0
     modeled_rep_current = 0
     per_race_snapshots: list[list[tuple[date, dict[str, float]]]] = []
+    per_race_holder: list[str | None] = []
 
     for race in races:
         candidates = db.query(Candidate).filter(Candidate.race_id == race.id).all()
@@ -408,6 +418,7 @@ def chamber_control_history(db: Session, office: str = "Senate") -> list[Chamber
             modeled_dem_current += 1
         elif holder == "Republican":
             modeled_rep_current += 1
+        per_race_holder.append(holder)
 
         rows = (
             db.query(ForecastSnapshot.created_at, Candidate.party, ForecastResult.win_probability)
@@ -424,16 +435,13 @@ def chamber_control_history(db: Session, office: str = "Senate") -> list[Chamber
             by_day.setdefault(created_at.date(), {})[party] = win_probability
         per_race_snapshots.append(sorted(by_day.items()))
 
-    if not per_race_snapshots or any(len(s) == 0 for s in per_race_snapshots):
+    if not any(per_race_snapshots):
         return []
 
     safe_dem_seats = CURRENT_SENATE_TOTAL_DEM - modeled_dem_current
     safe_rep_seats = CURRENT_SENATE_TOTAL_REP - modeled_rep_current
 
-    earliest_common_date = max(snapshots[0][0] for snapshots in per_race_snapshots)
-    all_dates = sorted(
-        {d for snapshots in per_race_snapshots for d, _ in snapshots if d >= earliest_common_date}
-    )
+    all_dates = sorted({d for snapshots in per_race_snapshots for d, _ in snapshots})
 
     points = []
     for target_date in all_dates:
@@ -442,13 +450,25 @@ def chamber_control_history(db: Session, office: str = "Senate") -> list[Chamber
         expected_ind = 0.0
         per_race_probs: list[tuple[float, float, float]] = []
 
-        for snapshots in per_race_snapshots:
+        for snapshots, holder in zip(per_race_snapshots, per_race_holder):
             dates_only = [d for d, _ in snapshots]
             idx = bisect.bisect_right(dates_only, target_date) - 1
-            probs = snapshots[idx][1]
-            p_dem = probs.get("Democratic", 0.0)
-            p_rep = probs.get("Republican", 0.0)
-            p_ind = probs.get(UNCOMMITTED_INDEPENDENT_PARTY, 0.0)
+            if idx < 0:
+                # No forecast existed yet for this race as of target_date
+                # (either it has no history at all, or target_date predates
+                # its own first snapshot) -- treat it as fully safe for
+                # whoever currently holds the seat rather than omitting it
+                # (which would make the day's expected-seats total
+                # undercount below 100) or reusing a later date's number
+                # (which would misrepresent what was actually known then).
+                p_dem = 1.0 if holder == "Democratic" else 0.0
+                p_rep = 1.0 if holder == "Republican" else 0.0
+                p_ind = 0.0
+            else:
+                probs = snapshots[idx][1]
+                p_dem = probs.get("Democratic", 0.0)
+                p_rep = probs.get("Republican", 0.0)
+                p_ind = probs.get(UNCOMMITTED_INDEPENDENT_PARTY, 0.0)
             expected_dem += p_dem
             expected_rep += p_rep
             expected_ind += p_ind

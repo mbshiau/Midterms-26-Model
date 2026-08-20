@@ -931,16 +931,11 @@ RACES = {
         "office": "Governor",
         "election_date": "2026-11-03",
         "wikipedia_page_title": "2026_Florida_gubernatorial_election",
-        # Open seat: Ron DeSantis (R) is term-limited. Neither primary is
-        # LEGALLY decided yet -- Florida's primary is August 18, 2026,
-        # still weeks away as of this writing -- but Byron Donalds (R,
-        # Trump-endorsed) and David Jolly (D, a former Republican
-        # congressman who became a Democrat) are used as presumptive
-        # nominees per explicit direction: Donalds dominates every neutral
-        # poll against his declared primary rivals (Lt. Gov. Jay Collins,
-        # ex-House Speaker Paul Renner), and Jolly's only serious rival
-        # (Orange County Mayor Jerry Demings) suspended his campaign June
-        # 5, 2026 after a cancer diagnosis, leaving only minor candidates.
+        # Open seat: Ron DeSantis (R) is term-limited. Confirmed by the
+        # actual Aug 18, 2026 primary: Byron Donalds (R) won 47.8% in a
+        # crowded field (Lt. Gov. Jay Collins, ex-House Speaker Paul
+        # Renner), and David Jolly (D, a former Republican congressman who
+        # became a Democrat) won 61%.
         "candidates": [
             {"name": "Byron Donalds", "party": "Republican", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Rep._Byron_Donalds_official_photo%2C_117th_Congress.jpg", "kalshi_ticker": "GOVPARTYFL-26-R"},
             {"name": "David Jolly", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/6/66/David_Jolly_%283x4%29.jpg", "kalshi_ticker": "GOVPARTYFL-26-D"},
@@ -1953,12 +1948,15 @@ RACES = {
         "office": "Governor",
         "election_date": "2026-11-03",
         "wikipedia_page_title": "2026_Wyoming_gubernatorial_election",
-        
+        # Open seat: Mark Gordon is term-limited. Aug 18, 2026 primary:
+        # Eric Barlow (R, state senator) won 45.1% over Trump-endorsed Megan
+        # Degenfelder (29.7%) and Brent Bien (23.6%); Kenneth Casner (D) ran
+        # uncontested.
         "candidates": [
-            {"name": "Republican Nominee (TBD)", "party": "Republican", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYWY-26-R"},
-            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYWY-26-D"},
+            {"name": "Eric Barlow", "party": "Republican", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYWY-26-R"},
+            {"name": "Kenneth Casner", "party": "Democratic", "incumbent": False, "photo_url": None,  "kalshi_ticker": "GOVPARTYWY-26-D"},
         ],
-        "raw_polls": []  
+        "raw_polls": []
     },
     "ri": {
         "state_name": "Rhode Island",
@@ -2003,43 +2001,29 @@ RACES = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": "2026_Alaska_gubernatorial_election",
 
-        # Alaska's real ballot is a 6-candidate nonpartisan blanket primary
-        # (no "Nominee (TBD)" concept applies), but this race is seeded as
-        # a clean two-candidate matchup instead -- Begich (D) and Wilson (R)
-        # are the two finalists in Alaska Survey Research's simulated final
-        # RCV round, so this collapses the same way any other RCV race can
-        # once a pollster publishes a final-round projection (see the
-        # earlier discussion of AK's RCV modeling options).
+        # Alaska's real ballot is a top-4 nonpartisan blanket primary (no
+        # "Nominee (TBD)" concept applies), narrowing to 4 candidates who
+        # then compete in a ranked-choice general election. This race is
+        # seeded as a clean two-candidate matchup between the top-2
+        # finishers in the actual Aug 18, 2026 primary (preliminary count,
+        # ~80-93% reporting as of Aug 19): Jonathan Kreiss-Tomkins (D)
+        # 21.7% and Tom Begich (D) 20.0%, ahead of Bernadette Wilson (R)
+        # 10.5% and Dave Bronson (R) 8.4% -- both leaders are Democrats,
+        # contrary to the earlier pre-primary Begich-vs-Wilson simulation
+        # this seed previously used. That old simulated-RCV poll tested a
+        # matchup (Begich vs. Wilson) that the real top-2 no longer is, so
+        # it's dropped here rather than relabeled; no real polling yet
+        # exists for the actual Kreiss-Tomkins-vs-Begich pairing.
         # Unlike every other state, the guessed GOVPARTYAK-26-{R|D} tickers
-        # 404 on Kalshi -- likely because Alaska's real 6-candidate ballot
-        # means Kalshi (if it lists this race at all) uses per-candidate
-        # tickers instead of per-party ones. Left null until real tickers
-        # are confirmed rather than guessed.
+        # 404 on Kalshi -- likely because Alaska's real multi-candidate
+        # ballot means Kalshi (if it lists this race at all) uses
+        # per-candidate tickers instead of per-party ones. Left null until
+        # real tickers are confirmed rather than guessed.
         "candidates": [
+            {"name": "Jonathan Kreiss-Tomkins", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/JKTphoto_%28cropped%29.jpg/500px-JKTphoto_%28cropped%29.jpg", "kalshi_ticker": None},
             {"name": "Tom Begich", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": None},
-            {"name": "Bernadette Wilson", "party": "Republican", "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
-        "raw_polls": [
-            {
-                "pollster": "Alaska Survey Research",
-                "sponsor": None,
-                "field_start_date": "2026-06-30",
-                "field_end_date": "2026-07-01",
-                "release_date": "2026-07-08",
-                "sample_size": 1528,
-                "population": "LV",
-                "margin_of_error": 2.7,
-                # Simulated final RCV round (not the first-round 6-candidate
-                # topline) -- Begich 51 / Wilson 49, no undecided reported
-                # for this round.
-                "undecided_pct": 0.0,
-                "source_url": "https://bsky.app/profile/alaskasurvey.bsky.social/post/3mq5ys4ybsc2r",
-                "results": {
-                    "Tom Begich": 51.0,
-                    "Bernadette Wilson": 49.0,
-                },
-            },
-        ]
+        "raw_polls": []
     },
 }
 
@@ -3672,9 +3656,12 @@ SENATE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": "2026_United_States_Senate_election_in_Florida",
        
+        # Aug 18, 2026 primary: Moody (R, incumbent) renominated 79.57% with
+        # no serious challenge; Angie Nixon (D, FL state rep) won the
+        # Democratic primary 55.95% over Alex Vindman.
         "candidates": [
             {"name": "Ashley Moody", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/6/6b/Senator_Ashley_Moody_Official_Portrait.jpg", "kalshi_ticker": "SENATEFL-26-R"},
-            {"name": "Democratic Nominee (TBD)", "party": "Democratic", "incumbent": False, "photo_url": None, "kalshi_ticker": "SENATEFL-26-D"},
+            {"name": "Angie Nixon", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Angie_Nixon_official_portrait.jpg/500px-Angie_Nixon_official_portrait.jpg", "kalshi_ticker": "SENATEFL-26-D"},
         ],
 
         "raw_polls": []
@@ -4277,9 +4264,14 @@ SENATE_RACES: dict = {
         "office": "Senate",
         "election_date": "2026-11-03",
         "wikipedia_page_title": "2026_United_States_Senate_election_in_Alaska",
-        # Straightforward 2-candidate race -- unlike ak-gov's 6-candidate
+        # Straightforward 2-candidate race -- unlike ak-gov's top-4
         # nonpartisan blanket primary, no other candidate has drawn real
-        # polling here.
+        # polling here. Confirmed by the actual Aug 18, 2026 primary
+        # (preliminary, ~80% reporting): Peltola (D) 48.0% and Sullivan
+        # (R, incumbent) 42.8% led the field -- still the top-2 likely RCV
+        # finalists, as this seed already assumed. The full top-4 also
+        # includes a namesake candidate, Daniel J. Sullivan Jr. (R, 2.4%),
+        # and David Leslie (D, 1.1%, a narrow 4th place).
         "candidates": [
             {"name": "Dan Sullivan", "party": "Republican", "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/1/10/Senator_Dan_Sullivan_official.jpg", "kalshi_ticker": "SENATEAK-26-R"},
             {"name": "Mary Peltola", "party": "Democratic", "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Mary_Peltola_Congressional_Member_Portrait_%282%29.jpeg", "kalshi_ticker": "SENATEAK-26-D"},

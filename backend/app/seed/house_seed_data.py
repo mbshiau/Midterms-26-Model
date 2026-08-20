@@ -20,6 +20,12 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_election_in_Alaska',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+6
+        # Confirmed by the actual Aug 18, 2026 top-4 primary (preliminary,
+        # ~80% reporting): Begich (R, incumbent) 46.1% and independent Bill
+        # Hill 31.0% led the field -- still the top-2, as this seed already
+        # assumed. Also advancing: Democrat Matt Schultz (8.1%, who
+        # suspended his campaign and endorsed Hill before the primary but
+        # remained on the ballot) and Eric Hafner (D, 3.8%).
         "candidates": [
             {"name": 'Nick Begich III', "party": 'Republican', "incumbent": True, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Nick_Begich_III_119th_Congress.jpg/500px-Nick_Begich_III_119th_Congress.jpg", "kalshi_ticker": "HOUSEAKAL-26-R"},
             {"name": 'Bill Hill', "party": 'Independent', "incumbent": False, "photo_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0F0cTe-ErkzDShG4O2UyFfbhyW9mSJJ9VJGiU9SGhZA&s=10", "kalshi_ticker": "HOUSEAKAL-26-D"},
@@ -1390,7 +1396,12 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+8
+        # Open seat: incumbent Neal Dunn retired. Aug 18, 2026 primary:
+        # Austin Rogers (R) won a crowded GOP field; Amanda Green (D) won
+        # 33.5% over 3 rivals.
         "candidates": [
+            {"name": 'Austin Rogers', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Amanda Green', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1404,8 +1415,11 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+10
+        # Aug 18, 2026 primary: Cammack (R) unopposed; Seth Harp (D, a
+        # sixth-grade civics teacher) won the Democratic primary.
         "candidates": [
             {"name": 'Kat Cammack', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Rep._Kat_Cammack_official_photo%2C_117th_Congress_%283x4_cropped%29.jpg/500px-Rep._Kat_Cammack_official_photo%2C_117th_Congress_%283x4_cropped%29.jpg', "kalshi_ticker": 'KXHOUSERACE-FL03-26-R'},
+            {"name": 'Seth Harp', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1419,8 +1433,11 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+5
+        # Aug 18, 2026 primary: Bean (R) unopposed; L.J. Holloway (D) won
+        # 57% over Michael Kirwan and Brit Robinson.
         "candidates": [
             {"name": 'Aaron Bean', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Rep._Aaron_Bean_official_photo%2C_118th_Congress.jpg/500px-Rep._Aaron_Bean_official_photo%2C_118th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-FL04-26-R'},
+            {"name": 'L.J. Holloway', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1434,8 +1451,11 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+10
+        # Aug 18, 2026 primary: Rutherford (R) won over Mark Kaye and
+        # Donald Muirheid; Rachel Grage (D) won the Democratic primary.
         "candidates": [
             {"name": 'John Rutherford', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Rutherford_John_119th_Congress_%28cropped%29.jpg/500px-Rutherford_John_119th_Congress_%28cropped%29.jpg', "kalshi_ticker": 'KXHOUSERACE-FL05-26-R'},
+            {"name": 'Rachel Grage', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1449,8 +1469,11 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+14
+        # Aug 18, 2026 primary: Fine (R) won 56.7% over Dan Bilzerian and
+        # others; Eric Yonce (D) won 32.4% over 3 rivals.
         "candidates": [
             {"name": 'Randy Fine', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Rep._Randy_Fine%2C_official_portrait%2C_2026_%28full_body_crop%29.jpg/500px-Rep._Randy_Fine%2C_official_portrait%2C_2026_%28full_body_crop%29.jpg', "kalshi_ticker": 'KXHOUSERACE-FL06-26-R'},
+            {"name": 'Eric Yonce', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1464,8 +1487,15 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+5
+        # Aug 18, 2026 primary upset: incumbent Cory Mills LOST the
+        # Republican primary to Ryan Elijah (a former TV news anchor),
+        # 47%-34%, amid scrutiny over misconduct/campaign-finance
+        # allegations -- so Mills is no longer the nominee and is dropped
+        # here rather than kept as a placeholder incumbent. Bale Dalton (D,
+        # Navy veteran, DCCC-backed) won the Democratic primary.
         "candidates": [
-            {"name": 'Cory Mills', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Representative_Cory_Mills_Cropped_Portrait.jpg/500px-Representative_Cory_Mills_Cropped_Portrait.jpg', "kalshi_ticker": 'KXHOUSERACE-FL07-26-R'},
+            {"name": 'Ryan Elijah', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-FL07-26-R'},
+            {"name": 'Bale Dalton', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1495,8 +1525,12 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+8
+        # Aug 18, 2026 primary: Soto (D) won renomination; Dan Green (R)
+        # won a crowded 7-way GOP field with 25.4%, narrowly ahead of Ben
+        # Butler (24.4%).
         "candidates": [
             {"name": 'Darren Soto', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Darren_Soto_115th_Congress_photo.jpg/500px-Darren_Soto_115th_Congress_photo.jpg', "kalshi_ticker": 'KXHOUSERACE-FL09-26-D'},
+            {"name": 'Dan Green', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1510,6 +1544,10 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+13
+        # Aug 18, 2026 primary: Frost (D) unopposed. Republican primary
+        # (Stuart Farber, Willie Montague, Vibert White) held the same day,
+        # but no source reports a called winner as of Aug 19 -- left
+        # unseeded rather than guessing which of the three won.
         "candidates": [
             {"name": 'Maxwell Frost', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Rep._Maxwell_Frost_-_119th_Congress.jpg/500px-Rep._Maxwell_Frost_-_119th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-FL10-26-D'},
         ],
@@ -1525,7 +1563,14 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+7
+        # Open seat: incumbent Daniel Webster retired. Aug 18, 2026
+        # primary: Democratic primary went to James Pericola with a
+        # commanding 46% (vs. 27%/26% for two rivals). The Republican
+        # primary (Joe Strada 34% vs. Carey Baker 33%, a 403-vote margin)
+        # remains too close to call as of Aug 19 -- left unseeded rather
+        # than guessing.
         "candidates": [
+            {"name": 'James Pericola', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1539,8 +1584,12 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+7
+        # Aug 18, 2026 primary: Bilirakis (R) renominated; Kimberly Overman
+        # (D, ex-Hillsborough County commissioner) won the Democratic
+        # primary with 52.7% over Darren McAuley.
         "candidates": [
             {"name": 'Gus Bilirakis', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Gus_Bilirakis%2C_official_portrait%2C_118th_Congress_%28cropped%29.jpg/500px-Gus_Bilirakis%2C_official_portrait%2C_118th_Congress_%28cropped%29.jpg', "kalshi_ticker": 'KXHOUSERACE-FL12-26-R'},
+            {"name": 'Kimberly Overman', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1554,8 +1603,12 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+6
+        # Aug 18, 2026 primary: Luna (R) unopposed (primary canceled).
+        # Leela Gray (D, retired Army brigadier general) won 65% over 2
+        # rivals.
         "candidates": [
             {"name": 'Anna Paulina Luna', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Anna_Paulina_Luna.jpg/500px-Anna_Paulina_Luna.jpg', "kalshi_ticker": None},
+            {"name": 'Leela Gray', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1569,8 +1622,11 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+4
+        # Aug 18, 2026 primary: Castor (D) unopposed. Mike Beltran (R,
+        # former state rep) won a crowded 8-way GOP field.
         "candidates": [
             {"name": 'Kathy Castor', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Kathy_Castor.jpg/500px-Kathy_Castor.jpg', "kalshi_ticker": 'KXHOUSERACE-FL14-26-D'},
+            {"name": 'Mike Beltran', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1584,8 +1640,11 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+9
+        # Aug 18, 2026 primary: Lee (R) unopposed (primary canceled).
+        # Robert People (D) won 53.7% over Christopher Irizarry.
         "candidates": [
             {"name": 'Laurel Lee', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Laurel_Lee_118thCong.jpeg/500px-Laurel_Lee_118thCong.jpeg', "kalshi_ticker": 'KXHOUSERACE-FL15-26-R'},
+            {"name": 'Robert People', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1599,7 +1658,13 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+6
+        # Open seat: incumbent Vern Buchanan retired. Aug 18, 2026 primary:
+        # Sydney Gruters (R) won 63.6% over 2 rivals; Kelly Kirschner (D,
+        # ex-Sarasota mayor) won 43.3% in a 5-way field. Independent Mark
+        # Davis drew real local coverage as a viral grassroots candidate.
         "candidates": [
+            {"name": 'Sydney Gruters', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Kelly Kirschner', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1613,8 +1678,11 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+10
+        # Aug 18, 2026 primary: Steube (R) unopposed. Matthew Montavon (D)
+        # won 55.3% over Allen Spence.
         "candidates": [
             {"name": 'Greg Steube', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Greg_Steube_117th_Congress.jpeg/500px-Greg_Steube_117th_Congress.jpeg', "kalshi_ticker": 'KXHOUSERACE-FL17-26-R'},
+            {"name": 'Matthew Montavon', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1644,7 +1712,14 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+14
+        # Open seat: incumbent Byron Donalds ran for Governor instead (see
+        # seed_data.py's fl Governor entry). Aug 18, 2026 primary: Jim
+        # Schwartzel (R, conservative radio owner) won a nationally-covered
+        # 10-way field at 29.1%, beating Trump-endorsed Catalina Lauf and
+        # others; Victor Arias (D) won 45.5% over 2 rivals.
         "candidates": [
+            {"name": 'Jim Schwartzel', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Victor Arias', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1658,7 +1733,14 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+20
+        # Aug 18, 2026 primary: Debbie Wasserman Schultz (D, shifted here
+        # from the old FL-25 by redistricting) won 45.6% in a contested
+        # field that included Sheila Cherfilus-McCormick (the resigned
+        # incumbent, facing a federal fraud indictment); Brent Andersen (R)
+        # won 53.8% over 3 rivals.
         "candidates": [
+            {"name": 'Debbie Wasserman Schultz', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Debbie_Wasserman_Schultz_official_photo.jpg/500px-Debbie_Wasserman_Schultz_official_photo.jpg', "kalshi_ticker": None},
+            {"name": 'Brent Andersen', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1672,6 +1754,9 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+7
+        # Aug 18, 2026 primary: Mast (R) unopposed. Democratic primary
+        # (James Martin 50.4% vs. Bernard Taylor 49.6%) is too close to
+        # call as of Aug 19 -- left unseeded rather than guessing.
         "candidates": [
             {"name": 'Brian Mast', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Brian_Mast_official_115th_Congress_photo.jpg/500px-Brian_Mast_official_115th_Congress_photo.jpg', "kalshi_ticker": 'KXHOUSERACE-FL21-26-R'},
         ],
@@ -1687,7 +1772,12 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+4
+        # Open seat. Aug 18, 2026 primary: Pia Dandiya (D) won 68.6% over
+        # Kaysia Earley; Casey Askar (R) won a crowded 7-way field at
+        # 30.8%.
         "candidates": [
+            {"name": 'Casey Askar', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Pia Dandiya', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1701,8 +1791,12 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+9
+        # This is now Frankel's district post-redistricting (shifted from
+        # the old FL-22). Aug 18, 2026 primary: Frankel (D) won 74.8% over
+        # 2 rivals; Deborah Adeimy (R) won 73.7% over Paola Branda.
         "candidates": [
             {"name": 'Lois Frankel', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Lois_Frankel_118th_Congress.jpeg/500px-Lois_Frankel_118th_Congress.jpeg', "kalshi_ticker": None},
+            {"name": 'Deborah Adeimy', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1716,8 +1810,14 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+22
+        # Open seat: incumbent Frederica S. Wilson did not seek
+        # re-election. Aug 18, 2026 primary: Te Mayonna Brown (R) ran
+        # unopposed; Oliver Gilbert III (D, Miami-Dade Commissioner,
+        # former Miami Gardens mayor) won a crowded 7-way field at 34.4%,
+        # beating Shevrin Jones (32.0%) and Kendrick Meek Jr. (17.3%).
         "candidates": [
             {"name": 'Te Mayonna Brown', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-FL24-26-R'},
+            {"name": 'Oliver Gilbert III', "party": 'Democratic', "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Oliver_G._Gilbert_III%2C_mayor_of_Miami_Gardens.jpg", "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1731,8 +1831,12 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+3
+        # Aug 18, 2026 primary: Moskowitz (D) won 63.5% over Oliver Larkin.
+        # Scott Singer (R, former Boca Raton mayor) won a crowded 5-way
+        # field at 31.4%. Rated Toss-up.
         "candidates": [
             {"name": 'Jared Moskowitz', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/JEM_New_Headshot_2.jpg/500px-JEM_New_Headshot_2.jpg', "kalshi_ticker": 'KXHOUSERACE-FL25-26-D'},
+            {"name": 'Scott Singer', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1762,8 +1866,12 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+6
+        # Aug 18, 2026 primary: Salazar (R) won 81.3% over V. Michael
+        # Arias. Eliott Rodriguez (D, former CBS Miami news anchor) won
+        # 53.5% over Robin Peguero.
         "candidates": [
             {"name": 'María Elvira Salazar', "party": 'Republican', "incumbent": True, "photo_url": None, "kalshi_ticker": 'KXHOUSERACE-FL27-26-R'},
+            {"name": 'Eliott Rodriguez', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -6443,7 +6551,14 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_election_in_Wyoming',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+23
+        # Open seat: incumbent Harriet Hageman ran for Senate instead (see
+        # seed_data.py's wy Senate entry). Aug 18, 2026 primary: Chuck Gray
+        # (R, current WY Secretary of State) won a crowded GOP field with
+        # 25.4%; Lisa Kinney (D, former state Senate minority leader) won
+        # the Democratic primary in a landslide, 77.9%.
         "candidates": [
+            {"name": 'Chuck Gray', "party": 'Republican', "incumbent": False, "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Chuck_Gray_in_2025_%28cropped%29.jpg/500px-Chuck_Gray_in_2025_%28cropped%29.jpg", "kalshi_ticker": None},
+            {"name": 'Lisa Kinney', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
