@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ForecastResult } from "../api/types";
-import { leadingCandidate } from "../lib/leadingCandidate";
+import { combinedSamePartyTicket, leadingCandidate } from "../lib/leadingCandidate";
 import { favoriteLabel, partyColorVar } from "../lib/partyColor";
 
 const CX = 170;
@@ -115,15 +115,39 @@ function CandidateLabel({
 }
 
 export function ForecastNeedle({ results }: { results: ForecastResult[] }) {
-  const sorted = [...results].sort((a, b) => b.mean_vote_share - a.mean_vote_share);
-  const dem = results.find((r) => r.candidate.party === "Democratic") ?? sorted[1] ?? sorted[0];
+  // A race where every candidate shares one major party (no real opposing
+  // nominee) has no basis for a two-person dem-vs-rep dial -- see
+  // combinedSamePartyTicket. Substituting two synthetic results (the
+  // combined ticket at 100%, "No Candidate" for the other party at 0%)
+  // lets every render path below (the dem/rep slot lookup, needle angle,
+  // gradient, labels, margin line) run completely unchanged, just pinned
+  // hard to whichever side the ticket's party occupies.
+  const combined = combinedSamePartyTicket(
+    results.map((r) => ({ name: r.candidate.name, party: r.candidate.party, win_probability: r.win_probability }))
+  );
+  const effectiveResults: ForecastResult[] = combined
+    ? combined.candidates.map((c, i) => ({
+        candidate: { id: -1 - i, name: c.name, party: c.party, incumbent: false, photo_url: null, kalshi_ticker: null },
+        mean_vote_share: c.voteShare,
+        median_vote_share: c.voteShare,
+        std_dev: 0,
+        win_probability: c.party === combined.winner.party ? combined.winner.probability : 1 - combined.winner.probability,
+        ci_low: c.voteShare,
+        ci_high: c.voteShare,
+        polling_vote_share: c.voteShare,
+        fundamentals_vote_share: c.voteShare,
+      }))
+    : results;
+
+  const sorted = [...effectiveResults].sort((a, b) => b.mean_vote_share - a.mean_vote_share);
+  const dem = effectiveResults.find((r) => r.candidate.party === "Democratic") ?? sorted[1] ?? sorted[0];
   // Mirrors dem's own fallback: prefer whichever candidate isn't already
   // occupying the other slot, rather than unconditionally grabbing sorted[0]
   // -- a race with no real Republican (e.g. an Independent as the only
   // challenger) would otherwise put the same candidate in both slots
   // whenever they're also the front-runner, duplicating one person's name
   // across the whole needle instead of showing the real second candidate.
-  const rep = results.find((r) => r.candidate.party === "Republican") ?? sorted.find((r) => r !== dem) ?? sorted[0];
+  const rep = effectiveResults.find((r) => r.candidate.party === "Republican") ?? sorted.find((r) => r !== dem) ?? sorted[0];
   // The dial itself is a fixed Dem-vs-Rep spectrum (there's no third point
   // on a 180deg arc to put an independent), but any other candidate --
   // Independent, third-party -- still needs to show up somewhere rather

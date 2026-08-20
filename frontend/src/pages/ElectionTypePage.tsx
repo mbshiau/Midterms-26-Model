@@ -4,7 +4,7 @@ import { api } from "../api/client";
 import type { ChamberControl, RaceSummary } from "../api/types";
 import { Orb } from "../components/Orb";
 import { UsMap, type StateVisual } from "../components/UsMap";
-import { isProjectedFlip, leadingCandidate } from "../lib/leadingCandidate";
+import { combinedSamePartyTicket, isProjectedFlip, leadingCandidate } from "../lib/leadingCandidate";
 import { partyColorVar } from "../lib/partyColor";
 
 // Lazy-loaded: the House district shape data is ~900KB on its own and was
@@ -41,8 +41,17 @@ function visualFor(entries: RaceSummary[]): (stateId: string) => StateVisual | n
   const byState = Object.fromEntries(entries.map((r) => [r.race.state_code.toLowerCase(), r]));
   return (stateId) => {
     const entry = byState[stateId];
-    const winner = entry && leadingCandidate(entry.candidates);
-    if (!entry || !winner) return null;
+    if (!entry) return null;
+    const combined = combinedSamePartyTicket(entry.candidates);
+    if (combined) {
+      return {
+        party: combined.winner.party,
+        winProbability: combined.winner.probability,
+        isFlip: isProjectedFlip(combined.winner.party, entry.race.current_holder_party),
+      };
+    }
+    const winner = leadingCandidate(entry.candidates);
+    if (!winner) return null;
     return {
       party: winner.party,
       winProbability: winner.win_probability,
@@ -54,7 +63,13 @@ function visualFor(entries: RaceSummary[]): (stateId: string) => StateVisual | n
 function houseVisualsFor(entries: RaceSummary[]) {
   return Object.fromEntries(
     entries
-      .map((r) => ({ r, winner: leadingCandidate(r.candidates) }))
+      .map((r) => {
+        const combined = combinedSamePartyTicket(r.candidates);
+        const winner = combined
+          ? { party: combined.winner.party, win_probability: combined.winner.probability }
+          : leadingCandidate(r.candidates);
+        return { r, winner };
+      })
       .filter((x): x is { r: RaceSummary; winner: NonNullable<typeof x.winner> } => Boolean(x.winner))
       .map(({ r, winner }) => [
         r.race.slug,

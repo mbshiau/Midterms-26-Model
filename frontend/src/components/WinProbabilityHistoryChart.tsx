@@ -60,7 +60,7 @@ export function WinProbabilityHistoryChart({ history }: { history: ForecastHisto
   const latestWinProbability = new Map(
     snapshots[snapshots.length - 1].results.map((r) => [r.candidate.name, r.win_probability])
   );
-  const candidateNames = Array.from(
+  let candidateNames = Array.from(
     new Set(snapshots.flatMap((s) => s.results.map((r) => r.candidate.name)))
   ).sort((a, b) => (latestWinProbability.get(b) ?? -1) - (latestWinProbability.get(a) ?? -1));
   // A candidate who joined the race after the earliest snapshot (e.g. a
@@ -69,15 +69,47 @@ export function WinProbabilityHistoryChart({ history }: { history: ForecastHisto
   // with no match and a gray fallback color, even though their line still
   // rendered correctly (candidateNames above is already a proper union
   // across every snapshot). Union across all snapshots here too.
-  const candidateByName = new Map(
+  let candidateByName = new Map<string, { party: string }>(
     snapshots.flatMap((s) => s.results.map((r) => [r.candidate.name, r.candidate] as const))
   );
+
+  // A race where every candidate (across the whole history) shares one
+  // major party has no real basis to forecast which specific person wins
+  // -- see combinedSamePartyTicket / ForecastHistoryChart. Collapse the
+  // two lines into one combined-ticket line at 100% and a "No Candidate"
+  // line at 0%, using the already-computed winner-first order so the
+  // joined name stays fixed across the whole chart rather than flipping
+  // day to day.
+  const combinedMeta =
+    candidateNames.length === 2 &&
+    new Set(candidateNames.map((name) => candidateByName.get(name)!.party)).size === 1 &&
+    (candidateByName.get(candidateNames[0])!.party === "Democratic" ||
+      candidateByName.get(candidateNames[0])!.party === "Republican")
+      ? {
+          party: candidateByName.get(candidateNames[0])!.party,
+          otherParty: candidateByName.get(candidateNames[0])!.party === "Democratic" ? "Republican" : "Democratic",
+          combinedName: candidateNames.join(" / "),
+        }
+      : null;
+
+  if (combinedMeta) {
+    candidateNames = [combinedMeta.combinedName, "No Candidate"];
+    candidateByName = new Map([
+      [combinedMeta.combinedName, { party: combinedMeta.party }],
+      ["No Candidate", { party: combinedMeta.otherParty }],
+    ]);
+  }
 
   const data: HistoryPoint[] = snapshots.map((s) => {
     const ts = new Date(s.created_at).getTime();
     const point: HistoryPoint = { timestamp: ts, dateLabel: formatTick(ts) };
-    for (const r of s.results) {
-      point[r.candidate.name] = r.win_probability * 100;
+    if (combinedMeta) {
+      point[combinedMeta.combinedName] = 100;
+      point["No Candidate"] = 0;
+    } else {
+      for (const r of s.results) {
+        point[r.candidate.name] = r.win_probability * 100;
+      }
     }
     return point;
   });

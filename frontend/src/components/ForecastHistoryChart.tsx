@@ -68,23 +68,65 @@ export function ForecastHistoryChart({ history }: { history: ForecastHistory }) 
     return <p style={{ color: "var(--text-muted)" }}>No forecast history yet.</p>;
   }
 
-  const candidateNames = Array.from(
+  let candidateNames = Array.from(
     new Set(snapshots.flatMap((s) => s.results.map((r) => r.candidate.name)))
   );
   // See WinProbabilityHistoryChart.tsx -- a candidate who joined after the
   // earliest snapshot wouldn't appear in snapshots[0] alone, leaving them
   // with no party match and a gray fallback color. Union across all
   // snapshots instead (candidateNames above already does this correctly).
-  const candidateByName = new Map(
+  let candidateByName = new Map<string, { party: string }>(
     snapshots.flatMap((s) => s.results.map((r) => [r.candidate.name, r.candidate] as const))
   );
+
+  // A race where every candidate (across the whole history, not just one
+  // snapshot) shares one major party has no real basis to forecast which
+  // specific person wins -- see combinedSamePartyTicket. Collapsing the
+  // two lines into one combined-ticket line at 100% and a "No Candidate"
+  // line at 0% (fixed name/order for the whole chart, not recomputed per
+  // snapshot, so the line doesn't fragment if the day-to-day win
+  // probability ordering between the two flips) keeps this chart
+  // consistent with the Forecast Summary card above it.
+  const combinedMeta = (() => {
+    if (candidateNames.length !== 2) return null;
+    const parties = new Set(candidateNames.map((name) => candidateByName.get(name)!.party));
+    if (parties.size !== 1) return null;
+    const [party] = parties;
+    if (party !== "Democratic" && party !== "Republican") return null;
+    const latest = snapshots[snapshots.length - 1];
+    const order = [...candidateNames].sort((a, b) => {
+      const pa = latest.results.find((r) => r.candidate.name === a)?.win_probability ?? 0;
+      const pb = latest.results.find((r) => r.candidate.name === b)?.win_probability ?? 0;
+      return pb - pa;
+    });
+    return {
+      party,
+      otherParty: party === "Democratic" ? "Republican" : "Democratic",
+      combinedName: order.join(" / "),
+    };
+  })();
+
+  if (combinedMeta) {
+    candidateNames = [combinedMeta.combinedName, "No Candidate"];
+    candidateByName = new Map([
+      [combinedMeta.combinedName, { party: combinedMeta.party }],
+      ["No Candidate", { party: combinedMeta.otherParty }],
+    ]);
+  }
 
   const data: HistoryPoint[] = snapshots.map((s) => {
     const ts = new Date(s.created_at).getTime();
     const point: HistoryPoint = { timestamp: ts, dateLabel: formatTick(ts) };
-    for (const r of s.results) {
-      point[r.candidate.name] = r.mean_vote_share;
-      point[`${r.candidate.name}Range`] = [r.ci_low, r.ci_high];
+    if (combinedMeta) {
+      point[combinedMeta.combinedName] = 100;
+      point[`${combinedMeta.combinedName}Range`] = [100, 100];
+      point["No Candidate"] = 0;
+      point["No CandidateRange"] = [0, 0];
+    } else {
+      for (const r of s.results) {
+        point[r.candidate.name] = r.mean_vote_share;
+        point[`${r.candidate.name}Range`] = [r.ci_low, r.ci_high];
+      }
     }
     return point;
   });

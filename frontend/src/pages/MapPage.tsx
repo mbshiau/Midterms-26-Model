@@ -6,7 +6,7 @@ import { GooeyText, type GooeyTextEntry } from "../components/GooeyText";
 import { SenateControlChart } from "../components/SenateControlChart";
 import { SenateControlHistoryChart } from "../components/SenateControlHistoryChart";
 import { UsMap } from "../components/UsMap";
-import { isProjectedFlip, leadingCandidate } from "../lib/leadingCandidate";
+import { combinedSamePartyTicket, isProjectedFlip, leadingCandidate } from "../lib/leadingCandidate";
 import { partyAbbrev, partyColorVar, type ProbabilityTier } from "../lib/partyColor";
 
 // Lazy-loaded: see ElectionTypePage.tsx for why -- this keeps /senate and
@@ -308,6 +308,17 @@ export function MapPage({ office }: { office: Office }) {
                 entries
                   .filter((entry) => entry.candidates.length > 0)
                   .map((entry) => {
+                    const combined = combinedSamePartyTicket(entry.candidates);
+                    if (combined) {
+                      return [
+                        entry.race.slug,
+                        {
+                          party: combined.winner.party,
+                          winProbability: combined.winner.probability,
+                          isFlip: isProjectedFlip(combined.winner.party, entry.race.current_holder_party),
+                        },
+                      ];
+                    }
                     const winner = leadingCandidate(entry.candidates)!;
                     return [
                       entry.race.slug,
@@ -327,6 +338,11 @@ export function MapPage({ office }: { office: Office }) {
                 const district = slug.split("-").pop();
                 const title = `${entry.race.state_name} — District ${Number(district)}`;
                 if (entry.candidates.length === 0) return { title };
+
+                const combined = combinedSamePartyTicket(entry.candidates);
+                if (combined) {
+                  return { title, candidates: combined.candidates, winner: combined.winner };
+                }
 
                 // Display order (vote share ranking) vs. the projected
                 // winner (highest win_probability) are two different
@@ -354,6 +370,15 @@ export function MapPage({ office }: { office: Office }) {
               const entry = racesByKey[id];
               if (!entry || entry.candidates.length === 0) return null;
 
+              const combined = combinedSamePartyTicket(entry.candidates);
+              if (combined) {
+                return {
+                  party: combined.winner.party,
+                  winProbability: combined.winner.probability,
+                  isFlip: isProjectedFlip(combined.winner.party, entry.race.current_holder_party),
+                };
+              }
+
               const winner = leadingCandidate(entry.candidates);
               if (!winner) return null;
 
@@ -371,6 +396,11 @@ export function MapPage({ office }: { office: Office }) {
             getTooltip={(id) => {
               const entry = racesByKey[id];
               if (!entry || entry.candidates.length === 0) return null;
+
+              const combined = combinedSamePartyTicket(entry.candidates);
+              if (combined) {
+                return { candidates: combined.candidates, winner: combined.winner };
+              }
 
               // Display order (vote share ranking) vs. the projected winner
               // (highest win_probability) are two different questions --
