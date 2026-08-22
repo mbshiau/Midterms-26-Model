@@ -1544,10 +1544,10 @@ HOUSE_RACES: dict = {
         "election_date": "2026-11-03",
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): D+13
-        # Aug 18, 2026 primary: Frost (D) unopposed. Republican primary
-        # (Stuart Farber, Willie Montague, Vibert White) held the same day,
-        # but no source reports a called winner as of Aug 19 -- left
-        # unseeded rather than guessing which of the three won.
+        # Aug 18, 2026 primary: Frost (D) unopposed. Per direct correction --
+        # no Republican challenger actually qualified for the Nov 3 general
+        # ballot in this district; the earlier "3-way GOP primary" read was
+        # wrong (2026-08-22).
         "candidates": [
             {"name": 'Maxwell Frost', "party": 'Democratic', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Rep._Maxwell_Frost_-_119th_Congress.jpg/500px-Rep._Maxwell_Frost_-_119th_Congress.jpg', "kalshi_ticker": 'KXHOUSERACE-FL10-26-D'},
         ],
@@ -1567,10 +1567,13 @@ HOUSE_RACES: dict = {
         # primary: Democratic primary went to James Pericola with a
         # commanding 46% (vs. 27%/26% for two rivals). The Republican
         # primary (Joe Strada 34% vs. Carey Baker 33%, a 403-vote margin)
-        # remains too close to call as of Aug 19 -- left unseeded rather
-        # than guessing.
+        # was too close to call as of Aug 19, but news outlets have since
+        # reported Strada as the winner (his 403-vote lead triggered
+        # Florida's mandatory machine recount, still pending official
+        # certification as of Aug 21).
         "candidates": [
             {"name": 'James Pericola', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
+            {"name": 'Joe Strada', "party": 'Republican', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
@@ -1755,10 +1758,12 @@ HOUSE_RACES: dict = {
         "wikipedia_page_title": '2026_United_States_House_of_Representatives_elections_in_Florida',
         # 2025 Cook PVI (via Wikipedia, citing The Cook Political Report): R+7
         # Aug 18, 2026 primary: Mast (R) unopposed. Democratic primary
-        # (James Martin 50.4% vs. Bernard Taylor 49.6%) is too close to
-        # call as of Aug 19 -- left unseeded rather than guessing.
+        # (James Martin 50.4% vs. Bernard Taylor 49.6%) was too close to
+        # call as of Aug 19, but Taylor conceded two days later and AP
+        # called the race for Martin.
         "candidates": [
             {"name": 'Brian Mast', "party": 'Republican', "incumbent": True, "photo_url": 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Brian_Mast_official_115th_Congress_photo.jpg/500px-Brian_Mast_official_115th_Congress_photo.jpg', "kalshi_ticker": 'KXHOUSERACE-FL21-26-R'},
+            {"name": 'James Martin', "party": 'Democratic', "incumbent": False, "photo_url": None, "kalshi_ticker": None},
         ],
         "raw_polls": [],
     },
